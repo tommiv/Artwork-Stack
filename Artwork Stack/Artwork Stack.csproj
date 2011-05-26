@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmShowFull.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmShowFull.Designer.cs">
+      <DependentUpon>frmShowFull.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmShowResults.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +65,9 @@
     <Compile Include="httpRequest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmShowFull.resx">
+      <DependentUpon>frmShowFull.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmShowResults.resx">
       <DependentUpon>frmShowResults.cs</DependentUpon>
     </EmbeddedResource>
@@ -82,6 +91,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImageCell\ImageCell.csproj">
+      <Project>{15FED470-1966-4445-8B26-ED667CFE4752}</Project>
+      <Name>ImageCell</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

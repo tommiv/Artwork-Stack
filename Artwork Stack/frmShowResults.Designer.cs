@@ -28,34 +28,58 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.txtConsole = new System.Windows.Forms.TextBox();
+            this.txtQuery = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // button1
+            // btnSearch
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnSearch.Location = new System.Drawing.Point(502, 12);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnSearch.TabIndex = 0;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // txtConsole
+            // 
+            this.txtConsole.Location = new System.Drawing.Point(12, 554);
+            this.txtConsole.Multiline = true;
+            this.txtConsole.Name = "txtConsole";
+            this.txtConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtConsole.Size = new System.Drawing.Size(812, 171);
+            this.txtConsole.TabIndex = 1;
+            // 
+            // txtQuery
+            // 
+            this.txtQuery.Location = new System.Drawing.Point(502, 51);
+            this.txtQuery.Name = "txtQuery";
+            this.txtQuery.Size = new System.Drawing.Size(322, 20);
+            this.txtQuery.TabIndex = 3;
             // 
             // frmShowResults
             // 
+            this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(836, 448);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(836, 737);
+            this.Controls.Add(this.txtQuery);
+            this.Controls.Add(this.txtConsole);
+            this.Controls.Add(this.btnSearch);
             this.Name = "frmShowResults";
             this.Load += new System.EventHandler(this.frmShowResults_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.TextBox txtConsole;
+        private System.Windows.Forms.TextBox txtQuery;
 
 
     }
