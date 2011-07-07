@@ -14,6 +14,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -24,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -33,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,29 +50,51 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp">
+      <HintPath>..\taglib-sharp-2.0.4.0-windows\Libraries\taglib-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="formJobs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formJobs.Designer.cs">
+      <DependentUpon>formJobs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="formSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formSetup.Designer.cs">
+      <DependentUpon>formSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmShowFull.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmShowFull.Designer.cs">
       <DependentUpon>frmShowFull.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmShowResults.cs">
+    <Compile Include="formDoWork.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmShowResults.Designer.cs">
-      <DependentUpon>frmShowResults.cs</DependentUpon>
+    <Compile Include="formDoWork.Designer.cs">
+      <DependentUpon>formDoWork.cs</DependentUpon>
     </Compile>
     <Compile Include="gImgAPI.cs" />
     <Compile Include="httpRequest.cs" />
+    <Compile Include="JobController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="formJobs.resx">
+      <DependentUpon>formJobs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="formSetup.resx">
+      <DependentUpon>formSetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmShowFull.resx">
       <DependentUpon>frmShowFull.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmShowResults.resx">
-      <DependentUpon>frmShowResults.cs</DependentUpon>
+    <EmbeddedResource Include="formDoWork.resx">
+      <DependentUpon>formDoWork.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

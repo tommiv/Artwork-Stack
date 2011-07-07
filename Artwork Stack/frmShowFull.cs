@@ -12,9 +12,9 @@ namespace Artwork_Stack
         public frmShowFull(string _url)
         {
             InitializeComponent();
-            BackgroundWorker bg = new BackgroundWorker();
-            bg.DoWork += new DoWorkEventHandler(this.getImgWorker);
-            bg.RunWorkerCompleted +=new RunWorkerCompletedEventHandler(bg_RunWorkerCompleted);
+            var bg = new BackgroundWorker();
+            bg.DoWork += this.getImgWorker;
+            bg.RunWorkerCompleted +=bg_RunWorkerCompleted;
             bg.RunWorkerAsync();
             url = _url;
         }

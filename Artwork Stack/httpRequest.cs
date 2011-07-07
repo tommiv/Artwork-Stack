@@ -21,7 +21,7 @@ namespace Artwork_Stack
 
         public static WebResponse httpRequestPOST(string URL, byte[] sendBuffer, string cookies)
         {
-            WebRequest reqPOST = WebRequest.Create(URL);
+            var reqPOST = WebRequest.Create(URL);
             reqPOST.Method = "POST";
             reqPOST.Timeout = 30000;
             reqPOST.Headers["UserAgent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; "
@@ -30,7 +30,7 @@ namespace Artwork_Stack
             if (cookies != null) { reqPOST.Headers["Cookie"] = cookies; }
             reqPOST.ContentType = "application/x-www-form-urlencoded";
             reqPOST.ContentLength = sendBuffer.Length;
-            System.IO.Stream sendStream = reqPOST.GetRequestStream();
+            Stream sendStream = reqPOST.GetRequestStream();
             sendStream.Write(sendBuffer, 0, sendBuffer.Length);
             sendStream.Close();
 
@@ -46,7 +46,7 @@ namespace Artwork_Stack
         // Чтение полученного в ответ потока в строку
         public static string getResponseContent(WebResponse response)
         {
-            System.IO.StreamReader reader = new System.IO.StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8);
+            var reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8);
             string result = reader.ReadToEnd();
             reader.Close();
             return result;
@@ -54,7 +54,8 @@ namespace Artwork_Stack
 
         public static Image getPicture(string URL)
         {
-            WebRequest request = FileWebRequest.Create(URL);
+            if (URL == null) return null;
+            WebRequest request = WebRequest.Create(URL);
             try
             {
                 Stream stream = request.GetResponse().GetResponseStream();
@@ -67,25 +68,22 @@ namespace Artwork_Stack
         public static bool checkInternetState() // True == есть подключение
         {
             // Будем проверять по двум адресам, для подстраховки
-            WebRequest checkReqGoogle = WebRequest.Create("http://google.com");
+            var checkReqGoogle = WebRequest.Create("http://google.com");
             try { checkReqGoogle.GetResponse(); return true; }
             catch { }
-            WebRequest checkReqMS = WebRequest.Create("http://ya.ru");
+            var checkReqMS = WebRequest.Create("http://ya.ru");
             try { checkReqMS.GetResponse(); return true; }
             catch { return false; }
         }
         
         public static bool checkInternetStateViaPing() {
-            Ping pingSender = new Ping();
-            PingOptions options = new PingOptions();
+            var pingSender = new Ping();
+            var options    = new PingOptions();
             options.DontFragment = true;
             string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
             byte[] buffer = System.Text.Encoding.ASCII.GetBytes(data);
             PingReply reply;
-            try
-            {
-                reply = pingSender.Send("vkontakte.ru", 300, buffer, options);
-            }
+            try { reply = pingSender.Send("vkontakte.ru", 300, buffer, options); }
             catch { return false; }
             if (reply.Status == IPStatus.Success) return true; else return false;
         }

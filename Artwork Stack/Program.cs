@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Artwork_Stack
@@ -15,7 +13,7 @@ namespace Artwork_Stack
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmShowResults());
+            Application.Run(new formSetup());
         }
     }
 }
