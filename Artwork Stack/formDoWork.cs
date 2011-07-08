@@ -13,10 +13,12 @@ namespace Artwork_Stack
     public partial class formDoWork : Form
     {
         private JobController jCon = new JobController();
+        private DataRow currentJob;
         public formDoWork(string Path)
         {
             InitializeComponent();
             jCon.TraverseFolder(Path);
+            currentJob = jCon.Jobs.Tables["Tracks"].Rows[0];
         }
 
         struct grid
@@ -42,7 +44,10 @@ namespace Artwork_Stack
                     cell[ii, jj].Click += CellClick; 
                     Controls.Add(cell[ii, jj]);
                 }
-            button1_Click(null, null); // HACK: for "initialize" threads // TODO: google it
+            picEmbeddedArt.Image = Properties.Resources.noartwork;
+            setNewJob(currentJob);
+            txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob["ID"].ToString()));
+            //googleIt(txtQuery.Text);
         }
         private struct gImgAPIWorkerParams
         {
@@ -61,7 +66,7 @@ namespace Artwork_Stack
             Stream resp = req.GetResponse().GetResponseStream();
             var reader = new StreamReader(resp);
             var jsonParser = new JavaScriptSerializer();
-            var gImgAPIResult = jsonParser.Deserialize<gImgAPI>(reader.ReadToEnd());
+            var gImgAPIResult = jsonParser.Deserialize<gImgAPI>(reader.ReadToEnd()); // TODO: use Dynamic?
 
             if (gImgAPIResult.responseData.results.Length == 0) return;
 
@@ -105,16 +110,20 @@ namespace Artwork_Stack
             }
             ));
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void googleIt(string query)
         {
             var thread = new Thread[4];
             for (int i = 0; i < 4; i++)
             {
-                DataRow dr = jCon.Jobs.Tables["Tracks"].Rows[0];
-                var parameters = new gImgAPIWorkerParams(dr["Artist"] + " " + dr["Album"], 4, i); // TODO: Incapsulate gettin search string to jobcontroller
+                var parameters = new gImgAPIWorkerParams(query, 4, i);
                 thread[i] = new Thread(gImgAPIWorker);
                 thread[i].Start(parameters);
             }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            googleIt(txtQuery.Text);
         }
         private static void CellClick(object sender, EventArgs e) // string url
         {
@@ -126,6 +135,83 @@ namespace Artwork_Stack
         private void button1_Click_1(object sender, EventArgs e)
         {
             jCon.ShowJobList();
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            int curJobIndex = int.Parse(currentJob["ID"].ToString());
+            if (curJobIndex != jCon.JobsCount)
+            {
+                for (int i = curJobIndex + 1; i < jCon.JobsCount; i++)
+                {
+                    DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
+                    if (!bool.Parse(newdr["done"].ToString()))
+                    {
+                        setNewJob(newdr); return;
+                    }
+                }
+            }
+            for (int i = 0; i < curJobIndex; i++)
+            {
+                DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
+                if (!bool.Parse(newdr["done"].ToString()))
+                {
+                    setNewJob(newdr); return;
+                }
+            }
+            MessageBox.Show(@"That's all, folks!");
+        }
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            int curJobIndex = int.Parse(currentJob["ID"].ToString());
+            if (curJobIndex != 0)
+            {
+                for (int i = curJobIndex - 1; i < jCon.JobsCount; i--)
+                {
+                    DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
+                    if (!bool.Parse(newdr["done"].ToString()))
+                    {
+                        setNewJob(newdr); return;
+                    }
+                }
+            }
+            for (int i = jCon.JobsCount - 1; i > curJobIndex; i--)
+            {
+                DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
+                if (!bool.Parse(newdr["done"].ToString()))
+                {
+                    setNewJob(newdr); return;
+                }
+            }
+            MessageBox.Show(@"That's all, folks!");
+        }
+        private void setNewJob(DataRow newdr)
+        {
+            // Do current job HERE
+
+            currentJob = newdr;
+            txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob["ID"].ToString()));
+            //googleIt(txtQuery.Text);
+
+            gridCurrentJob.Rows.Clear();
+            gridCurrentJob.Rows.Add("Job",    int.Parse(currentJob["ID"].ToString()) + "/" + (jCon.JobsCount-1));
+            gridCurrentJob.Rows.Add("Path",   currentJob["Path"].ToString());
+            gridCurrentJob.Rows.Add("Artist", currentJob["Artist"].ToString());
+            gridCurrentJob.Rows.Add("Track",  currentJob["Title"].ToString());
+            gridCurrentJob.Rows.Add("Album",  currentJob["Album"].ToString());
+            var track = TagLib.File.Create(currentJob["Path"].ToString());
+            gridCurrentJob.Rows.Add("Art in file", track.Tag.Pictures.GetLength(0));
+            if (track.Tag.Pictures.GetLength(0) > 0)
+            {
+                var ic = new ImageConverter();
+                picEmbeddedArt.Image = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
+                lblEmbedded.Text = @"Embedded Art";
+            }
+            else
+            {
+                picEmbeddedArt.Image = Properties.Resources.noartwork;
+                lblEmbedded.Text = @"No Embedded Art";
+            }
         }
     }
 }

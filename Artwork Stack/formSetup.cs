@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Artwork_Stack
@@ -16,8 +11,9 @@ namespace Artwork_Stack
             InitializeComponent();
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e) //TODO: Sync txt input and dialog
+        private void btnBrowse_Click(object sender, EventArgs e) //TODO: get path from registry
         {
+            folderBrowse.SelectedPath = txtPath.Text;
             folderBrowse.ShowDialog();
             txtPath.Text = folderBrowse.SelectedPath;
         }
@@ -25,8 +21,9 @@ namespace Artwork_Stack
         private void btnStart_Click(object sender, EventArgs e)
         {
             //TODO: validate path
-            (new formDoWork(txtPath.Text)).Show();
-            this.Visible = false;
+            string path = txtPath.Text;
+            (new Thread(() => (new formDoWork(path)).ShowDialog())).Start();
+            this.Close();
         }
     }
 }

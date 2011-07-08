@@ -11,14 +11,14 @@
     <ItemStatistics item="Default">
       <Item value="if" priority="0" />
       <Item value="return" priority="0" />
-      <Item value="var" priority="2" />
-      <Item value="new" priority="4" />
-      <Item value="JobController`0" priority="3" />
-      <Item value="public" priority="0" />
-      <Item value="string" priority="0" />
+      <Item value="var" priority="3" />
+      <Item value="new" priority="7" />
+      <Item value="JobController`0" priority="5" />
+      <Item value="public" priority="3" />
+      <Item value="string" priority="4" />
       <Item value="foreach" priority="0" />
       <Item value="Directory`0" priority="0" />
-      <Item value="path" priority="0" />
+      <Item value="path" priority="1" />
       <Item value="TagLib" priority="0" />
       <Item value="Tag`0" priority="0" />
       <Item value="jobs" priority="1" />
@@ -27,6 +27,18 @@
       <Item value="track" priority="0" />
       <Item value="DataRow" priority="0" />
       <Item value="dr" priority="0" />
+      <Item value="DataSet`0" priority="0" />
+      <Item value="void" priority="1" />
+      <Item value="formSetup`0" priority="0" />
+      <Item value="folderBrowse" priority="0" />
+      <Item value="private" priority="1" />
+      <Item value="Path" priority="0" />
+      <Item value="frmShowResults`0" priority="0" />
+      <Item value="txtPath" priority="0" />
+      <Item value="this" priority="0" />
+      <Item value="false" priority="0" />
+      <Item value="JobController" priority="0" />
+      <Item value="jCon" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Artwork_Stack.frmShowFull">
       <Item value="ShowDialog`0" priority="0" />
@@ -35,13 +47,13 @@
       <Item value="GetFiles`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Data.DataSet">
-      <Item value="Tables" priority="2" />
+      <Item value="Tables" priority="3" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Data.DataTableCollection">
       <Item value="Add`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Data.DataTable">
-      <Item value="Columns" priority="1" />
+      <Item value="Columns" priority="2" />
       <Item value="Rows" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Data.DataColumnCollection">
@@ -58,7 +70,7 @@
       <Item value="Add`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Data.DataRow">
-      <Item value="Indexer" priority="0" />
+      <Item value="Indexer" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:TagLib.File">
       <Item value="Tag" priority="0" />
@@ -67,23 +79,66 @@
       <Item value="Artists" priority="0" />
       <Item value="Performers" priority="0" />
       <Item value="TitleSort" priority="0" />
+      <Item value="Album" priority="0" />
+      <Item value="FirstPerformer" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Forms.FolderBrowserDialog">
+      <Item value="ShowDialog`0" priority="0" />
+      <Item value="SelectedPath" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Windows.Forms.TextBox">
+      <Item value="Text" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Artwork_Stack.frmShowResults">
+      <Item value="Show`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Artwork_Stack.formSetup">
+      <Item value="Visible" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Artwork_Stack.JobController">
+      <Item value="TraverseFolder`0" priority="0" />
+      <Item value="ShowJobList`0" priority="0" />
+      <Item value="Jobs" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Object">
+      <Item value="ToString`0" priority="1" />
     </ItemStatistics>
   </CompletionStatisticsManager>
   <RecentFiles>
     <RecentFiles>
       <File id="15FED470-1966-4445-8B26-ED667CFE4752/f:clickHandler.cs" caret="468" fromTop="13" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowResults.cs" caret="5099" fromTop="26" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowFull.cs" caret="615" fromTop="23" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="1040" fromTop="29" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:gImgAPI.cs" caret="0" fromTop="0" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="469" fromTop="19" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:Program.cs" caret="13" fromTop="0" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowFull.cs" caret="170" fromTop="7" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="878" fromTop="27" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="4334" fromTop="22" />
     </RecentFiles>
     <RecentEdits>
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="1062" fromTop="29" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowResults.cs" caret="4380" fromTop="35" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowResults.cs" caret="4628" fromTop="41" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowResults.cs" caret="5122" fromTop="26" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowResults.cs" caret="5099" fromTop="26" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="350" fromTop="16" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="4533" fromTop="35" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="5407" fromTop="26" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowFull.cs" caret="615" fromTop="23" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:Program.cs" caret="72" fromTop="6" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="436" fromTop="21" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="436" fromTop="26" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:gImgAPI.cs" caret="0" fromTop="0" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="436" fromTop="17" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="1231" fromTop="35" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:Program.cs" caret="451" fromTop="18" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="798" fromTop="18" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="798" fromTop="26" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="537" fromTop="21" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="775" fromTop="28" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:Program.cs" caret="13" fromTop="0" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="286" fromTop="13" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="5384" fromTop="34" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="678" fromTop="21" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="56" fromTop="1" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="286" fromTop="12" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="1072" fromTop="31" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="644" fromTop="22" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:JobController.cs" caret="1309" fromTop="22" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="4765" fromTop="27" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>

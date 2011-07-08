@@ -59,5 +59,12 @@ namespace Artwork_Stack.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap noartwork {
+            get {
+                object obj = ResourceManager.GetObject("noartwork", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

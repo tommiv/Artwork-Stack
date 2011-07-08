@@ -40,6 +40,7 @@
             this.txtPath.Name = "txtPath";
             this.txtPath.Size = new System.Drawing.Size(316, 20);
             this.txtPath.TabIndex = 0;
+            this.txtPath.Text = "C:\\Users\\Tommi\\Desktop\\forAS";
             // 
             // btnBrowse
             // 

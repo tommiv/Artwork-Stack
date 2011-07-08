@@ -42,14 +42,15 @@
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
             this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridJobs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
+            this.gridJobs.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.gridJobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gridJobs.Dock = System.Windows.Forms.DockStyle.Top;
             this.gridJobs.Location = new System.Drawing.Point(0, 0);
             this.gridJobs.MultiSelect = false;
             this.gridJobs.Name = "gridJobs";
+            this.gridJobs.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.gridJobs.RowHeadersVisible = false;
             this.gridJobs.RowTemplate.Height = 20;
-            this.gridJobs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.gridJobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridJobs.ShowCellErrors = false;
             this.gridJobs.ShowEditingIcon = false;
