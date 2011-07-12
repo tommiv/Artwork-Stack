@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnJobs = new System.Windows.Forms.Button();
@@ -39,6 +39,7 @@
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.picEmbeddedArt = new System.Windows.Forms.PictureBox();
             this.lblEmbedded = new System.Windows.Forms.Label();
+            this.txtDebug = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picEmbeddedArt)).BeginInit();
             this.SuspendLayout();
@@ -51,7 +52,7 @@
             this.btnSearch.TabIndex = 0;
             this.btnSearch.Text = "Override Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.button1_Click);
+            this.btnSearch.Click += new System.EventHandler(this.btnOverrideSearch_Click);
             // 
             // txtQuery
             // 
@@ -68,7 +69,7 @@
             this.btnJobs.TabIndex = 4;
             this.btnJobs.Text = "Jobs List";
             this.btnJobs.UseVisualStyleBackColor = true;
-            this.btnJobs.Click += new System.EventHandler(this.button1_Click_1);
+            this.btnJobs.Click += new System.EventHandler(this.btnJobs_Click);
             // 
             // btnNext
             // 
@@ -95,10 +96,10 @@
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.LightCyan;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.LightCyan;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.gridCurrentJob.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.gridCurrentJob.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.gridCurrentJob.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -140,7 +141,7 @@
             this.picEmbeddedArt.ErrorImage = global::Artwork_Stack.Properties.Resources.noartwork;
             this.picEmbeddedArt.Image = global::Artwork_Stack.Properties.Resources.noartwork;
             this.picEmbeddedArt.InitialImage = global::Artwork_Stack.Properties.Resources.noartwork;
-            this.picEmbeddedArt.Location = new System.Drawing.Point(724, 294);
+            this.picEmbeddedArt.Location = new System.Drawing.Point(709, 152);
             this.picEmbeddedArt.Name = "picEmbeddedArt";
             this.picEmbeddedArt.Size = new System.Drawing.Size(100, 100);
             this.picEmbeddedArt.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -149,12 +150,21 @@
             // 
             // lblEmbedded
             // 
-            this.lblEmbedded.Location = new System.Drawing.Point(724, 397);
+            this.lblEmbedded.Location = new System.Drawing.Point(709, 255);
             this.lblEmbedded.Name = "lblEmbedded";
             this.lblEmbedded.Size = new System.Drawing.Size(100, 19);
             this.lblEmbedded.TabIndex = 9;
             this.lblEmbedded.Text = "Embedded Art";
             this.lblEmbedded.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // txtDebug
+            // 
+            this.txtDebug.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDebug.Location = new System.Drawing.Point(502, 295);
+            this.txtDebug.Multiline = true;
+            this.txtDebug.Name = "txtDebug";
+            this.txtDebug.Size = new System.Drawing.Size(322, 178);
+            this.txtDebug.TabIndex = 10;
             // 
             // formDoWork
             // 
@@ -162,6 +172,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(836, 553);
+            this.Controls.Add(this.txtDebug);
             this.Controls.Add(this.lblEmbedded);
             this.Controls.Add(this.picEmbeddedArt);
             this.Controls.Add(this.gridCurrentJob);
@@ -192,6 +203,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
         private System.Windows.Forms.PictureBox picEmbeddedArt;
         private System.Windows.Forms.Label lblEmbedded;
+        private System.Windows.Forms.TextBox txtDebug;
 
 
     }

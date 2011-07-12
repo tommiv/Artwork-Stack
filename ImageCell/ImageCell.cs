@@ -25,8 +25,11 @@ namespace ImageCell
             this.ClickHandler.BringToFront();
         }
 
-        public Image Image { set { this.Picture.Image = value; } }
+        public Image Image    { set { this.Picture.Image = value; } }
         public string Caption { set { this.caption.Text = value; } }
+        public void Check()   { this.BackColor = Color.FromArgb(120,60,90,120); }
+        public void UnCheck() { this.BackColor = SystemColors.Control; }
+        public bool Checked   { get { if (this.BackColor == Color.FromArgb(120,60,90,120)) return true; else return false; } }
 
         public new event EventHandler Click
         {

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -61,6 +62,19 @@ namespace Artwork_Stack
                 Stream stream = request.GetResponse().GetResponseStream();
                 Image image = Image.FromStream(stream);
                 return image;
+            }
+            catch { return null; }
+        }
+        public static byte[] getStream(string URL)
+        {
+            if (URL == null) return null;
+            WebRequest request = WebRequest.Create(URL);
+            try
+            {
+                var resp    = request.GetResponse();
+                int bufSize = Convert.ToInt32(resp.ContentLength);
+                var br      = new BinaryReader(resp.GetResponseStream());
+                return br.ReadBytes(bufSize);
             }
             catch { return null; }
         }

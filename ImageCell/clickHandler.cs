@@ -14,10 +14,7 @@ namespace ImageCell
                 return cp;
             }
         }
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            // Prevent erasing background
-        }
+        protected override void OnPaintBackground(PaintEventArgs e) { /*Prevent erasing background*/ }
         public string storage;
     }
 }

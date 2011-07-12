@@ -48,5 +48,15 @@ namespace Artwork_Stack
         {
             get { return Jobs.Tables["Tracks"].Rows.Count; }
         }
+        public void SetJobIsDone(int jobID)
+        {
+            DataRow dr = Jobs.Tables["Tracks"].Rows[jobID];
+            dr["Done"] = true;
+        }
+
+        public struct job
+        {
+            
+        }
     }
 }
