@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnJobs = new System.Windows.Forms.Button();
@@ -96,8 +96,8 @@
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.LightCyan;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightCyan;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -183,7 +183,7 @@
             this.Controls.Add(this.btnSearch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "formDoWork";
-            this.Load += new System.EventHandler(this.frmShowResults_Load);
+            this.Shown += new System.EventHandler(this.formDoWork_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picEmbeddedArt)).EndInit();
             this.ResumeLayout(false);

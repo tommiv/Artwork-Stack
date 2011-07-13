@@ -9,8 +9,8 @@ using System.Drawing;
 using ImageCell;
 using TagLib;
 
-//TODO: uncheck cells when switch tracks; figure out initial search and some artworks not showed in explorer; add existing art checking and 
-// uncheck checked cell functions, add feature to skip track w/o modifying
+//TODO: figure out some artworks not showed in explorer; add existing art checking functions, add feature to skip track w/o modifying
+//TODO: change colors, properly size joblist
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
@@ -38,19 +38,22 @@ namespace Artwork_Stack
 
         imageCell[,] cell = new imageCell[grid.i, grid.j];
 
-        private void frmShowResults_Load(object sender, EventArgs e)
+        private void formDoWork_Shown(object sender, EventArgs e)
         {
             for (int ii = 0; ii < grid.i; ii++)
                 for (int jj = 0; jj < grid.j; jj++)
                 {
                     cell[ii, jj] = new imageCell(grid.w, grid.h, grid.lm + ii * grid.w + ii * grid.pw, grid.tm + jj * grid.h + jj * grid.ph);
-                    cell[ii, jj].Click += CellClick; 
+                    cell[ii, jj].Click += CellClick;
                     Controls.Add(cell[ii, jj]);
                 }
             picEmbeddedArt.Image = Properties.Resources.noartwork;
             showTrackInfo();
-            googleIt(txtQuery.Text);
+            var busy = new formBusy();
+            (new Thread(()=>googleIt(txtQuery.Text, busy))).Start();
+            busy.ShowDialog();
         }
+
         private struct gImgAPIWorkerParams
         {
             public string query;
@@ -87,13 +90,13 @@ namespace Artwork_Stack
                 thread[j].Start(parameters);
             }
         }
-        struct getIMGWorkerParams // TODO: remove useless params
+        struct getIMGWorkerParams
         {
             public string tburl;
             public string url;
             public int ix; // thread position
             public int iy;
-            public int w;  // img thumb width
+            public int w;
             public int h;
             public string caption;
             public getIMGWorkerParams(string _tburl, string _url, int _ix, int _iy, int _w, int _h, string _caption)
@@ -110,11 +113,14 @@ namespace Artwork_Stack
                 cell[p.ix, p.iy].Image                = thumb;
                 cell[p.ix, p.iy].Caption              = p.caption;
                 cell[p.ix, p.iy].ClickHandler.storage = p.url;
+                cell[p.ix, p.iy].Initated             = true;
             }
             ));
         }
-        private void googleIt(string query)
+
+        private void googleIt(string query, Form busy = null)
         {
+            foreach (var c in this.Controls) if (c is imageCell) ((imageCell)c).Image = Properties.Resources.noartwork;
             var thread = new Thread[4];
             for (int i = 0; i < 4; i++)
             {
@@ -122,26 +128,52 @@ namespace Artwork_Stack
                 thread[i] = new Thread(gImgAPIWorker);
                 thread[i].Start(parameters);
             }
+
+            if (busy == null) return;
+            while (true)
+            {
+                bool process = false;
+                foreach (var t in thread) process = process || t.IsAlive;
+                if (!process) break;
+                Thread.Sleep(500);
+            }
+            this.Invoke((Action)busy.Close);
         }
+
         private void btnOverrideSearch_Click(object sender, EventArgs e)
         {
             if (sender == null) return;
             googleIt(txtQuery.Text);
         }
-        private static void CellClick(object sender, EventArgs e) // string url
+        private void CellClick(object _sender, EventArgs _e)
         {
-            var ee = (MouseEventArgs)e;
-            if (ee.Button == MouseButtons.Left)
+            var e = (MouseEventArgs)_e;
+            var sender = (clickHandler)_sender;
+            if (e.Button == MouseButtons.Left)
             {
                 string url = "";
-                try { url = ((clickHandler)sender).storage; } catch { }; // HACK: it's very simple
-                if (url != "") new frmShowFull(url).ShowDialog();
+                try { url = sender.storage; } catch { }; // HACK: it's very simple
+                if (url != "")
+                {
+                    var viewer = new frmShowFull(url);
+                    viewer.ShowDialog();
+                    if (viewer.NotAvailable) ((imageCell)sender.Parent).Image = Properties.Resources.noartwork;
+                    if (viewer.Selected)
+                    {
+                        unselectCells();
+                        ((imageCell)sender.Parent).Check();
+                    }
+
+                }
             }
-            else if (ee.Button == MouseButtons.Right)
+            else if (e.Button == MouseButtons.Right)
             {
-                var p = (imageCell) ((clickHandler) sender).Parent;
-                foreach (var c in p.Parent.Controls) if (c is imageCell) ((imageCell)c).UnCheck();
-                p.Check();
+                var p = (imageCell)sender.Parent;
+                foreach (var c in p.Parent.Controls) 
+                    if (c is imageCell) 
+                        if (c == p) continue; 
+                        else ((imageCell)c).UnCheck();
+                if (p.Checked) p.UnCheck(); else p.Check();
             }
         }
 
@@ -149,6 +181,7 @@ namespace Artwork_Stack
 
         private void btnNext_Click(object sender, EventArgs e)
         {
+            unselectCells();
             DataRow stored = currentJob;
             int curJobIndex = int.Parse(currentJob["ID"].ToString());
             if (curJobIndex != jCon.JobsCount-1)
@@ -179,6 +212,7 @@ namespace Artwork_Stack
         }
         private void btnPrev_Click(object sender, EventArgs e)
         {
+            unselectCells();
             DataRow stored = currentJob;
             int curJobIndex = int.Parse(currentJob["ID"].ToString());
 
@@ -208,6 +242,8 @@ namespace Artwork_Stack
                 googleIt(currentJob["Artist"] + " " + currentJob["Album"]);
             }
         }
+        private void unselectCells() { foreach (var c in this.Controls) if (c is imageCell) ((imageCell)c).UnCheck(); }
+
         private void showTrackInfo()
         {
             txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob["ID"].ToString()));
@@ -243,8 +279,8 @@ namespace Artwork_Stack
                     (new Thread(() => saveArtWorkWorker(
                         job["Path"].ToString(), 
                         j.ClickHandler.storage,
-                        int.Parse(job["ID"].ToString())
-                    ))).Start();
+                        int.Parse(job["ID"].ToString()
+                    )))).Start();
                 }
         }
 

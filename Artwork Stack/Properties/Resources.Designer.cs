@@ -60,6 +60,20 @@ namespace Artwork_Stack.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ajax_loader {
+            get {
+                object obj = ResourceManager.GetObject("ajax_loader", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap busy {
+            get {
+                object obj = ResourceManager.GetObject("busy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap noartwork {
             get {
                 object obj = ResourceManager.GetObject("noartwork", resourceCulture);
