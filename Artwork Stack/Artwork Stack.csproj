@@ -85,7 +85,6 @@
     <Compile Include="formDoWork.Designer.cs">
       <DependentUpon>formDoWork.cs</DependentUpon>
     </Compile>
-    <Compile Include="gImgAPI.cs" />
     <Compile Include="httpRequest.cs" />
     <Compile Include="JobController.cs" />
     <Compile Include="Program.cs" />

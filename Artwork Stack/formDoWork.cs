@@ -71,21 +71,20 @@ namespace Artwork_Stack
             Stream resp = req.GetResponse().GetResponseStream();
             var reader = new StreamReader(resp);
             var jsonParser = new JavaScriptSerializer();
-            var gImgAPIResult = jsonParser.Deserialize<gImgAPI>(reader.ReadToEnd()); // TODO: use Dynamic?
-
-            if (gImgAPIResult.responseData == null || gImgAPIResult.responseData.results.Length == 0) return;
-
+            dynamic gImgAPIResult = jsonParser.DeserializeObject(reader.ReadToEnd());
+            if (gImgAPIResult["responseData"] == null || gImgAPIResult["responseData"]["results"].Length == 0) return;
+            gImgAPIResult = gImgAPIResult["responseData"]["results"];
             var thread = new Thread[p.rsz];
             for (int j = 0; j < p.rsz; j++)
             {
                 string caption = string.Format(
-                    "{0}x{1}: {2}\n{3}", 
-                    gImgAPIResult.responseData.results[j].width, 
-                    gImgAPIResult.responseData.results[j].height,
-                    gImgAPIResult.responseData.results[j].url.Substring(gImgAPIResult.responseData.results[j].url.LastIndexOf('.')+1, 3),
-                    gImgAPIResult.responseData.results[j].visibleUrl
+                    "{0}x{1}: {2}\n{3}",
+                    gImgAPIResult[j]["width"],
+                    gImgAPIResult[j]["height"],
+                    gImgAPIResult[j]["url"].Substring(gImgAPIResult[j]["url"].LastIndexOf('.') + 1, 3),
+                    gImgAPIResult[j]["visibleUrl"]
                 );
-                var parameters = new getIMGWorkerParams(gImgAPIResult.responseData.results[j].tbUrl, gImgAPIResult.responseData.results[j].url, p.i, j, 100, 100, caption);
+                var parameters = new getIMGWorkerParams(gImgAPIResult[j]["tbUrl"], gImgAPIResult[j]["url"], p.i, j, 100, 100, caption);
                 thread[j] = new Thread(getIMGWorker);
                 thread[j].Start(parameters);
             }
