@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnJobs = new System.Windows.Forms.Button();
@@ -40,6 +40,7 @@
             this.picEmbeddedArt = new System.Windows.Forms.PictureBox();
             this.lblEmbedded = new System.Windows.Forms.Label();
             this.txtDebug = new System.Windows.Forms.TextBox();
+            this.chkSkip = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picEmbeddedArt)).BeginInit();
             this.SuspendLayout();
@@ -79,25 +80,26 @@
             this.btnNext.TabIndex = 5;
             this.btnNext.Text = "Next >>";
             this.btnNext.UseVisualStyleBackColor = true;
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            this.btnNext.Click += new System.EventHandler(this.buttonCycleClick);
             // 
             // btnPrev
             // 
+            this.btnPrev.Enabled = false;
             this.btnPrev.Location = new System.Drawing.Point(502, 491);
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(75, 23);
             this.btnPrev.TabIndex = 6;
             this.btnPrev.Text = "<< Prev";
             this.btnPrev.UseVisualStyleBackColor = true;
-            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
+            this.btnPrev.Click += new System.EventHandler(this.buttonCycleClick);
             // 
             // gridCurrentJob
             // 
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightCyan;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.LightCyan;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -163,8 +165,19 @@
             this.txtDebug.Location = new System.Drawing.Point(502, 295);
             this.txtDebug.Multiline = true;
             this.txtDebug.Name = "txtDebug";
-            this.txtDebug.Size = new System.Drawing.Size(322, 178);
+            this.txtDebug.Size = new System.Drawing.Size(322, 133);
             this.txtDebug.TabIndex = 10;
+            // 
+            // chkSkip
+            // 
+            this.chkSkip.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkSkip.Location = new System.Drawing.Point(749, 451);
+            this.chkSkip.Name = "chkSkip";
+            this.chkSkip.Size = new System.Drawing.Size(75, 24);
+            this.chkSkip.TabIndex = 11;
+            this.chkSkip.Text = "Skip";
+            this.chkSkip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.chkSkip.UseVisualStyleBackColor = true;
             // 
             // formDoWork
             // 
@@ -172,6 +185,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(836, 553);
+            this.Controls.Add(this.chkSkip);
             this.Controls.Add(this.txtDebug);
             this.Controls.Add(this.lblEmbedded);
             this.Controls.Add(this.picEmbeddedArt);
@@ -204,6 +218,7 @@
         private System.Windows.Forms.PictureBox picEmbeddedArt;
         private System.Windows.Forms.Label lblEmbedded;
         private System.Windows.Forms.TextBox txtDebug;
+        private System.Windows.Forms.CheckBox chkSkip;
 
 
     }

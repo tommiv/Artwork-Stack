@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.IO;
+using System.Linq;
 
 namespace Artwork_Stack
 {
@@ -9,12 +10,12 @@ namespace Artwork_Stack
         {
             Jobs = new DataSet();
             Jobs.Tables.Add("Tracks");
-            Jobs.Tables["Tracks"].Columns.Add("ID");
-            Jobs.Tables["Tracks"].Columns.Add("Artist");
-            Jobs.Tables["Tracks"].Columns.Add("Title");
-            Jobs.Tables["Tracks"].Columns.Add("Album");
-            Jobs.Tables["Tracks"].Columns.Add("Path");
-            Jobs.Tables["Tracks"].Columns.Add("Done");
+            Jobs.Tables["Tracks"].Columns.Add("ID",     typeof(int));
+            Jobs.Tables["Tracks"].Columns.Add("Artist", typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Title",  typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Album",  typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Path",   typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Done",   typeof(bool));
         }
         public DataSet Jobs;
         public void TraverseFolder(string path) // TODO: add recurse subdir traversing
@@ -44,19 +45,26 @@ namespace Artwork_Stack
             DataRow dr = Jobs.Tables["Tracks"].Rows[jobID];
             return dr["Artist"] + " " + dr["Album"];
         }
+        public int PendingJobsCount
+        {
+            get { return Jobs.Tables["Tracks"].AsEnumerable().Where(r => (bool)r["Done"] == false).Count(); }
+        }
         public int JobsCount
         {
             get { return Jobs.Tables["Tracks"].Rows.Count; }
+        }
+        public int TopMargin
+        {
+            get { return (int)Jobs.Tables["Tracks"].AsEnumerable().Last(r => (bool)r["Done"] == false)["ID"]; }
+        }
+        public int BottomMargin
+        {
+            get { return (int)Jobs.Tables["Tracks"].AsEnumerable().First(r => (bool)r["Done"] == false)["ID"]; }
         }
         public void SetJobIsDone(int jobID)
         {
             DataRow dr = Jobs.Tables["Tracks"].Rows[jobID];
             dr["Done"] = true;
-        }
-
-        public struct job
-        {
-            
         }
     }
 }

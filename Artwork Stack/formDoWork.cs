@@ -9,13 +9,13 @@ using System.Drawing;
 using ImageCell;
 using TagLib;
 
-//TODO: figure out some artworks not showed in explorer; add existing art checking functions, add feature to skip track w/o modifying
-//TODO: change colors, properly size joblist
+//TODO: figure out some artworks not showed in explorer; add existing art checking functions
+//TODO: change colors, properly size joblist, read only mp3 files && recurse traversing
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
     {
-        private JobController jCon = new JobController();
+        private readonly JobController jCon = new JobController();
         private DataRow currentJob;
         public formDoWork(string Path)
         {
@@ -36,7 +36,7 @@ namespace Artwork_Stack
             public const int tm = 12;
         }
 
-        imageCell[,] cell = new imageCell[grid.i, grid.j];
+        readonly imageCell[,] cell = new imageCell[grid.i, grid.j];
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
@@ -73,7 +73,7 @@ namespace Artwork_Stack
             var jsonParser = new JavaScriptSerializer();
             var gImgAPIResult = jsonParser.Deserialize<gImgAPI>(reader.ReadToEnd()); // TODO: use Dynamic?
 
-            if (gImgAPIResult.responseData.results.Length == 0) return;
+            if (gImgAPIResult.responseData == null || gImgAPIResult.responseData.results.Length == 0) return;
 
             var thread = new Thread[p.rsz];
             for (int j = 0; j < p.rsz; j++)
@@ -179,70 +179,77 @@ namespace Artwork_Stack
 
         private void btnJobs_Click(object sender, EventArgs e) { jCon.ShowJobList(); }
 
-        private void btnNext_Click(object sender, EventArgs e)
+        private void buttonCycleClick(object sender, EventArgs e)
         {
-            unselectCells();
             DataRow stored = currentJob;
-            int curJobIndex = int.Parse(currentJob["ID"].ToString());
-            if (curJobIndex != jCon.JobsCount-1)
-                for (int i = curJobIndex + 1; i < jCon.JobsCount; i++)
-                {
-                    DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
-                    if (bool.Parse(newdr["done"].ToString())) continue;
-                    currentJob = newdr; break;
-                }
-            else 
-                for (int i = 0; i < curJobIndex; i++)
-                {
-                    DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
-                    if (bool.Parse(newdr["done"].ToString())) continue;
-                    currentJob = newdr; break;
-                }
-            if (currentJob == stored)
-            {
-                saveArtWork(stored);
-                MessageBox.Show(@"That's all, folks!");
-            }
-            else
-            {
-                showTrackInfo();
-                saveArtWork(stored);
-                googleIt(currentJob["Artist"] + " " + currentJob["Album"]);
-            }
-        }
-        private void btnPrev_Click(object sender, EventArgs e)
-        {
-            unselectCells();
-            DataRow stored = currentJob;
-            int curJobIndex = int.Parse(currentJob["ID"].ToString());
+            int curJobIndex = (int)currentJob["ID"];
 
-            if (curJobIndex != 0)
-                for (int i = curJobIndex - 1; i < jCon.JobsCount; i--)
-                {
-                    DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
-                    if (bool.Parse(newdr["done"].ToString())) continue;
-                    currentJob = newdr; break;
-                }
-            else
-                for (int i = jCon.JobsCount - 1; i > curJobIndex; i--)
-                {
-                    DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
-                    if (bool.Parse(newdr["done"].ToString())) continue;
-                    currentJob = newdr; break;
-                }
-            if (currentJob == stored)
+            int startIndex, endIndex;
+            bool isForwardClick = ((Button)sender).Name == "btnNext";
+            if (isForwardClick)
             {
-                saveArtWork(stored);
+                startIndex = curJobIndex == jCon.TopMargin ? curJobIndex : (curJobIndex + 1);
+                endIndex   = jCon.JobsCount;
+            }
+            else
+            {
+                startIndex = curJobIndex - 1;
+                endIndex   = 0;
+            }
+
+            int i = startIndex;
+            while (true)
+            {
+                if (jCon.PendingJobsCount == 0) break;
+                DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
+                if ((bool)newdr["done"])
+                {
+                    if ( isForwardClick && i != endIndex) { i++; continue; }
+                    if (!isForwardClick && i != endIndex) { i--; continue; }
+                }
+                else
+                {
+                    currentJob = newdr; break;
+                }
+            }
+
+            if (!chkSkip.Checked) saveArtWork(stored, getCurrentArtworkUrl());
+            else
+            {
+                jCon.SetJobIsDone(curJobIndex);
+                unselectCells();
+            }
+
+            if (jCon.PendingJobsCount == 0)
+            {
+                btnPrev.Enabled = btnNext.Enabled = false;
                 MessageBox.Show(@"That's all, folks!");
             }
             else
             {
+                btnPrev.Enabled = (int) currentJob["ID"] >  jCon.BottomMargin;
+                btnNext.Enabled = (int) currentJob["ID"] <= jCon.TopMargin;
                 showTrackInfo();
-                saveArtWork(stored);
                 googleIt(currentJob["Artist"] + " " + currentJob["Album"]);
             }
         }
+
         private void unselectCells() { foreach (var c in this.Controls) if (c is imageCell) ((imageCell)c).UnCheck(); }
+
+        private string getCurrentArtworkUrl(bool uncheckAll = true)
+        {
+            string result = "";
+            foreach (var c in this.Controls)
+                if (c is imageCell)
+                {
+                    var j = (imageCell)c;
+                    if (!j.Checked) continue;
+                    result = j.ClickHandler.storage;
+                }
+
+            if (uncheckAll) unselectCells();
+            return result;
+        }
 
         private void showTrackInfo()
         {
@@ -269,19 +276,10 @@ namespace Artwork_Stack
             track.Dispose();
         }
 
-        private void saveArtWork(DataRow job)
+        private void saveArtWork(DataRow job, string artworkUrl)
         {
-            foreach (var c in this.Controls) 
-                if (c is imageCell)
-                {
-                    var j = (imageCell)c;
-                    if (!j.Checked) continue;
-                    (new Thread(() => saveArtWorkWorker(
-                        job["Path"].ToString(), 
-                        j.ClickHandler.storage,
-                        int.Parse(job["ID"].ToString()
-                    )))).Start();
-                }
+            if (String.IsNullOrEmpty(artworkUrl)) return;
+            (new Thread(() => saveArtWorkWorker(job["Path"].ToString(), artworkUrl, (int)job["ID"]))).Start();
         }
 
         private void saveArtWorkWorker(string file, string artworkURL, int jobID)

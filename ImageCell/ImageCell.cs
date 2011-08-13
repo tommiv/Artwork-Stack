@@ -27,9 +27,10 @@ namespace ImageCell
 
         public Image Image    { set { this.Picture.Image = value; } }
         public string Caption { set { this.caption.Text = value; } }
-        public void Check()   { this.BackColor = Color.FromArgb(120,60,90,120); }
-        public void UnCheck() { this.BackColor = SystemColors.Control; }
-        public bool Checked   { get { if (this.BackColor == Color.FromArgb(120,60,90,120)) return true; else return false; } }
+        public void Check()   { this.BackColor = Color.FromArgb(120, 60, 90, 120); _checked = true; }
+        public void UnCheck() { this.BackColor = SystemColors.Control; _checked = false; }
+        public bool Checked   { get { return _checked; } }
+        private bool _checked;
         public bool Initated;
 
         public new event EventHandler Click
