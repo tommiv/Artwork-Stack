@@ -55,12 +55,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="formBusy.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="formBusy.Designer.cs">
-      <DependentUpon>formBusy.cs</DependentUpon>
-    </Compile>
     <Compile Include="formJobs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,9 +83,9 @@
     <Compile Include="JobController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="formBusy.resx">
-      <DependentUpon>formBusy.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="TransparentPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="formJobs.resx">
       <DependentUpon>formJobs.cs</DependentUpon>
     </EmbeddedResource>

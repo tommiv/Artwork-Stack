@@ -9,8 +9,9 @@ using System.Drawing;
 using ImageCell;
 using TagLib;
 
-//TODO: figure out some artworks not showed in explorer; add existing art checking functions
-//TODO: change colors, properly size joblist, read only mp3 files && recurse traversing
+//TODO: figure out some artworks not showed in explorer; add existing art checking functions; add grouping by album
+//TODO: change colors, properly size joblist, read only mp3 files && recurse traversing;
+//TODO: create showFull constructor with Image for embeded art && store this image in formDoWork property
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
@@ -36,7 +37,8 @@ namespace Artwork_Stack
             public const int tm = 12;
         }
 
-        readonly imageCell[,] cell = new imageCell[grid.i, grid.j];
+        readonly imageCell[,] cell        = new imageCell[grid.i, grid.j];
+        private  imageCell cellEmbeded;
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
@@ -47,11 +49,13 @@ namespace Artwork_Stack
                     cell[ii, jj].Click += CellClick;
                     Controls.Add(cell[ii, jj]);
                 }
-            picEmbeddedArt.Image = Properties.Resources.noartwork;
+
+            cellEmbeded = new imageCell(100, 130, 724, 300);
+            cellEmbeded.Text = @"embeded";
+            cellEmbeded.Click += CellClick;
+            Controls.Add(cellEmbeded);
             showTrackInfo();
-            var busy = new formBusy();
-            (new Thread(()=>googleIt(txtQuery.Text, busy))).Start();
-            busy.ShowDialog();
+            (new Thread(()=>googleIt(txtQuery.Text, picBusy))).Start();
         }
 
         private struct gImgAPIWorkerParams
@@ -112,14 +116,13 @@ namespace Artwork_Stack
                 cell[p.ix, p.iy].Image                = thumb;
                 cell[p.ix, p.iy].Caption              = p.caption;
                 cell[p.ix, p.iy].ClickHandler.storage = p.url;
-                cell[p.ix, p.iy].Initated             = true;
             }
             ));
         }
 
-        private void googleIt(string query, Form busy = null)
+        private void googleIt(string query, PictureBox busy = null)
         {
-            foreach (var c in this.Controls) if (c is imageCell) ((imageCell)c).Image = Properties.Resources.noartwork;
+            foreach (var c in cell) c.Image = Properties.Resources.noartwork;
             var thread = new Thread[4];
             for (int i = 0; i < 4; i++)
             {
@@ -134,9 +137,10 @@ namespace Artwork_Stack
                 bool process = false;
                 foreach (var t in thread) process = process || t.IsAlive;
                 if (!process) break;
-                Thread.Sleep(500);
+                Application.DoEvents();
+                //Thread.Sleep(500);
             }
-            this.Invoke((Action)busy.Close);
+            this.Invoke((Action)(() => busy.Visible = false));
         }
 
         private void btnOverrideSearch_Click(object sender, EventArgs e)
@@ -146,9 +150,11 @@ namespace Artwork_Stack
         }
         private void CellClick(object _sender, EventArgs _e)
         {
-            var e = (MouseEventArgs)_e;
+            var e      = (MouseEventArgs)_e;
             var sender = (clickHandler)_sender;
-            if (e.Button == MouseButtons.Left)
+            var p      = (imageCell)sender.Parent;
+
+            if (e.Button == MouseButtons.Left && p.Text != @"embeded")
             {
                 string url = "";
                 try { url = sender.storage; } catch { }; // HACK: it's very simple
@@ -167,7 +173,6 @@ namespace Artwork_Stack
             }
             else if (e.Button == MouseButtons.Right)
             {
-                var p = (imageCell)sender.Parent;
                 foreach (var c in p.Parent.Controls) 
                     if (c is imageCell) 
                         if (c == p) continue; 
@@ -264,13 +269,13 @@ namespace Artwork_Stack
             if (track.Tag.Pictures.GetLength(0) > 0)
             {
                 var ic = new ImageConverter();
-                picEmbeddedArt.Image = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
-                lblEmbedded.Text = @"Embedded Art";
+                cellEmbeded.Image = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
+                cellEmbeded.Caption = @"Embedded Art";
             }
             else
             {
-                picEmbeddedArt.Image = Properties.Resources.noartwork;
-                lblEmbedded.Text = @"No Embedded Art";
+                cellEmbeded.Image = Properties.Resources.noartwork;
+                cellEmbeded.Caption = @"No Embedded Art";
             }
             track.Dispose();
         }

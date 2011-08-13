@@ -37,12 +37,10 @@
             this.gridCurrentJob = new System.Windows.Forms.DataGridView();
             this.Parameter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.picEmbeddedArt = new System.Windows.Forms.PictureBox();
-            this.lblEmbedded = new System.Windows.Forms.Label();
-            this.txtDebug = new System.Windows.Forms.TextBox();
             this.chkSkip = new System.Windows.Forms.CheckBox();
+            this.picBusy = new Artwork_Stack.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picEmbeddedArt)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSearch
@@ -137,37 +135,6 @@
             this.Value.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Value.Width = 40;
             // 
-            // picEmbeddedArt
-            // 
-            this.picEmbeddedArt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picEmbeddedArt.ErrorImage = global::Artwork_Stack.Properties.Resources.noartwork;
-            this.picEmbeddedArt.Image = global::Artwork_Stack.Properties.Resources.noartwork;
-            this.picEmbeddedArt.InitialImage = global::Artwork_Stack.Properties.Resources.noartwork;
-            this.picEmbeddedArt.Location = new System.Drawing.Point(709, 152);
-            this.picEmbeddedArt.Name = "picEmbeddedArt";
-            this.picEmbeddedArt.Size = new System.Drawing.Size(100, 100);
-            this.picEmbeddedArt.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picEmbeddedArt.TabIndex = 8;
-            this.picEmbeddedArt.TabStop = false;
-            // 
-            // lblEmbedded
-            // 
-            this.lblEmbedded.Location = new System.Drawing.Point(709, 255);
-            this.lblEmbedded.Name = "lblEmbedded";
-            this.lblEmbedded.Size = new System.Drawing.Size(100, 19);
-            this.lblEmbedded.TabIndex = 9;
-            this.lblEmbedded.Text = "Embedded Art";
-            this.lblEmbedded.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // txtDebug
-            // 
-            this.txtDebug.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDebug.Location = new System.Drawing.Point(502, 295);
-            this.txtDebug.Multiline = true;
-            this.txtDebug.Name = "txtDebug";
-            this.txtDebug.Size = new System.Drawing.Size(322, 133);
-            this.txtDebug.TabIndex = 10;
-            // 
             // chkSkip
             // 
             this.chkSkip.Appearance = System.Windows.Forms.Appearance.Button;
@@ -179,16 +146,24 @@
             this.chkSkip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkSkip.UseVisualStyleBackColor = true;
             // 
+            // picBusy
+            // 
+            this.picBusy.BackColor = System.Drawing.Color.Transparent;
+            this.picBusy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
+            this.picBusy.Location = new System.Drawing.Point(357, 205);
+            this.picBusy.Name = "picBusy";
+            this.picBusy.Size = new System.Drawing.Size(100, 100);
+            this.picBusy.TabIndex = 12;
+            this.picBusy.TabStop = false;
+            // 
             // formDoWork
             // 
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(836, 553);
+            this.Controls.Add(this.picBusy);
             this.Controls.Add(this.chkSkip);
-            this.Controls.Add(this.txtDebug);
-            this.Controls.Add(this.lblEmbedded);
-            this.Controls.Add(this.picEmbeddedArt);
             this.Controls.Add(this.gridCurrentJob);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnNext);
@@ -199,7 +174,7 @@
             this.Name = "formDoWork";
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picEmbeddedArt)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -215,10 +190,8 @@
         private System.Windows.Forms.DataGridView gridCurrentJob;
         private System.Windows.Forms.DataGridViewTextBoxColumn Parameter;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
-        private System.Windows.Forms.PictureBox picEmbeddedArt;
-        private System.Windows.Forms.Label lblEmbedded;
-        private System.Windows.Forms.TextBox txtDebug;
         private System.Windows.Forms.CheckBox chkSkip;
+        private TransparentPictureBox picBusy;
 
 
     }
