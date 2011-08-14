@@ -9,8 +9,8 @@ using System.Drawing;
 using ImageCell;
 using TagLib;
 
-//TODO: figure out some artworks not showed in explorer; add existing art checking functions; add grouping by album
-//TODO: change colors, properly size joblist, read only mp3 files && recurse traversing;
+//TODO: figure out some artworks not showed in explorer; add grouping by album
+//TODO: change colors, properly size joblist;
 //TODO: create showFull constructor with Image for embeded art && store this image in formDoWork property
 namespace Artwork_Stack
 {
@@ -18,10 +18,10 @@ namespace Artwork_Stack
     {
         private readonly JobController jCon = new JobController();
         private DataRow currentJob;
-        public formDoWork(string Path)
+        public formDoWork(string Path, bool Recurse)
         {
             InitializeComponent();
-            jCon.TraverseFolder(Path);
+            jCon.TraverseFolder(Path, Recurse);
             currentJob = jCon.Jobs.Tables["Tracks"].Rows[0];
         }
 
@@ -42,6 +42,9 @@ namespace Artwork_Stack
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
+            picBusy.Location = new Point(0,0);
+            picBusy.Size     = this.Size;
+
             for (int ii = 0; ii < grid.i; ii++)
                 for (int jj = 0; jj < grid.j; jj++)
                 {

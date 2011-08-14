@@ -22,7 +22,7 @@ namespace Artwork_Stack
         {
             //TODO: validate path
             string path = txtPath.Text;
-            (new Thread(() => (new formDoWork(path)).ShowDialog())).Start();
+            (new Thread(() => (new formDoWork(path, chkRecurse.Checked)).ShowDialog())).Start();
             this.Close();
         }
     }

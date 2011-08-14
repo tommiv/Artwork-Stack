@@ -153,6 +153,7 @@
             this.picBusy.Location = new System.Drawing.Point(357, 205);
             this.picBusy.Name = "picBusy";
             this.picBusy.Size = new System.Drawing.Size(100, 100);
+            this.picBusy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.picBusy.TabIndex = 12;
             this.picBusy.TabStop = false;
             // 

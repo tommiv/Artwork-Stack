@@ -18,11 +18,13 @@ namespace Artwork_Stack
             Jobs.Tables["Tracks"].Columns.Add("Done",   typeof(bool));
         }
         public DataSet Jobs;
-        public void TraverseFolder(string path) // TODO: add recurse subdir traversing
+        public void TraverseFolder(string path, bool recurse)
         {
-            int jobID = 0;
+            int jobID = TopMargin == 0 ? 0 : TopMargin + 1;
             foreach (string f in Directory.GetFiles(path))
             {
+                if (!f.ToLowerInvariant().EndsWith(".mp3")) continue;
+
                 var track    = TagLib.File.Create(f);
                 DataRow dr   = Jobs.Tables["Tracks"].Rows.Add();
                 dr["ID"]     = jobID;
@@ -33,6 +35,9 @@ namespace Artwork_Stack
                 dr["Done"]   = false;
                 jobID++;
             }
+            if (recurse)
+                foreach (string folder in Directory.GetDirectories(path))
+                    TraverseFolder(folder, true);
         }
         public void ShowJobList()
         {
@@ -55,11 +60,21 @@ namespace Artwork_Stack
         }
         public int TopMargin
         {
-            get { return (int)Jobs.Tables["Tracks"].AsEnumerable().Last(r => (bool)r["Done"] == false)["ID"]; }
+            get
+            {
+                var lastNotDone = Jobs.Tables["Tracks"].AsEnumerable().LastOrDefault(r => (bool)r["Done"] == false);
+                if (lastNotDone == null) return 0;
+                else return (int)lastNotDone["ID"];
+            }
         }
         public int BottomMargin
         {
-            get { return (int)Jobs.Tables["Tracks"].AsEnumerable().First(r => (bool)r["Done"] == false)["ID"]; }
+            get
+            {
+                var firstNotDone = Jobs.Tables["Tracks"].AsEnumerable().FirstOrDefault(r => (bool)r["Done"] == false);
+                if (firstNotDone == null) return 0;
+                else return (int)firstNotDone["ID"];
+            }
         }
         public void SetJobIsDone(int jobID)
         {

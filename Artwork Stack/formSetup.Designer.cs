@@ -32,6 +32,7 @@
             this.btnBrowse = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.folderBrowse = new System.Windows.Forms.FolderBrowserDialog();
+            this.chkRecurse = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txtPath
@@ -66,11 +67,22 @@
             // 
             this.folderBrowse.ShowNewFolderButton = false;
             // 
+            // chkRecurse
+            // 
+            this.chkRecurse.AutoSize = true;
+            this.chkRecurse.Location = new System.Drawing.Point(335, 39);
+            this.chkRecurse.Name = "chkRecurse";
+            this.chkRecurse.Size = new System.Drawing.Size(66, 17);
+            this.chkRecurse.TabIndex = 3;
+            this.chkRecurse.Text = "Recurse";
+            this.chkRecurse.UseVisualStyleBackColor = true;
+            // 
             // formSetup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(419, 122);
+            this.Controls.Add(this.chkRecurse);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.txtPath);
@@ -87,5 +99,6 @@
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse;
+        private System.Windows.Forms.CheckBox chkRecurse;
     }
 }
