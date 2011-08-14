@@ -14,7 +14,7 @@ using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
 using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
 //TODO: figure out some artworks not showed in explorer; add grouping by album
-//TODO: change colors, properly size joblist;
+//TODO: change colors, properly size joblist; Change track info showing (ID's and complete amount)
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form

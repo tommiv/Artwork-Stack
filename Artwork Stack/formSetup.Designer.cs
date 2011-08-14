@@ -88,6 +88,7 @@
             this.Controls.Add(this.txtPath);
             this.Name = "formSetup";
             this.Text = "Setup";
+            this.Load += new System.EventHandler(this.formSetup_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
