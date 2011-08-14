@@ -20,6 +20,12 @@ namespace Artwork_Stack
             bg.RunWorkerAsync();
             url = _url;
         }
+        public frmShowFull(Image img)
+        {
+            InitializeComponent();
+            mainImage = img;
+            bg_RunWorkerCompleted(null, null);
+        }
 
         private void pictMain_Click(object sender, EventArgs e)
         {

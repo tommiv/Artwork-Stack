@@ -9,36 +9,28 @@ using System.Drawing;
 using ImageCell;
 using TagLib;
 
+using grid = Artwork_Stack.Model.grid;
+using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
+using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
+
 //TODO: figure out some artworks not showed in explorer; add grouping by album
 //TODO: change colors, properly size joblist;
-//TODO: create showFull constructor with Image for embeded art && store this image in formDoWork property
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
     {
         private readonly JobController jCon = new JobController();
-        private DataRow currentJob;
+        private          DataRow       currentJob;
+        private readonly imageCell[,]  cell = new imageCell[grid.i, grid.j];
+        private          imageCell     cellEmbeded;
+        private Image    EmbededArt;
+
         public formDoWork(string Path, bool Recurse)
         {
             InitializeComponent();
             jCon.TraverseFolder(Path, Recurse);
             currentJob = jCon.Jobs.Tables["Tracks"].Rows[0];
         }
-
-        struct grid
-        {
-            public const int i = 4;
-            public const int j = 4;
-            public const int w = 100;
-            public const int h = 130;
-            public const int pw = 4; // Space between cells
-            public const int ph = 4;
-            public const int lm = 12; // Left margin
-            public const int tm = 12;
-        }
-
-        readonly imageCell[,] cell        = new imageCell[grid.i, grid.j];
-        private  imageCell cellEmbeded;
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
@@ -61,16 +53,6 @@ namespace Artwork_Stack
             (new Thread(()=>googleIt(txtQuery.Text, picBusy))).Start();
         }
 
-        private struct gImgAPIWorkerParams
-        {
-            public string query;
-            public int rsz; // results per page
-            public int i;   // thread position
-            public gImgAPIWorkerParams(string _query, int _rsz, int _i)
-            {
-                query = _query; rsz = _rsz; i = _i;
-            }
-        }
         private void gImgAPIWorker(Object P)
         {
             var p = (gImgAPIWorkerParams)P;
@@ -96,20 +78,7 @@ namespace Artwork_Stack
                 thread[j].Start(parameters);
             }
         }
-        struct getIMGWorkerParams
-        {
-            public string tburl;
-            public string url;
-            public int ix; // thread position
-            public int iy;
-            public int w;
-            public int h;
-            public string caption;
-            public getIMGWorkerParams(string _tburl, string _url, int _ix, int _iy, int _w, int _h, string _caption)
-            {
-                tburl = _tburl; url = _url; ix = _ix; iy = _iy; w = _w; h = _h; caption = _caption;
-            }
-        }
+
         private void getIMGWorker(Object P)
         {
             var p = (getIMGWorkerParams)P;
@@ -141,7 +110,6 @@ namespace Artwork_Stack
                 foreach (var t in thread) process = process || t.IsAlive;
                 if (!process) break;
                 Application.DoEvents();
-                //Thread.Sleep(500);
             }
             this.Invoke((Action)(() => busy.Visible = false));
         }
@@ -157,13 +125,11 @@ namespace Artwork_Stack
             var sender = (clickHandler)_sender;
             var p      = (imageCell)sender.Parent;
 
-            if (e.Button == MouseButtons.Left && p.Text != @"embeded")
+            if (e.Button == MouseButtons.Left)
             {
-                string url = "";
-                try { url = sender.storage; } catch { }; // HACK: it's very simple
-                if (url != "")
+                if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.storage))
                 {
-                    var viewer = new frmShowFull(url);
+                    var viewer = p.Text == @"embeded"? new frmShowFull(EmbededArt) : new frmShowFull(sender.storage);
                     viewer.ShowDialog();
                     if (viewer.NotAvailable) ((imageCell)sender.Parent).Image = Properties.Resources.noartwork;
                     if (viewer.Selected)
@@ -220,11 +186,12 @@ namespace Artwork_Stack
                 }
             }
 
-            if (!chkSkip.Checked) saveArtWork(stored, getCurrentArtworkUrl());
+            if (!chkSkip.Checked && !cellEmbeded.Checked) saveArtWork(stored, getCurrentArtworkUrl());
             else
             {
                 jCon.SetJobIsDone(curJobIndex);
                 unselectCells();
+                chkSkip.Checked = false;
             }
 
             if (jCon.PendingJobsCount == 0)
@@ -272,12 +239,13 @@ namespace Artwork_Stack
             if (track.Tag.Pictures.GetLength(0) > 0)
             {
                 var ic = new ImageConverter();
-                cellEmbeded.Image = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
+                cellEmbeded.Image = EmbededArt = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
                 cellEmbeded.Caption = @"Embedded Art";
             }
             else
             {
                 cellEmbeded.Image = Properties.Resources.noartwork;
+                EmbededArt = null;
                 cellEmbeded.Caption = @"No Embedded Art";
             }
             track.Dispose();

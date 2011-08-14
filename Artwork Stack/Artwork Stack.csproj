@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="httpRequest.cs" />
     <Compile Include="JobController.cs" />
+    <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransparentPictureBox.cs">
