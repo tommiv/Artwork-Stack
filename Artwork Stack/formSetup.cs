@@ -15,12 +15,8 @@ namespace Artwork_Stack
 
         private void formSetup_Load(object sender, EventArgs e)
         {
-            var path    = (string)getRegValue(regKeys.DefaultPath);
-            if (!string.IsNullOrEmpty(path)) txtPath.Text = path;
-            
-            bool recurse;
-            bool.TryParse((string)getRegValue(regKeys.RecurseTraversing), out recurse);
-            chkRecurse.Checked = recurse;
+            txtPath.Text       = (string)getRegValue(regKeys.DefaultPath);
+            chkRecurse.Checked = Convert.ToBoolean(getRegValue(regKeys.RecurseTraversing));
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
