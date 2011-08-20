@@ -180,6 +180,7 @@
       <Item value="Artwrk" priority="0" />
       <Item value="RegistryKeyPermissionCheck`0" priority="1" />
       <Item value="out" priority="0" />
+      <Item value="Convert`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Artwork_Stack.frmShowFull">
       <Item value="ShowDialog`0" priority="0" />
@@ -448,8 +449,8 @@
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:frmShowFull.cs" caret="778" fromTop="26" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:Program.cs" caret="395" fromTop="14" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.Designer.cs" caret="492" fromTop="14" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1444" fromTop="43" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="953" fromTop="0" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="667" fromTop="0" />
     </RecentFiles>
     <RecentEdits>
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="5432" fromTop="17" />
@@ -464,24 +465,24 @@
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="5385" fromTop="25" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="5815" fromTop="34" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="7517" fromTop="31" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="741" fromTop="13" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1703" fromTop="33" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1772" fromTop="35" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="601" fromTop="13" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1563" fromTop="33" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1632" fromTop="35" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="109" fromTop="4" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1459" fromTop="31" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1080" fromTop="25" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1330" fromTop="30" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2764" fromTop="12" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2578" fromTop="21" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2567" fromTop="38" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1908" fromTop="27" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2446" fromTop="18" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2209" fromTop="10" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2379" fromTop="14" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="662" fromTop="22" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1577" fromTop="23" />
-      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1980" fromTop="30" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1319" fromTop="31" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="940" fromTop="25" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1190" fromTop="30" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2624" fromTop="12" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2438" fromTop="21" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2427" fromTop="38" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1768" fromTop="27" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2306" fromTop="18" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2069" fromTop="10" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="2239" fromTop="14" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1437" fromTop="23" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="1840" fromTop="30" />
       <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formDoWork.cs" caret="583" fromTop="16" />
+      <File id="E6FDB8E3-41CB-45CC-912F-E986C9FFA675/f:formSetup.cs" caret="396" fromTop="17" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>

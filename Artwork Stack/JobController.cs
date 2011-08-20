@@ -10,12 +10,13 @@ namespace Artwork_Stack
         {
             Jobs = new DataSet();
             Jobs.Tables.Add("Tracks");
-            Jobs.Tables["Tracks"].Columns.Add("ID",     typeof(int));
-            Jobs.Tables["Tracks"].Columns.Add("Artist", typeof(string));
-            Jobs.Tables["Tracks"].Columns.Add("Title",  typeof(string));
-            Jobs.Tables["Tracks"].Columns.Add("Album",  typeof(string));
-            Jobs.Tables["Tracks"].Columns.Add("Path",   typeof(string));
-            Jobs.Tables["Tracks"].Columns.Add("Done",   typeof(bool));
+            Jobs.Tables["Tracks"].Columns.Add("ID",      typeof(int));
+            Jobs.Tables["Tracks"].Columns.Add("Artist",  typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Title",   typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Album",   typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Path",    typeof(string));
+            Jobs.Tables["Tracks"].Columns.Add("Done",    typeof(bool));
+            Jobs.Tables["Tracks"].Columns.Add("Process", typeof(bool));
         }
         public DataSet Jobs;
         public void TraverseFolder(string path, bool recurse)
@@ -25,14 +26,15 @@ namespace Artwork_Stack
             {
                 if (!f.ToLowerInvariant().EndsWith(".mp3")) continue;
 
-                var track    = TagLib.File.Create(f);
-                DataRow dr   = Jobs.Tables["Tracks"].Rows.Add();
-                dr["ID"]     = jobID;
-                dr["Artist"] = track.Tag.FirstPerformer;
-                dr["Title"]  = track.Tag.Title;
-                dr["Album"]  = track.Tag.Album;
-                dr["Path"]   = f;
-                dr["Done"]   = false;
+                var track     = TagLib.File.Create(f);
+                DataRow dr    = Jobs.Tables["Tracks"].Rows.Add();
+                dr["ID"]      = jobID;
+                dr["Artist"]  = track.Tag.FirstPerformer;
+                dr["Title"]   = track.Tag.Title;
+                dr["Album"]   = track.Tag.Album;
+                dr["Path"]    = f;
+                dr["Done"]    = false;
+                dr["Process"] = false;
                 jobID++;
             }
             if (recurse)
@@ -53,6 +55,14 @@ namespace Artwork_Stack
         public int PendingJobsCount
         {
             get { return Jobs.Tables["Tracks"].AsEnumerable().Where(r => (bool)r["Done"] == false).Count(); }
+        }
+        public int ProcessedJobsCount
+        {
+            get { return Jobs.Tables["Tracks"].AsEnumerable().Where(r => (bool)r["Process"]).Count(); }
+        }
+        public bool IsUnprocessedJobs
+        {
+            get { return Jobs.Tables["Tracks"].AsEnumerable().Where(r => (bool)r["done"] == false && (bool)r["Process"] == false).Count() > 0; }
         }
         public int JobsCount
         {
@@ -79,7 +89,8 @@ namespace Artwork_Stack
         public void SetJobIsDone(int jobID)
         {
             DataRow dr = Jobs.Tables["Tracks"].Rows[jobID];
-            dr["Done"] = true;
+            dr["Process"] = false;
+            dr["Done"]    = true;
         }
     }
 }

@@ -15,6 +15,7 @@ using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
 //TODO: figure out some artworks not showed in explorer; add grouping by album
 //TODO: change colors, properly size joblist; Change track info showing (ID's and complete amount)
+//TODO: Refactor all to use fields constants && maybe enum for job statuses?
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
@@ -173,9 +174,9 @@ namespace Artwork_Stack
             int i = startIndex;
             while (true)
             {
-                if (jCon.PendingJobsCount == 0) break;
+                if (!jCon.IsUnprocessedJobs) break;
                 DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
-                if ((bool)newdr["done"])
+                if ((bool)newdr["done"] || (bool)newdr["Process"])
                 {
                     if ( isForwardClick && i != endIndex) { i++; continue; }
                     if (!isForwardClick && i != endIndex) { i--; continue; }
@@ -186,7 +187,11 @@ namespace Artwork_Stack
                 }
             }
 
-            if (!chkSkip.Checked && !cellEmbeded.Checked) saveArtWork(stored, getCurrentArtworkUrl());
+            if (!chkSkip.Checked && !cellEmbeded.Checked)
+            {
+                stored["Process"] = true;
+                saveArtWork(stored, getCurrentArtworkUrl());
+            }
             else
             {
                 jCon.SetJobIsDone(curJobIndex);
@@ -194,7 +199,7 @@ namespace Artwork_Stack
                 chkSkip.Checked = false;
             }
 
-            if (jCon.PendingJobsCount == 0)
+            if (!jCon.IsUnprocessedJobs)
             {
                 btnPrev.Enabled = btnNext.Enabled = false;
                 MessageBox.Show(@"That's all, folks!");
@@ -253,7 +258,11 @@ namespace Artwork_Stack
 
         private void saveArtWork(DataRow job, string artworkUrl)
         {
-            if (String.IsNullOrEmpty(artworkUrl)) return;
+            if (String.IsNullOrEmpty(artworkUrl))
+            {
+                job["Process"] = false;
+                return;
+            }
             (new Thread(() => saveArtWorkWorker(job["Path"].ToString(), artworkUrl, (int)job["ID"]))).Start();
         }
 
