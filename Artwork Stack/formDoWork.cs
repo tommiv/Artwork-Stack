@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
@@ -13,31 +14,36 @@ using grid = Artwork_Stack.Model.grid;
 using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
 using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
-//TODO: figure out some artworks not showed in explorer; 
-//TODO: add grouping by album
+//TODO: figure out some artworks not showed in explorer; // maybe it's because of tag position in files
+//TODO: make formjobs as toolbox with navigation function
 //TODO: resize image && crop to square
 //TODO: Refactor all to use fields constants && maybe enum for job statuses?
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
     {
-        private readonly JobController jCon = new JobController();
+        private readonly JobController jCon;
         private          DataRow       currentJob;
         private readonly imageCell[,]  cell = new imageCell[grid.i, grid.j];
         private          imageCell     cellEmbeded;
         private Image    EmbededArt;
 
-        public formDoWork(string Path, bool Recurse)
+        public formDoWork(JobController jcon)
         {
             InitializeComponent();
-            jCon.TraverseFolder(Path, Recurse);
-            currentJob = jCon.Jobs.Tables["Tracks"].Rows[0];
+            jCon = jcon;
         }
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
             picBusy.Location = new Point(0,0);
             picBusy.Size     = this.Size;
+
+            var t = new Thread(() => jCon.TraverseFolder());
+            t.Start();
+            while (t.IsAlive) Application.DoEvents();
+
+            currentJob = jCon.Jobs.Tables["Tracks"].Rows[0];
 
             for (int ii = 0; ii < grid.i; ii++)
                 for (int jj = 0; jj < grid.j; jj++)
@@ -195,6 +201,12 @@ namespace Artwork_Stack
             }
             else
             {
+                string msg = string.Format(
+                    "This unit is album-group. If you check 'skip' or 'embedded art', {0} files will be skipped ",
+                    ((List<String>)stored["PathList"]).Count
+                );
+                if (MessageBox.Show(msg, "", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+
                 jCon.SetJobIsDone(curJobIndex);
                 unselectCells();
                 chkSkip.Checked = false;
@@ -233,15 +245,21 @@ namespace Artwork_Stack
 
         private void showTrackInfo()
         {
+            bool groupMode = string.IsNullOrEmpty(currentJob["Path"].ToString());
+            string path = groupMode ? ((List<String>)currentJob["PathList"])[0] : currentJob["Path"].ToString();
+
             txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob["ID"].ToString()));
             gridCurrentJob.Rows.Clear();
             gridCurrentJob.Rows.Add("Job index", (int)currentJob["ID"]);
             gridCurrentJob.Rows.Add("Done/total jobs", jCon.CompletedJobsCount + "/" + jCon.JobsCount);
-            gridCurrentJob.Rows.Add("Path", currentJob["Path"].ToString());
+            gridCurrentJob.Rows.Add("Path",  groupMode ? "Grouping mode, multiple paths"  : path);
+            gridCurrentJob.Rows.Add("Track", groupMode ? "Grouping mode, multiple titles" : currentJob["Title"].ToString());
             gridCurrentJob.Rows.Add("Artist", currentJob["Artist"].ToString());
-            gridCurrentJob.Rows.Add("Track", currentJob["Title"].ToString());
             gridCurrentJob.Rows.Add("Album", currentJob["Album"].ToString());
-            var track = TagLib.File.Create(currentJob["Path"].ToString());
+
+            if (groupMode) gridCurrentJob.Rows.Add("WARN", string.Format("Art applies (or not) to {0} files!", ((List<String>)currentJob["PathList"]).Count));
+
+            var track = TagLib.File.Create(path);
             gridCurrentJob.Rows.Add("Art in file", track.Tag.Pictures.GetLength(0));
             if (track.Tag.Pictures.GetLength(0) > 0)
             {
@@ -265,19 +283,27 @@ namespace Artwork_Stack
                 job["Process"] = false;
                 return;
             }
-            (new Thread(() => saveArtWorkWorker(job["Path"].ToString(), artworkUrl, (int)job["ID"]))).Start();
+
+            var pathLists = new List<string>();
+            if (string.IsNullOrEmpty(job["Path"].ToString())) pathLists = (List<String>)job["PathList"];
+            else pathLists.Add((string)job["Path"]);
+
+            (new Thread(() => saveArtWorkWorker(pathLists, artworkUrl, (int)job["ID"]))).Start();
         }
 
-        private void saveArtWorkWorker(string file, string artworkURL, int jobID)
+        private void saveArtWorkWorker(List<string> files, string artworkURL, int jobID)
         {
             Byte[] artwork = httpRequest.getStream(artworkURL);
             if (artwork == null) return;
             var artworkInMem = new MemoryStream(artwork);
             var pic = new Picture(ByteVector.FromStream(artworkInMem));
             Picture[] artworkFrame = { pic };
-            var track = TagLib.File.Create(file);
-            track.Tag.Pictures = artworkFrame;
-            track.Save();
+            foreach (var file in files)
+            {
+                var track = TagLib.File.Create(file);
+                track.Tag.Pictures = artworkFrame;
+                track.Save();
+            }
             jCon.SetJobIsDone(jobID);
         }
     }

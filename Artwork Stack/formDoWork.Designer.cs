@@ -36,9 +36,9 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.gridCurrentJob = new System.Windows.Forms.DataGridView();
+            this.chkSkip = new System.Windows.Forms.CheckBox();
             this.Parameter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.chkSkip = new System.Windows.Forms.CheckBox();
             this.picBusy = new Artwork_Stack.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
@@ -130,24 +130,8 @@
             this.gridCurrentJob.ShowCellErrors = false;
             this.gridCurrentJob.ShowEditingIcon = false;
             this.gridCurrentJob.ShowRowErrors = false;
-            this.gridCurrentJob.Size = new System.Drawing.Size(322, 195);
+            this.gridCurrentJob.Size = new System.Drawing.Size(322, 185);
             this.gridCurrentJob.TabIndex = 7;
-            // 
-            // Parameter
-            // 
-            this.Parameter.HeaderText = "Parameter";
-            this.Parameter.Name = "Parameter";
-            this.Parameter.ReadOnly = true;
-            this.Parameter.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Parameter.Width = 61;
-            // 
-            // Value
-            // 
-            this.Value.HeaderText = "Value";
-            this.Value.Name = "Value";
-            this.Value.ReadOnly = true;
-            this.Value.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Value.Width = 40;
             // 
             // chkSkip
             // 
@@ -159,6 +143,24 @@
             this.chkSkip.Text = "Skip";
             this.chkSkip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkSkip.UseVisualStyleBackColor = true;
+            // 
+            // Parameter
+            // 
+            this.Parameter.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Parameter.HeaderText = "Parameter";
+            this.Parameter.Name = "Parameter";
+            this.Parameter.ReadOnly = true;
+            this.Parameter.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Parameter.Width = 80;
+            // 
+            // Value
+            // 
+            this.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Value.HeaderText = "Value";
+            this.Value.Name = "Value";
+            this.Value.ReadOnly = true;
+            this.Value.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Value.Width = 242;
             // 
             // picBusy
             // 
@@ -205,10 +207,10 @@
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.DataGridView gridCurrentJob;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Parameter;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Value;
         private System.Windows.Forms.CheckBox chkSkip;
         private TransparentPictureBox picBusy;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Parameter;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Value;
 
 
     }

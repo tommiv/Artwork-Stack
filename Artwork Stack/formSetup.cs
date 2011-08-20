@@ -8,15 +8,13 @@ namespace Artwork_Stack
 {
     public partial class formSetup : Form
     {
-        public formSetup()
-        {
-            InitializeComponent();
-        }
+        public formSetup() { InitializeComponent(); }
 
         private void formSetup_Load(object sender, EventArgs e)
         {
             txtPath.Text       = (string)getRegValue(regKeys.DefaultPath);
             chkRecurse.Checked = Convert.ToBoolean(getRegValue(regKeys.RecurseTraversing));
+            chkGroup.Checked   = Convert.ToBoolean(getRegValue(regKeys.GroupByAlbum));
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -29,12 +27,13 @@ namespace Artwork_Stack
         private void btnStart_Click(object sender, EventArgs e)
         {
             string path = txtPath.Text;
-            bool recurse = chkRecurse.Checked;
             if (Directory.Exists(path))
             {
                 setRegValue(regKeys.DefaultPath,       path);
-                setRegValue(regKeys.RecurseTraversing, recurse);
-                (new Thread(() => (new formDoWork(path, recurse)).ShowDialog())).Start();
+                setRegValue(regKeys.GroupByAlbum,      chkGroup.Checked);
+                setRegValue(regKeys.RecurseTraversing, chkRecurse.Checked);
+                var jcon = new JobController(path, chkGroup.Checked, chkRecurse.Checked);
+                (new Thread(() => (new formDoWork(jcon)).ShowDialog())).Start();
                 this.Close();
             }
             else MessageBox.Show(@"Directory not exists");
@@ -82,5 +81,6 @@ namespace Artwork_Stack
     {
         public const string DefaultPath       = "DefaultPath";
         public const string RecurseTraversing = "RecurseTraversing";
+        public const string GroupByAlbum      = "GroupByAlbum";
     }
 }
