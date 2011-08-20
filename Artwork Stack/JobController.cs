@@ -45,7 +45,7 @@ namespace Artwork_Stack
         {
             var fJobs = new formJobs();
             fJobs.gridJobs.DataSource = Jobs.Tables["Tracks"];
-            fJobs.ShowDialog();
+            fJobs.Show();
         }
         public string CreateQueryString(int jobID)
         {
@@ -59,6 +59,10 @@ namespace Artwork_Stack
         public int ProcessedJobsCount
         {
             get { return Jobs.Tables["Tracks"].AsEnumerable().Where(r => (bool)r["Process"]).Count(); }
+        }
+        public int CompletedJobsCount
+        {
+            get { return Jobs.Tables["Tracks"].AsEnumerable().Where(r => (bool)r["Done"]).Count(); }
         }
         public bool IsUnprocessedJobs
         {

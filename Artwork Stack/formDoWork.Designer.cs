@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
@@ -96,8 +97,8 @@
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.LightCyan;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -106,14 +107,25 @@
             this.gridCurrentJob.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Parameter,
             this.Value});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridCurrentJob.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.gridCurrentJob.GridColor = System.Drawing.SystemColors.ButtonHighlight;
             this.gridCurrentJob.Location = new System.Drawing.Point(502, 82);
             this.gridCurrentJob.MultiSelect = false;
             this.gridCurrentJob.Name = "gridCurrentJob";
+            this.gridCurrentJob.ReadOnly = true;
             this.gridCurrentJob.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.gridCurrentJob.RowHeadersVisible = false;
+            this.gridCurrentJob.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.gridCurrentJob.RowTemplate.Height = 20;
-            this.gridCurrentJob.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.gridCurrentJob.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.gridCurrentJob.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridCurrentJob.ShowCellErrors = false;
             this.gridCurrentJob.ShowEditingIcon = false;
@@ -125,6 +137,7 @@
             // 
             this.Parameter.HeaderText = "Parameter";
             this.Parameter.Name = "Parameter";
+            this.Parameter.ReadOnly = true;
             this.Parameter.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Parameter.Width = 61;
             // 
@@ -132,6 +145,7 @@
             // 
             this.Value.HeaderText = "Value";
             this.Value.Name = "Value";
+            this.Value.ReadOnly = true;
             this.Value.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Value.Width = 40;
             // 
@@ -162,6 +176,7 @@
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(836, 553);
             this.Controls.Add(this.picBusy);
             this.Controls.Add(this.chkSkip);
@@ -172,6 +187,7 @@
             this.Controls.Add(this.txtQuery);
             this.Controls.Add(this.btnSearch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "formDoWork";
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();

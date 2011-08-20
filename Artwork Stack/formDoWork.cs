@@ -13,8 +13,9 @@ using grid = Artwork_Stack.Model.grid;
 using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
 using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
-//TODO: figure out some artworks not showed in explorer; add grouping by album
-//TODO: change colors, properly size joblist; Change track info showing (ID's and complete amount)
+//TODO: figure out some artworks not showed in explorer; 
+//TODO: add grouping by album
+//TODO: resize image && crop to square
 //TODO: Refactor all to use fields constants && maybe enum for job statuses?
 namespace Artwork_Stack
 {
@@ -234,7 +235,8 @@ namespace Artwork_Stack
         {
             txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob["ID"].ToString()));
             gridCurrentJob.Rows.Clear();
-            gridCurrentJob.Rows.Add("Job", int.Parse(currentJob["ID"].ToString()) + "/" + (jCon.JobsCount - 1));
+            gridCurrentJob.Rows.Add("Job index", (int)currentJob["ID"]);
+            gridCurrentJob.Rows.Add("Done/total jobs", jCon.CompletedJobsCount + "/" + jCon.JobsCount);
             gridCurrentJob.Rows.Add("Path", currentJob["Path"].ToString());
             gridCurrentJob.Rows.Add("Artist", currentJob["Artist"].ToString());
             gridCurrentJob.Rows.Add("Track", currentJob["Title"].ToString());
