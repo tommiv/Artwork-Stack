@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Artwork_Stack
 {
@@ -12,6 +14,7 @@ namespace Artwork_Stack
         public  bool      Group;
         public  DataSet   Jobs;
         private DataTable T;
+        private formJobs  fJobs;
 
         public JobController(string rootfolder, bool group, bool recurse)
         {
@@ -84,11 +87,28 @@ namespace Artwork_Stack
                     GatherFiles(folder, true);
         }
 
-        public void ShowJobList()
+        public formJobs ShowJobList()
         {
-            var fJobs = new formJobs();
-            fJobs.gridJobs.DataSource = Jobs.Tables["Tracks"];
-            fJobs.Show();
+            if (fJobs == null || fJobs.IsDisposed)
+            {
+                fJobs = new formJobs();
+                fJobs.gridJobs.DataSource = Jobs.Tables["Tracks"];
+                // ReSharper disable PossibleNullReferenceException
+                fJobs.gridJobs.Columns["Path"].Visible  = false;
+                fJobs.gridJobs.Columns["ID"].Width      = 40;
+                fJobs.gridJobs.Columns["Artist"].Width  = 220;
+                fJobs.gridJobs.Columns["Title"].Width   = 220;
+                fJobs.gridJobs.Columns["Album"].Width   = 220;
+                fJobs.gridJobs.Columns["Done"].Width    = 40;
+                fJobs.gridJobs.Columns["Process"].Width = 60;
+                // ReSharper restore PossibleNullReferenceException
+                fJobs.Show();
+                foreach (DataGridViewRow row in fJobs.gridJobs.Rows)
+                    if (string.IsNullOrEmpty(row.Cells["path"].Value.ToString()))
+                        foreach (DataGridViewCell cell in row.Cells)
+                            cell.Style.BackColor = row.Index % 2 == 0 ? Color.FromArgb(255, 240, 210, 240) : Color.FromArgb(255, 255, 220, 255);
+            }
+            return fJobs;
         }
         public string CreateQueryString(int jobID)
         {

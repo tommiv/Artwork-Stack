@@ -15,7 +15,6 @@ using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
 using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
 //TODO: figure out some artworks not showed in explorer; // maybe it's because of tag position in files
-//TODO: make formjobs as toolbox with navigation function
 //TODO: resize image && crop to square
 //TODO: Refactor all to use fields constants && maybe enum for job statuses?
 namespace Artwork_Stack
@@ -27,6 +26,7 @@ namespace Artwork_Stack
         private readonly imageCell[,]  cell = new imageCell[grid.i, grid.j];
         private          imageCell     cellEmbeded;
         private Image    EmbededArt;
+        private formJobs fJobs;
 
         public formDoWork(JobController jcon)
         {
@@ -108,7 +108,7 @@ namespace Artwork_Stack
             {
                 var parameters = new gImgAPIWorkerParams(query, 4, i);
                 thread[i] = new Thread(gImgAPIWorker);
-                thread[i].Start(parameters);
+                //thread[i].Start(parameters);
             }
 
             if (busy == null) return;
@@ -157,8 +157,6 @@ namespace Artwork_Stack
                 if (p.Checked) p.UnCheck(); else p.Check();
             }
         }
-
-        private void btnJobs_Click(object sender, EventArgs e) { jCon.ShowJobList(); }
 
         private void buttonCycleClick(object sender, EventArgs e)
         {
@@ -305,6 +303,52 @@ namespace Artwork_Stack
                 track.Save();
             }
             jCon.SetJobIsDone(jobID);
+        }
+
+        private void btnJobs_CheckedChanged(object sender, EventArgs e)
+        {
+            if (btnJobs.Checked)
+            {
+                fJobs = jCon.ShowJobList();
+                fJobs.Visible = true;
+                fJobs.Closed += (sndr, evargs) => btnJobs.Checked = false;
+                stickJobs();
+            }
+            else
+            {
+                if (fJobs != null && !fJobs.IsDisposed)
+                {
+                    fJobs.Visible = false;
+                    this.Focus();
+                }
+            }
+        }
+
+        private void stickJobs()
+        {
+            fJobs.Size     = new Size(this.Width, fJobs.Height);
+            fJobs.Location = new Point(this.Location.X, this.Location.Y + this.Height + 6);
+        }
+
+        private void formDoWork_LocationChanged(object sender, EventArgs e)
+        {
+            stickJobs();
+            fJobs.Focus();
+            this.Focus();
+        }
+
+        public void Navigate(int jobId)
+        {
+            var job = jCon.Jobs.Tables["Tracks"].Rows[jobId];
+            if (!(bool)job["done"] && !(bool)job["process"])
+            {
+                currentJob = job;
+                showTrackInfo();
+                googleIt(currentJob["Artist"] + " " + currentJob["Album"]);
+                chkSkip.Checked = false;
+                btnPrev.Enabled = (int)currentJob["ID"] > jCon.BottomMargin;
+                btnNext.Enabled = (int)currentJob["ID"] <= jCon.TopMargin;
+            }
         }
     }
 }

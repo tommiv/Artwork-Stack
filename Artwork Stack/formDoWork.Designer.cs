@@ -32,13 +32,13 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
-            this.btnJobs = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.gridCurrentJob = new System.Windows.Forms.DataGridView();
-            this.chkSkip = new System.Windows.Forms.CheckBox();
             this.Parameter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chkSkip = new System.Windows.Forms.CheckBox();
+            this.btnJobs = new System.Windows.Forms.CheckBox();
             this.picBusy = new Artwork_Stack.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
@@ -60,16 +60,6 @@
             this.txtQuery.Name = "txtQuery";
             this.txtQuery.Size = new System.Drawing.Size(322, 20);
             this.txtQuery.TabIndex = 3;
-            // 
-            // btnJobs
-            // 
-            this.btnJobs.Location = new System.Drawing.Point(627, 491);
-            this.btnJobs.Name = "btnJobs";
-            this.btnJobs.Size = new System.Drawing.Size(75, 23);
-            this.btnJobs.TabIndex = 4;
-            this.btnJobs.Text = "Jobs List";
-            this.btnJobs.UseVisualStyleBackColor = true;
-            this.btnJobs.Click += new System.EventHandler(this.btnJobs_Click);
             // 
             // btnNext
             // 
@@ -133,17 +123,6 @@
             this.gridCurrentJob.Size = new System.Drawing.Size(322, 185);
             this.gridCurrentJob.TabIndex = 7;
             // 
-            // chkSkip
-            // 
-            this.chkSkip.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkSkip.Location = new System.Drawing.Point(749, 451);
-            this.chkSkip.Name = "chkSkip";
-            this.chkSkip.Size = new System.Drawing.Size(75, 24);
-            this.chkSkip.TabIndex = 11;
-            this.chkSkip.Text = "Skip";
-            this.chkSkip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.chkSkip.UseVisualStyleBackColor = true;
-            // 
             // Parameter
             // 
             this.Parameter.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -161,6 +140,29 @@
             this.Value.ReadOnly = true;
             this.Value.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Value.Width = 242;
+            // 
+            // chkSkip
+            // 
+            this.chkSkip.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkSkip.Location = new System.Drawing.Point(749, 451);
+            this.chkSkip.Name = "chkSkip";
+            this.chkSkip.Size = new System.Drawing.Size(75, 24);
+            this.chkSkip.TabIndex = 11;
+            this.chkSkip.Text = "Skip";
+            this.chkSkip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.chkSkip.UseVisualStyleBackColor = true;
+            // 
+            // btnJobs
+            // 
+            this.btnJobs.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnJobs.Location = new System.Drawing.Point(623, 491);
+            this.btnJobs.Name = "btnJobs";
+            this.btnJobs.Size = new System.Drawing.Size(86, 24);
+            this.btnJobs.TabIndex = 13;
+            this.btnJobs.Text = "Jobs list";
+            this.btnJobs.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnJobs.UseVisualStyleBackColor = true;
+            this.btnJobs.CheckedChanged += new System.EventHandler(this.btnJobs_CheckedChanged);
             // 
             // picBusy
             // 
@@ -180,18 +182,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(836, 553);
+            this.Controls.Add(this.btnJobs);
             this.Controls.Add(this.picBusy);
             this.Controls.Add(this.chkSkip);
             this.Controls.Add(this.gridCurrentJob);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnNext);
-            this.Controls.Add(this.btnJobs);
             this.Controls.Add(this.txtQuery);
             this.Controls.Add(this.btnSearch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "formDoWork";
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
+            this.LocationChanged += new System.EventHandler(this.formDoWork_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);
@@ -203,7 +206,6 @@
 
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.TextBox txtQuery;
-        private System.Windows.Forms.Button btnJobs;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.DataGridView gridCurrentJob;
@@ -211,6 +213,7 @@
         private TransparentPictureBox picBusy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Parameter;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
+        private System.Windows.Forms.CheckBox btnJobs;
 
 
     }

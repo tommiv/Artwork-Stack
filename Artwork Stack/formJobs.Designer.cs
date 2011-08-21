@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridJobs = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.gridJobs)).BeginInit();
             this.SuspendLayout();
@@ -37,10 +37,10 @@
             // 
             this.gridJobs.AllowUserToAddRows = false;
             this.gridJobs.AllowUserToDeleteRows = false;
+            this.gridJobs.AllowUserToResizeColumns = false;
             this.gridJobs.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lavender;
-            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
-            this.gridJobs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
+            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridJobs.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridJobs.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.gridJobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -51,23 +51,30 @@
             this.gridJobs.ReadOnly = true;
             this.gridJobs.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.gridJobs.RowHeadersVisible = false;
+            this.gridJobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.gridJobs.RowTemplate.Height = 20;
+            this.gridJobs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.gridJobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridJobs.ShowCellErrors = false;
             this.gridJobs.ShowEditingIcon = false;
             this.gridJobs.ShowRowErrors = false;
-            this.gridJobs.Size = new System.Drawing.Size(984, 541);
+            this.gridJobs.Size = new System.Drawing.Size(826, 216);
             this.gridJobs.TabIndex = 0;
+            this.gridJobs.DoubleClick += new System.EventHandler(this.gridJobs_DoubleClick);
             // 
             // formJobs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(984, 541);
+            this.ClientSize = new System.Drawing.Size(826, 216);
             this.Controls.Add(this.gridJobs);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(842, 500);
+            this.MinimumSize = new System.Drawing.Size(842, 100);
             this.Name = "formJobs";
-            this.Text = "formJobs";
+            this.Text = "Jobs list";
             ((System.ComponentModel.ISupportInitialize)(this.gridJobs)).EndInit();
             this.ResumeLayout(false);
 
