@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Windows.Forms;
@@ -15,7 +16,6 @@ using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
 using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
 //TODO: figure out some artworks not showed in explorer; // maybe it's because of tag position in files
-//TODO: resize image && crop to square
 //TODO: Refactor all to use fields constants && maybe enum for job statuses?
 namespace Artwork_Stack
 {
@@ -291,10 +291,23 @@ namespace Artwork_Stack
 
         private void saveArtWorkWorker(List<string> files, string artworkURL, int jobID)
         {
-            Byte[] artwork = httpRequest.getStream(artworkURL);
-            if (artwork == null) return;
-            var artworkInMem = new MemoryStream(artwork);
-            var pic = new Picture(ByteVector.FromStream(artworkInMem));
+            var artwork = httpRequest.getPicture(artworkURL);
+            if (artwork == null || artwork.Width == 0 || artwork.Height == 0)
+            {
+                jCon.Jobs.Tables["Tracks"].Rows[jobID]["process"] = false;
+                return;
+            }
+
+            if (chkResize.Checked && (artwork.Width > numSize.Value || artwork.Height > numSize.Value))
+                artwork = Tools.resizeImage(artwork, new Size((int)numSize.Value, (int)numSize.Value));
+
+            if (chkCrop.Checked) artwork = Tools.CropImage(artwork);
+
+            var stream = new MemoryStream();
+            artwork.Save(stream, ImageFormat.Jpeg);
+
+            var buffer = new ByteVector(stream.ToArray());
+            var pic = new Picture(buffer);
             Picture[] artworkFrame = { pic };
             foreach (var file in files)
             {

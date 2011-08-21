@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace Artwork_Stack
 {
@@ -24,6 +21,21 @@ namespace Artwork_Stack
             g.Dispose();
 
             return b;
+        }
+
+        public static Image CropImage(Image img)
+        {
+            bool IsPortrait = img.Width < img.Height;
+            int cropped = Math.Abs(img.Width - img.Height);
+            var cropArea = new Rectangle(
+                IsPortrait?         0           : cropped/2,
+                IsPortrait? cropped/2           : 0,
+                IsPortrait? img.Width           : img.Width - cropped,
+                IsPortrait? img.Width - cropped : img.Height
+            );
+            var input  = new Bitmap(img);
+            var output = input.Clone(cropArea, input.PixelFormat);
+            return output;
         }
     }
 }
