@@ -7,33 +7,41 @@ namespace Artwork_Stack
 {
     public partial class frmShowFull : Form
     {
-        string url;
+        readonly string url;
         Image mainImage;
-        public bool Selected     = false;
-        public bool NotAvailable = false;
-        public frmShowFull(string _url)
+        public bool Selected;
+        public bool NotAvailable;
+
+        private readonly bool crop;
+
+        public frmShowFull(string _url, bool _crop = false)
         {
             InitializeComponent();
+            url = _url;
+            crop = _crop;
             var bg = new BackgroundWorker();
             bg.DoWork += getImgWorker;
             bg.RunWorkerCompleted +=bg_RunWorkerCompleted;
             bg.RunWorkerAsync();
-            url = _url;
         }
-        public frmShowFull(Image img)
+        public frmShowFull(Image img, bool _crop = false)
         {
             InitializeComponent();
+            crop = _crop;
             mainImage = img;
             bg_RunWorkerCompleted(null, null);
         }
 
-        private void pictMain_Click(object sender, EventArgs e)
+        private void getImgWorker(object sender, DoWorkEventArgs e)
         {
-            if (((MouseEventArgs)e).Button == MouseButtons.Right) Selected = true;
-            this.Close();
+            mainImage = httpRequest.getPicture(url);
         }
-
-        private void getImgWorker(object sender, DoWorkEventArgs e) { mainImage = httpRequest.getPicture(url); }
+        
+        private void Placeholder_Paint(object sender, PaintEventArgs e)
+        {
+            ProcessPaint(e.Graphics);
+            Placeholder.Visible = true;
+        }
 
         private void bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -45,17 +53,74 @@ namespace Artwork_Stack
                 this.Close();
                 return;
             }
-            pictMain.Image = mainImage;
-            if (mainImage.Width > pictMain.Size.Width || mainImage.Height > pictMain.Size.Height)
-                pictMain.SizeMode = PictureBoxSizeMode.Zoom;
+            bool resize = false;
+            if (mainImage.Width > Placeholder.Width || mainImage.Height > Placeholder.Height) resize = true;
             lblPictureRes.Text = string.Format(
                 "Resolution: {0}x{1}. Resized: {2}",
                 mainImage.Width,
                 mainImage.Height,
-                pictMain.SizeMode == PictureBoxSizeMode.Zoom? "yes" : "no"
+                resize? "yes" : "no"
             );
-        }
-          
 
+            if (resize) mainImage = Tools.resizeImage(mainImage, Placeholder.Size);
+
+            ProcessPaint();
+            Placeholder.Visible = true;
+        }
+
+        private void ProcessClick(object sender, EventArgs e)
+        {
+            if (((MouseEventArgs)e).Button == MouseButtons.Right) Selected = true;
+            this.Close();
+        }
+
+        private void ProcessPaint(Graphics gfx = null)
+        {
+            bool needDispose = gfx == null;
+            if (gfx == null) gfx = Placeholder.CreateGraphics();
+
+            // draw background
+            var backRect = new Rectangle(Placeholder.Location.X, Placeholder.Location.Y, Placeholder.Width, Placeholder.Height);
+            gfx.FillRectangle(SystemBrushes.Control, backRect);
+
+            // draw main image
+            var imgRect = new Rectangle();
+            if (mainImage.Width > Placeholder.Width || mainImage.Height > Placeholder.Height)
+            {
+                imgRect.X = imgRect.X = 0;
+                imgRect.Width = imgRect.Height = Placeholder.Width;
+            }
+            else
+            {
+                imgRect.X = (Placeholder.Width  - mainImage.Width) / 2;
+                imgRect.Y = (Placeholder.Height - mainImage.Height) / 2;
+                imgRect.Width  = mainImage.Width;
+                imgRect.Height = mainImage.Height;
+            }
+            gfx.DrawImage(mainImage, imgRect);
+
+            // draw crop rectangles
+            if (!crop || Math.Abs(mainImage.Width - mainImage.Height) <= 1) return;
+
+            using (var brush = new SolidBrush(Color.FromArgb(128, 0, 0, 0)))
+            {
+                var r = new Rectangle[2];
+                int unused = Math.Abs(mainImage.Width - mainImage.Height);
+                if (mainImage.Width > mainImage.Height)
+                {
+                    r[0] = new Rectangle(imgRect.Location.X,                                   imgRect.Location.Y, unused / 2, mainImage.Height);
+                    r[1] = new Rectangle(imgRect.Location.X + imgRect.Size.Width - unused / 2, imgRect.Location.Y, unused / 2, mainImage.Height);
+                }
+                else
+                {
+                    r[0] = new Rectangle(imgRect.Location.X, imgRect.Location.Y,                                    mainImage.Width, unused / 2);
+                    r[1] = new Rectangle(imgRect.Location.X, imgRect.Location.Y + imgRect.Size.Height - unused / 2, mainImage.Width, unused / 2);
+                }
+
+                gfx.FillRectangles(brush, r);
+            }
+
+            if(needDispose) gfx.Dispose();
+        }
     }
 }

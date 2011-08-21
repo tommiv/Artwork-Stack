@@ -108,7 +108,7 @@ namespace Artwork_Stack
             {
                 var parameters = new gImgAPIWorkerParams(query, 4, i);
                 thread[i] = new Thread(gImgAPIWorker);
-                //thread[i].Start(parameters);
+                thread[i].Start(parameters);
             }
 
             if (busy == null) return;
@@ -137,7 +137,7 @@ namespace Artwork_Stack
             {
                 if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.storage))
                 {
-                    var viewer = p.Text == @"embeded"? new frmShowFull(EmbededArt) : new frmShowFull(sender.storage);
+                    var viewer = p.Text == @"embeded"? new frmShowFull(EmbededArt) : new frmShowFull(sender.storage, chkCrop.Checked);
                     viewer.ShowDialog();
                     if (viewer.NotAvailable) ((imageCell)sender.Parent).Image = Properties.Resources.noartwork;
                     if (viewer.Selected)

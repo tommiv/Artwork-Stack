@@ -28,28 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictMain = new System.Windows.Forms.PictureBox();
             this.picBusy = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblPictureRes = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictMain)).BeginInit();
+            this.Placeholder = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             this.SuspendLayout();
-            // 
-            // pictMain
-            // 
-            this.pictMain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictMain.ErrorImage = global::Artwork_Stack.Properties.Resources.noartwork;
-            this.pictMain.Location = new System.Drawing.Point(0, 0);
-            this.pictMain.Margin = new System.Windows.Forms.Padding(0);
-            this.pictMain.Name = "pictMain";
-            this.pictMain.Size = new System.Drawing.Size(500, 500);
-            this.pictMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictMain.TabIndex = 0;
-            this.pictMain.TabStop = false;
-            this.pictMain.Click += new System.EventHandler(this.pictMain_Click);
             // 
             // picBusy
             // 
@@ -91,6 +76,16 @@
             this.lblPictureRes.TabIndex = 4;
             this.lblPictureRes.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // Placeholder
+            // 
+            this.Placeholder.Location = new System.Drawing.Point(0, 0);
+            this.Placeholder.Name = "Placeholder";
+            this.Placeholder.Size = new System.Drawing.Size(500, 500);
+            this.Placeholder.TabIndex = 5;
+            this.Placeholder.Visible = false;
+            this.Placeholder.Click += new System.EventHandler(this.ProcessClick);
+            this.Placeholder.Paint += new System.Windows.Forms.PaintEventHandler(this.Placeholder_Paint);
+            // 
             // frmShowFull
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -101,7 +96,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.picBusy);
-            this.Controls.Add(this.pictMain);
+            this.Controls.Add(this.Placeholder);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -109,7 +104,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "frmShowFull";
-            ((System.ComponentModel.ISupportInitialize)(this.pictMain)).EndInit();
+            this.Click += new System.EventHandler(this.ProcessClick);
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);
 
@@ -117,10 +112,10 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictMain;
         private System.Windows.Forms.PictureBox picBusy;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblPictureRes;
+        private System.Windows.Forms.Panel Placeholder;
     }
 }
