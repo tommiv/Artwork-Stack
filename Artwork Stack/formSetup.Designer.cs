@@ -35,6 +35,7 @@
             this.chkRecurse = new System.Windows.Forms.CheckBox();
             this.chkGroup = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkSkipExistingArt = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,7 +59,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(334, 87);
+            this.btnStart.Location = new System.Drawing.Point(334, 109);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 0;
@@ -94,20 +95,33 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkSkipExistingArt);
             this.groupBox1.Controls.Add(this.chkRecurse);
             this.groupBox1.Controls.Add(this.chkGroup);
             this.groupBox1.Location = new System.Drawing.Point(12, 47);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(316, 63);
+            this.groupBox1.Size = new System.Drawing.Size(316, 85);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
+            // 
+            // chkSkipExistingArt
+            // 
+            this.chkSkipExistingArt.AutoSize = true;
+            this.chkSkipExistingArt.Checked = true;
+            this.chkSkipExistingArt.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSkipExistingArt.Location = new System.Drawing.Point(6, 58);
+            this.chkSkipExistingArt.Name = "chkSkipExistingArt";
+            this.chkSkipExistingArt.Size = new System.Drawing.Size(196, 17);
+            this.chkSkipExistingArt.TabIndex = 5;
+            this.chkSkipExistingArt.Text = "Skip files with existing embedded art";
+            this.chkSkipExistingArt.UseVisualStyleBackColor = true;
             // 
             // formSetup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(419, 122);
+            this.ClientSize = new System.Drawing.Size(419, 144);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnBrowse);
@@ -133,5 +147,6 @@
         private System.Windows.Forms.CheckBox chkRecurse;
         private System.Windows.Forms.CheckBox chkGroup;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox chkSkipExistingArt;
     }
 }

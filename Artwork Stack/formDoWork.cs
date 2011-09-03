@@ -15,8 +15,6 @@ using grid = Artwork_Stack.Model.grid;
 using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
 using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
 
-//TODO: figure out some artworks not showed in explorer; // maybe it's because of tag position in files
-//TODO: Refactor all to use fields constants && maybe enum for job statuses?
 namespace Artwork_Stack
 {
     public partial class formDoWork : Form
@@ -36,14 +34,23 @@ namespace Artwork_Stack
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
+            if (jCon.JobsCount <= 0)
+            {
+                MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
+                picBusy.Visible = false;
+                foreach (Control c in this.Controls) c.Enabled = false;
+                return;
+            }
+
             picBusy.Location = new Point(0,0);
             picBusy.Size     = this.Size;
+            picBusy.BringToFront();
 
             var t = new Thread(() => jCon.TraverseFolder());
             t.Start();
             while (t.IsAlive) Application.DoEvents();
 
-            currentJob = jCon.Jobs.Tables["Tracks"].Rows[0];
+            currentJob = jCon.Jobs.Tables[Fields.Tracks].Rows[0];
 
             for (int ii = 0; ii < grid.i; ii++)
                 for (int jj = 0; jj < grid.j; jj++)
@@ -161,7 +168,7 @@ namespace Artwork_Stack
         private void buttonCycleClick(object sender, EventArgs e)
         {
             DataRow stored = currentJob;
-            int curJobIndex = (int)currentJob["ID"];
+            int curJobIndex = (int)currentJob[Fields.ID];
 
             int startIndex, endIndex;
             bool isForwardClick = ((Button)sender).Name == "btnNext";
@@ -180,8 +187,8 @@ namespace Artwork_Stack
             while (true)
             {
                 if (!jCon.IsUnprocessedJobs) break;
-                DataRow newdr = jCon.Jobs.Tables["Tracks"].Rows[i];
-                if ((bool)newdr["done"] || (bool)newdr["Process"])
+                DataRow newdr = jCon.Jobs.Tables[Fields.Tracks].Rows[i];
+                if ((bool)newdr[Fields.Done] || (bool)newdr[Fields.Process])
                 {
                     if ( isForwardClick && i != endIndex) { i++; continue; }
                     if (!isForwardClick && i != endIndex) { i--; continue; }
@@ -194,17 +201,19 @@ namespace Artwork_Stack
 
             if (!chkSkip.Checked && !cellEmbeded.Checked)
             {
-                stored["Process"] = true;
+                stored[Fields.Process] = true;
                 saveArtWork(stored, getCurrentArtworkUrl());
             }
             else
             {
-                string msg = string.Format(
-                    "This unit is album-group. If you check 'skip' or 'embedded art', {0} files will be skipped ",
-                    ((List<String>)stored["PathList"]).Count
-                );
-                if (MessageBox.Show(msg, "", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
-
+                if (stored[Fields.PathList].GetType() != typeof(DBNull))
+                {
+                    string msg = string.Format(
+                        "This unit is album-group. If you check 'skip' or 'embedded art', {0} files will be skipped ",
+                        ((List<String>)stored[Fields.PathList]).Count
+                    );
+                    if (MessageBox.Show(msg, "", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+                }
                 jCon.SetJobIsDone(curJobIndex);
                 unselectCells();
                 chkSkip.Checked = false;
@@ -217,10 +226,10 @@ namespace Artwork_Stack
             }
             else
             {
-                btnPrev.Enabled = (int) currentJob["ID"] >  jCon.BottomMargin;
-                btnNext.Enabled = (int) currentJob["ID"] <= jCon.TopMargin;
+                btnPrev.Enabled = (int) currentJob[Fields.ID] >  jCon.BottomMargin;
+                btnNext.Enabled = (int) currentJob[Fields.ID] <= jCon.TopMargin;
                 showTrackInfo();
-                googleIt(currentJob["Artist"] + " " + currentJob["Album"]);
+                googleIt(currentJob[Fields.Artist] + " " + currentJob[Fields.Album]);
             }
         }
 
@@ -243,19 +252,19 @@ namespace Artwork_Stack
 
         private void showTrackInfo()
         {
-            bool groupMode = string.IsNullOrEmpty(currentJob["Path"].ToString());
-            string path = groupMode ? ((List<String>)currentJob["PathList"])[0] : currentJob["Path"].ToString();
+            bool groupMode = string.IsNullOrEmpty(currentJob[Fields.Path].ToString());
+            string path = groupMode ? ((List<String>)currentJob[Fields.PathList])[0] : currentJob[Fields.Path].ToString();
 
-            txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob["ID"].ToString()));
+            txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob[Fields.ID].ToString()));
             gridCurrentJob.Rows.Clear();
-            gridCurrentJob.Rows.Add("Job index", (int)currentJob["ID"]);
+            gridCurrentJob.Rows.Add("Job index", (int)currentJob[Fields.ID]);
             gridCurrentJob.Rows.Add("Done/total jobs", jCon.CompletedJobsCount + "/" + jCon.JobsCount);
-            gridCurrentJob.Rows.Add("Path",  groupMode ? "Grouping mode, multiple paths"  : path);
-            gridCurrentJob.Rows.Add("Track", groupMode ? "Grouping mode, multiple titles" : currentJob["Title"].ToString());
-            gridCurrentJob.Rows.Add("Artist", currentJob["Artist"].ToString());
-            gridCurrentJob.Rows.Add("Album", currentJob["Album"].ToString());
+            gridCurrentJob.Rows.Add(Fields.Path, groupMode ? "Grouping mode, multiple paths" : path);
+            gridCurrentJob.Rows.Add("Track", groupMode ? "Grouping mode, multiple titles" : currentJob[Fields.Title].ToString());
+            gridCurrentJob.Rows.Add(Fields.Artist, currentJob[Fields.Artist].ToString());
+            gridCurrentJob.Rows.Add(Fields.Album, currentJob[Fields.Album].ToString());
 
-            if (groupMode) gridCurrentJob.Rows.Add("WARN", string.Format("Art applies (or not) to {0} files!", ((List<String>)currentJob["PathList"]).Count));
+            if (groupMode) gridCurrentJob.Rows.Add("WARN", string.Format("Art applies (or not) to {0} files!", ((List<String>)currentJob[Fields.PathList]).Count));
 
             var track = TagLib.File.Create(path);
             gridCurrentJob.Rows.Add("Art in file", track.Tag.Pictures.GetLength(0));
@@ -278,15 +287,15 @@ namespace Artwork_Stack
         {
             if (String.IsNullOrEmpty(artworkUrl))
             {
-                job["Process"] = false;
+                job[Fields.Process] = false;
                 return;
             }
 
             var pathLists = new List<string>();
-            if (string.IsNullOrEmpty(job["Path"].ToString())) pathLists = (List<String>)job["PathList"];
-            else pathLists.Add((string)job["Path"]);
+            if (string.IsNullOrEmpty(job[Fields.Path].ToString())) pathLists = (List<String>)job[Fields.PathList];
+            else pathLists.Add((string)job[Fields.Path]);
 
-            (new Thread(() => saveArtWorkWorker(pathLists, artworkUrl, (int)job["ID"]))).Start();
+            (new Thread(() => saveArtWorkWorker(pathLists, artworkUrl, (int)job[Fields.ID]))).Start();
         }
 
         private void saveArtWorkWorker(List<string> files, string artworkURL, int jobID)
@@ -294,7 +303,7 @@ namespace Artwork_Stack
             var artwork = httpRequest.getPicture(artworkURL);
             if (artwork == null || artwork.Width == 0 || artwork.Height == 0)
             {
-                jCon.Jobs.Tables["Tracks"].Rows[jobID]["process"] = false;
+                jCon.Jobs.Tables[Fields.Tracks].Rows[jobID][Fields.Process] = false;
                 return;
             }
 
@@ -339,12 +348,14 @@ namespace Artwork_Stack
 
         private void stickJobs()
         {
+            if (fJobs == null || fJobs.IsDisposed) return;
             fJobs.Size     = new Size(this.Width, fJobs.Height);
             fJobs.Location = new Point(this.Location.X, this.Location.Y + this.Height + 6);
         }
 
         private void formDoWork_LocationChanged(object sender, EventArgs e)
         {
+            if (fJobs == null || fJobs.IsDisposed) return;
             stickJobs();
             fJobs.Focus();
             this.Focus();
@@ -352,15 +363,15 @@ namespace Artwork_Stack
 
         public void Navigate(int jobId)
         {
-            var job = jCon.Jobs.Tables["Tracks"].Rows[jobId];
-            if (!(bool)job["done"] && !(bool)job["process"])
+            var job = jCon.Jobs.Tables[Fields.Tracks].Rows[jobId];
+            if (!(bool)job[Fields.Done] && !(bool)job[Fields.Process])
             {
                 currentJob = job;
                 showTrackInfo();
-                googleIt(currentJob["Artist"] + " " + currentJob["Album"]);
+                googleIt(currentJob[Fields.Artist] + " " + currentJob[Fields.Album]);
                 chkSkip.Checked = false;
-                btnPrev.Enabled = (int)currentJob["ID"] > jCon.BottomMargin;
-                btnNext.Enabled = (int)currentJob["ID"] <= jCon.TopMargin;
+                btnPrev.Enabled = (int)currentJob[Fields.ID] > jCon.BottomMargin;
+                btnNext.Enabled = (int)currentJob[Fields.ID] <= jCon.TopMargin;
             }
         }
     }

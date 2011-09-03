@@ -12,9 +12,10 @@ namespace Artwork_Stack
 
         private void formSetup_Load(object sender, EventArgs e)
         {
-            txtPath.Text       = (string)getRegValue(regKeys.DefaultPath);
-            chkRecurse.Checked = Convert.ToBoolean(getRegValue(regKeys.RecurseTraversing));
-            chkGroup.Checked   = Convert.ToBoolean(getRegValue(regKeys.GroupByAlbum));
+            txtPath.Text               = (string)getRegValue(regKeys.DefaultPath);
+            chkRecurse.Checked         = Convert.ToBoolean(getRegValue(regKeys.RecurseTraversing));
+            chkGroup.Checked           = Convert.ToBoolean(getRegValue(regKeys.GroupByAlbum));
+            chkSkipExistingArt.Checked = Convert.ToBoolean(getRegValue(regKeys.SkipExisting));
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -32,7 +33,8 @@ namespace Artwork_Stack
                 setRegValue(regKeys.DefaultPath,       path);
                 setRegValue(regKeys.GroupByAlbum,      chkGroup.Checked);
                 setRegValue(regKeys.RecurseTraversing, chkRecurse.Checked);
-                var jcon = new JobController(path, chkGroup.Checked, chkRecurse.Checked);
+                setRegValue(regKeys.SkipExisting,      chkSkipExistingArt.Checked);
+                var jcon = new JobController(path, chkGroup.Checked, chkRecurse.Checked, chkSkipExistingArt.Checked);
                 (new Thread(() => (new formDoWork(jcon)).ShowDialog())).Start();
                 this.Close();
             }
@@ -82,5 +84,6 @@ namespace Artwork_Stack
         public const string DefaultPath       = "DefaultPath";
         public const string RecurseTraversing = "RecurseTraversing";
         public const string GroupByAlbum      = "GroupByAlbum";
+        public const string SkipExisting      = "SkipExisting";
     }
 }

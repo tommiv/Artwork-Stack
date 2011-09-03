@@ -12,7 +12,7 @@ namespace Artwork_Stack
         private void gridJobs_DoubleClick(object sender, System.EventArgs e)
         {
             var dw = (formDoWork)Application.OpenForms["formDoWork"];
-            dw.Navigate((int)gridJobs.SelectedRows[0].Cells["id"].Value);
+            dw.Navigate((int)gridJobs.SelectedRows[0].Cells[Fields.ID].Value);
         }
     }
 }
