@@ -34,14 +34,6 @@ namespace Artwork_Stack
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
-            if (jCon.JobsCount <= 0)
-            {
-                MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
-                picBusy.Visible = false;
-                foreach (Control c in this.Controls) c.Enabled = false;
-                return;
-            }
-
             picBusy.Location = new Point(0,0);
             picBusy.Size     = this.Size;
             picBusy.BringToFront();
@@ -49,6 +41,14 @@ namespace Artwork_Stack
             var t = new Thread(() => jCon.TraverseFolder());
             t.Start();
             while (t.IsAlive) Application.DoEvents();
+
+            if (jCon.JobsCount <= 0)
+            {
+                MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
+                picBusy.Visible = false;
+                foreach (Control c in this.Controls) c.Enabled = false;
+                return;
+            }
 
             currentJob = jCon.Jobs.Tables[Fields.Tracks].Rows[0];
 
