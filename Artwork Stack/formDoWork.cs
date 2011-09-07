@@ -79,7 +79,7 @@ namespace Artwork_Stack
             if (gImgAPIResult["responseData"] == null || gImgAPIResult["responseData"]["results"].Length == 0) return;
             gImgAPIResult = gImgAPIResult["responseData"]["results"];
             var thread = new Thread[p.rsz];
-            for (int j = 0; j < p.rsz; j++)
+            for (int j = 0; j < Math.Min(p.rsz, ((object[])gImgAPIResult).Length); j++)
             {
                 string caption = string.Format(
                     "{0}x{1}: {2}\n{3}",
