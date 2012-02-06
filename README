@@ -1,1 +1,4 @@
-Artwork Stack is a tool for semi-automatic fetch and store artwork / cd cover image in your mp3 files. Supported album mode and single track mode, supported basic image reformatting (crop to square, resample). First implemetation was based on Google Search API, but it deprecated now, so new versions will use other specialized sources. 
+Artwork Stack is a tool for semi-automatic fetch and store artwork / cd cover image in your mp3 files. 
+Supported album mode and single track mode, supported basic image reformatting (crop to square, resample). 
+First implemetation was based on Google Search API, but it deprecated now, 
+so new versions will use other specialized sources. 
