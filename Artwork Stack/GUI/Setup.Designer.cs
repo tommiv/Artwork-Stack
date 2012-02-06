@@ -1,6 +1,6 @@
-﻿namespace Artwork_Stack
+﻿namespace Artwork_Stack.GUI
 {
-    partial class formSetup
+    partial class Setup
     {
         /// <summary>
         /// Required designer variable.
@@ -117,7 +117,7 @@
             this.chkSkipExistingArt.Text = "Skip files with existing embedded art";
             this.chkSkipExistingArt.UseVisualStyleBackColor = true;
             // 
-            // formSetup
+            // Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -128,7 +128,7 @@
             this.Controls.Add(this.txtPath);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
-            this.Name = "formSetup";
+            this.Name = "Setup";
             this.Text = "Setup";
             this.Load += new System.EventHandler(this.formSetup_Load);
             this.groupBox1.ResumeLayout(false);

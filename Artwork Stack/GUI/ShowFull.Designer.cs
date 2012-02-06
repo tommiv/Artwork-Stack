@@ -1,6 +1,6 @@
-﻿namespace Artwork_Stack
+﻿namespace Artwork_Stack.GUI
 {
-    partial class frmShowFull
+    partial class ShowFull
     {
         /// <summary>
         /// Required designer variable.
@@ -86,7 +86,7 @@
             this.Placeholder.Click += new System.EventHandler(this.ProcessClick);
             this.Placeholder.Paint += new System.Windows.Forms.PaintEventHandler(this.Placeholder_Paint);
             // 
-            // frmShowFull
+            // ShowFull
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -100,10 +100,10 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmShowFull";
+            this.Name = "ShowFull";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "frmShowFull";
+            this.Text = "ShowFull";
             this.Click += new System.EventHandler(this.ProcessClick);
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);

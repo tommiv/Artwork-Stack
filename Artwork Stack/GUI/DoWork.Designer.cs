@@ -1,6 +1,8 @@
-﻿namespace Artwork_Stack
+﻿using Artwork_Stack.Controls;
+
+namespace Artwork_Stack.GUI
 {
-    partial class formDoWork
+    partial class DoWork
     {
         /// <summary>
         /// Required designer variable.
@@ -28,8 +30,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnNext = new System.Windows.Forms.Button();
@@ -39,18 +41,19 @@
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chkSkip = new System.Windows.Forms.CheckBox();
             this.btnJobs = new System.Windows.Forms.CheckBox();
-            this.picBusy = new Artwork_Stack.TransparentPictureBox();
             this.chkCrop = new System.Windows.Forms.CheckBox();
             this.chkResize = new System.Windows.Forms.CheckBox();
             this.numSize = new System.Windows.Forms.NumericUpDown();
+            this.Sources = new System.Windows.Forms.TabControl();
+            this.picBusy = new Artwork_Stack.Controls.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(725, 38);
+            this.btnSearch.Location = new System.Drawing.Point(956, 38);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(99, 23);
             this.btnSearch.TabIndex = 0;
@@ -60,14 +63,14 @@
             // 
             // txtQuery
             // 
-            this.txtQuery.Location = new System.Drawing.Point(502, 12);
+            this.txtQuery.Location = new System.Drawing.Point(733, 12);
             this.txtQuery.Name = "txtQuery";
             this.txtQuery.Size = new System.Drawing.Size(322, 20);
             this.txtQuery.TabIndex = 3;
             // 
             // btnNext
             // 
-            this.btnNext.Location = new System.Drawing.Point(749, 491);
+            this.btnNext.Location = new System.Drawing.Point(980, 491);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(75, 23);
             this.btnNext.TabIndex = 5;
@@ -78,7 +81,7 @@
             // btnPrev
             // 
             this.btnPrev.Enabled = false;
-            this.btnPrev.Location = new System.Drawing.Point(502, 491);
+            this.btnPrev.Location = new System.Drawing.Point(733, 491);
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(75, 23);
             this.btnPrev.TabIndex = 6;
@@ -91,8 +94,8 @@
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -101,17 +104,17 @@
             this.gridCurrentJob.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Parameter,
             this.Value});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridCurrentJob.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.gridCurrentJob.GridColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.gridCurrentJob.Location = new System.Drawing.Point(502, 82);
+            this.gridCurrentJob.Location = new System.Drawing.Point(733, 82);
             this.gridCurrentJob.MultiSelect = false;
             this.gridCurrentJob.Name = "gridCurrentJob";
             this.gridCurrentJob.ReadOnly = true;
@@ -148,7 +151,7 @@
             // chkSkip
             // 
             this.chkSkip.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkSkip.Location = new System.Drawing.Point(749, 451);
+            this.chkSkip.Location = new System.Drawing.Point(980, 451);
             this.chkSkip.Name = "chkSkip";
             this.chkSkip.Size = new System.Drawing.Size(75, 24);
             this.chkSkip.TabIndex = 11;
@@ -159,7 +162,7 @@
             // btnJobs
             // 
             this.btnJobs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnJobs.Location = new System.Drawing.Point(623, 491);
+            this.btnJobs.Location = new System.Drawing.Point(854, 491);
             this.btnJobs.Name = "btnJobs";
             this.btnJobs.Size = new System.Drawing.Size(86, 24);
             this.btnJobs.TabIndex = 13;
@@ -168,23 +171,12 @@
             this.btnJobs.UseVisualStyleBackColor = true;
             this.btnJobs.CheckedChanged += new System.EventHandler(this.btnJobs_CheckedChanged);
             // 
-            // picBusy
-            // 
-            this.picBusy.BackColor = System.Drawing.Color.Transparent;
-            this.picBusy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
-            this.picBusy.Location = new System.Drawing.Point(357, 205);
-            this.picBusy.Name = "picBusy";
-            this.picBusy.Size = new System.Drawing.Size(100, 100);
-            this.picBusy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.picBusy.TabIndex = 12;
-            this.picBusy.TabStop = false;
-            // 
             // chkCrop
             // 
             this.chkCrop.AutoSize = true;
             this.chkCrop.Checked = true;
             this.chkCrop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkCrop.Location = new System.Drawing.Point(502, 431);
+            this.chkCrop.Location = new System.Drawing.Point(733, 431);
             this.chkCrop.Name = "chkCrop";
             this.chkCrop.Size = new System.Drawing.Size(95, 17);
             this.chkCrop.TabIndex = 14;
@@ -194,7 +186,7 @@
             // chkResize
             // 
             this.chkResize.AutoSize = true;
-            this.chkResize.Location = new System.Drawing.Point(502, 458);
+            this.chkResize.Location = new System.Drawing.Point(733, 458);
             this.chkResize.Name = "chkResize";
             this.chkResize.Size = new System.Drawing.Size(109, 17);
             this.chkResize.TabIndex = 15;
@@ -203,7 +195,7 @@
             // 
             // numSize
             // 
-            this.numSize.Location = new System.Drawing.Point(617, 456);
+            this.numSize.Location = new System.Drawing.Point(848, 456);
             this.numSize.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -218,32 +210,52 @@
             0,
             0});
             // 
-            // formDoWork
+            // Sources
+            // 
+            this.Sources.Location = new System.Drawing.Point(12, 12);
+            this.Sources.Name = "Sources";
+            this.Sources.SelectedIndex = 0;
+            this.Sources.Size = new System.Drawing.Size(703, 582);
+            this.Sources.TabIndex = 17;
+            // 
+            // picBusy
+            // 
+            this.picBusy.BackColor = System.Drawing.Color.Transparent;
+            this.picBusy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
+            this.picBusy.Location = new System.Drawing.Point(357, 205);
+            this.picBusy.Name = "picBusy";
+            this.picBusy.Size = new System.Drawing.Size(100, 100);
+            this.picBusy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.picBusy.TabIndex = 12;
+            this.picBusy.TabStop = false;
+            // 
+            // DoWork
             // 
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(836, 553);
+            this.ClientSize = new System.Drawing.Size(1067, 606);
+            this.Controls.Add(this.Sources);
             this.Controls.Add(this.numSize);
             this.Controls.Add(this.chkResize);
             this.Controls.Add(this.chkCrop);
             this.Controls.Add(this.btnJobs);
-            this.Controls.Add(this.picBusy);
             this.Controls.Add(this.chkSkip);
             this.Controls.Add(this.gridCurrentJob);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.txtQuery);
             this.Controls.Add(this.btnSearch);
+            this.Controls.Add(this.picBusy);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "formDoWork";
+            this.Name = "DoWork";
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
             this.LocationChanged += new System.EventHandler(this.formDoWork_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -264,6 +276,7 @@
         private System.Windows.Forms.CheckBox chkCrop;
         private System.Windows.Forms.CheckBox chkResize;
         private System.Windows.Forms.NumericUpDown numSize;
+        private System.Windows.Forms.TabControl Sources;
 
 
     }

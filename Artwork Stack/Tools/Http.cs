@@ -5,9 +5,9 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
-namespace Artwork_Stack
+namespace Artwork_Stack.Tools
 {
-   public static class httpRequest
+   public static class Http
     {
         public static WebResponse httpRequestGET(string URL, string cookies)
         {
@@ -18,7 +18,7 @@ namespace Artwork_Stack
             if (cookies != null) { reqGET.Headers["Cookie"] = cookies; }
             return reqGET.GetResponse();
         }
-        public static WebResponse httpRequestGET(string URL) { return httpRequestGET(URL, null); } // перегрузка без куков
+        public static WebResponse httpRequestGET(string URL) { return httpRequestGET(URL, null); }
 
         public static WebResponse httpRequestPOST(string URL, byte[] sendBuffer, string cookies)
         {
@@ -44,10 +44,14 @@ namespace Artwork_Stack
         }
         public static WebResponse httpRequestPOST(string URL, string postString) { return httpRequestPOST(URL, postString, null); }
 
-        // Чтение полученного в ответ потока в строку
         public static string getResponseContent(WebResponse response)
         {
-            var reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8);
+            var s = response.GetResponseStream();
+            if (s == null)
+            {
+                return null;
+            }
+            var reader = new StreamReader(s, System.Text.Encoding.UTF8);
             string result = reader.ReadToEnd();
             reader.Close();
             return result;
@@ -65,7 +69,21 @@ namespace Artwork_Stack
             }
             catch { return null; }
         }
-        public static byte[] getStream(string URL)
+
+        public static string getText(string URL)
+        {
+            if (URL == null) return null;
+            WebRequest request = WebRequest.Create(URL);
+            try
+            {
+                var resp = request.GetResponse();
+                var br = new StreamReader(resp.GetResponseStream());
+                return br.ReadToEnd();
+            }
+            catch { return null; }
+        }
+
+       public static byte[] getStream(string URL)
         {
             if (URL == null) return null;
             WebRequest request = WebRequest.Create(URL);
@@ -78,10 +96,9 @@ namespace Artwork_Stack
             }
             catch { return null; }
         }
-
-        public static bool checkInternetState() // True == есть подключение
+        
+        public static bool checkInternetState() // True if connection OK
         {
-            // Будем проверять по двум адресам, для подстраховки
             var checkReqGoogle = WebRequest.Create("http://google.com");
             try { checkReqGoogle.GetResponse(); return true; }
             catch { }

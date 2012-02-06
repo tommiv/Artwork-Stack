@@ -2,10 +2,11 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Artwork_Stack.Tools;
 
-namespace Artwork_Stack
+namespace Artwork_Stack.GUI
 {
-    public partial class frmShowFull : Form
+    public partial class ShowFull : Form
     {
         readonly string url;
         Image mainImage;
@@ -14,7 +15,7 @@ namespace Artwork_Stack
 
         private readonly bool crop;
 
-        public frmShowFull(string _url, bool _crop = false)
+        public ShowFull(string _url, bool _crop = false)
         {
             InitializeComponent();
             url = _url;
@@ -24,7 +25,7 @@ namespace Artwork_Stack
             bg.RunWorkerCompleted +=bg_RunWorkerCompleted;
             bg.RunWorkerAsync();
         }
-        public frmShowFull(Image img, bool _crop = false)
+        public ShowFull(Image img, bool _crop = false)
         {
             InitializeComponent();
             crop = _crop;
@@ -34,7 +35,7 @@ namespace Artwork_Stack
 
         private void getImgWorker(object sender, DoWorkEventArgs e)
         {
-            mainImage = httpRequest.getPicture(url);
+            mainImage = Http.getPicture(url);
         }
         
         private void Placeholder_Paint(object sender, PaintEventArgs e)
@@ -62,7 +63,7 @@ namespace Artwork_Stack
                 resize? "yes" : "no"
             );
 
-            if (resize) mainImage = Tools.resizeImage(mainImage, Placeholder.Size);
+            if (resize) mainImage = Images.ResizeImage(mainImage, Placeholder.Size);
 
             ProcessPaint();
             Placeholder.Visible = true;

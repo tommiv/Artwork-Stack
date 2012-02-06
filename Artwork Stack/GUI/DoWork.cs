@@ -1,41 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Net;
-using System.Windows.Forms;
-using System.Web.Script.Serialization;
+using System.Linq;
 using System.Threading;
-using System.Drawing;
-using ImageCell;
+using System.Windows.Forms;
+using Artwork_Stack.Controls;
+using Artwork_Stack.DataAccessLayer;
+using Artwork_Stack.Model;
+using Artwork_Stack.Tools;
 using TagLib;
 
-using grid = Artwork_Stack.Model.grid;
-using gImgAPIWorkerParams = Artwork_Stack.Model.gImgAPIWorkerParams;
-using getIMGWorkerParams  = Artwork_Stack.Model.getIMGWorkerParams;
-
-namespace Artwork_Stack
+namespace Artwork_Stack.GUI
 {
-    public partial class formDoWork : Form
+    public partial class DoWork : Form
     {
         private readonly JobController jCon;
-        private          DataRow       currentJob;
-        private readonly imageCell[,]  cell = new imageCell[grid.i, grid.j];
-        private          imageCell     cellEmbeded;
-        private Image    EmbededArt;
-        private formJobs fJobs;
 
-        public formDoWork(JobController jcon)
+        private DataRow   currentJob;
+        private imageCell cellEmbeded;
+        private Image     EmbededArt;
+        private Jobs      fJobs;
+
+        public DoWork(JobController jcon)
         {
             InitializeComponent();
             jCon = jcon;
+            foreach (var c in Services.Providers)
+            {
+                Sources.TabPages.Add(
+                    new TabPage
+                    {
+                        Name = Enum.GetName(typeof(Services.Supported), c.Value.InternalID),
+                        Text = c.Value.DisplayedName
+                    }
+                );
+            }
         }
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
-            picBusy.Location = new Point(0,0);
-            picBusy.Size     = this.Size;
+            picBusy.Location = new Point(0, 0);
+            picBusy.Size = this.Size;
             picBusy.BringToFront();
 
             var t = new Thread(() => jCon.TraverseFolder());
@@ -52,88 +60,84 @@ namespace Artwork_Stack
 
             currentJob = jCon.Jobs.Tables[Fields.Tracks].Rows[0];
 
-            for (int ii = 0; ii < grid.i; ii++)
-                for (int jj = 0; jj < grid.j; jj++)
-                {
-                    cell[ii, jj] = new imageCell(grid.w, grid.h, grid.lm + ii * grid.w + ii * grid.pw, grid.tm + jj * grid.h + jj * grid.ph);
-                    cell[ii, jj].Click += CellClick;
-                    Controls.Add(cell[ii, jj]);
-                }
-
-            cellEmbeded = new imageCell(100, 130, 724, 300);
+            cellEmbeded = new imageCell(120, 150, 724, 300);
             cellEmbeded.Text = @"embeded";
             cellEmbeded.Click += CellClick;
             Controls.Add(cellEmbeded);
+
             showTrackInfo();
-            (new Thread(()=>googleIt(txtQuery.Text, picBusy))).Start();
+            DoSearch();
         }
 
-        private void gImgAPIWorker(Object P)
+        private ServiceContext GetCurrentContext()
         {
-            var p = (gImgAPIWorkerParams)P;
-            var req = WebRequest.Create("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=" + p.rsz + "&start=" + p.i * p.rsz + "&q=" + p.query);
-            Stream resp = req.GetResponse().GetResponseStream();
-            var reader = new StreamReader(resp);
-            var jsonParser = new JavaScriptSerializer();
-            dynamic gImgAPIResult = jsonParser.DeserializeObject(reader.ReadToEnd());
-            if (gImgAPIResult["responseData"] == null || gImgAPIResult["responseData"]["results"].Length == 0) return;
-            gImgAPIResult = gImgAPIResult["responseData"]["results"];
-            var thread = new Thread[p.rsz];
-            for (int j = 0; j < Math.Min(p.rsz, ((object[])gImgAPIResult).Length); j++)
+            var currentprovier = (Services.Supported)Enum.Parse(typeof(Services.Supported), Sources.SelectedTab.Name);
+            return Services.Providers[currentprovier];
+        }
+
+        private void ShowResults(UnifiedResponse Response)
+        {
+            picBusy.Hide();
+
+            Sources.SelectedTab.Controls.Clear();
+
+            int cursor = 0;
+            int i = 0;
+            while (cursor < Response.Results.Count && i < Math.Min(20, Response.Results.Count))
             {
-                string caption = string.Format(
-                    "{0}x{1}: {2}\n{3}",
-                    gImgAPIResult[j]["width"],
-                    gImgAPIResult[j]["height"],
-                    gImgAPIResult[j]["url"].Substring(gImgAPIResult[j]["url"].LastIndexOf('.') + 1, 3),
-                    gImgAPIResult[j]["visibleUrl"]
-                );
-                var parameters = new getIMGWorkerParams(gImgAPIResult[j]["tbUrl"], gImgAPIResult[j]["url"], p.i, j, 100, 100, caption);
-                thread[j] = new Thread(getIMGWorker);
-                thread[j].Start(parameters);
+                var r = Response.Results[cursor];
+                if (string.IsNullOrEmpty(r.Url))
+                {
+                    cursor++;
+                    continue;
+                }
+
+                var cell = new imageCell(120, 150, 120 * (i % 5), 150 * (i / 5));
+                cell.Caption = string.Format("{0}\r\n{1}\r\n fjvnksfjvn", r.Album, r.Url);
+                cell.Click += CellClick;
+                cell.ClickHandler.Storage = r.Url;
+                Sources.SelectedTab.Controls.Add(cell);
+                (new Thread(() => cell.Image = Http.getPicture(r.Url))).Start();
+
+                cursor++;
+                i++;
             }
         }
 
-        private void getIMGWorker(Object P)
+        private static void SearchWorker(ServiceContext SCon, string Query, out UnifiedResponse Response)
         {
-            var p = (getIMGWorkerParams)P;
-            Image thumb = httpRequest.getPicture(p.tburl);
-            this.Invoke((Action)(() =>
+            Response = SCon.Provider.Search(Query);
+            if (Response.ResultsCount == 0)
             {
-                cell[p.ix, p.iy].Image                = thumb;
-                cell[p.ix, p.iy].Caption              = p.caption;
-                cell[p.ix, p.iy].ClickHandler.storage = p.url;
+                MessageBox.Show(@"No results");
+                return;
             }
-            ));
         }
 
-        private void googleIt(string query, PictureBox busy = null)
+        private void DoSearch()
         {
-            foreach (var c in cell) c.Image = Properties.Resources.noartwork;
-            var thread = new Thread[4];
-            for (int i = 0; i < 4; i++)
-            {
-                var parameters = new gImgAPIWorkerParams(query, 4, i);
-                thread[i] = new Thread(gImgAPIWorker);
-                thread[i].Start(parameters);
-            }
+            picBusy.Show();
 
-            if (busy == null) return;
-            while (true)
+            UnifiedResponse Response = null;
+            
+            var context = GetCurrentContext();
+            string query = txtQuery.Text;
+
+            var t = new Thread(() => SearchWorker(context, query, out Response));
+            t.Start();
+            while (t.IsAlive)
             {
-                bool process = false;
-                foreach (var t in thread) process = process || t.IsAlive;
-                if (!process) break;
                 Application.DoEvents();
             }
-            this.Invoke((Action)(() => busy.Visible = false));
+            ShowResults(Response);
         }
 
         private void btnOverrideSearch_Click(object sender, EventArgs e)
         {
             if (sender == null) return;
-            googleIt(txtQuery.Text);
+            DoSearch();
         }
+
         private void CellClick(object _sender, EventArgs _e)
         {
             var e      = (MouseEventArgs)_e;
@@ -142,9 +146,9 @@ namespace Artwork_Stack
 
             if (e.Button == MouseButtons.Left)
             {
-                if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.storage))
+                if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.Storage)) // todo move embed to const
                 {
-                    var viewer = p.Text == @"embeded"? new frmShowFull(EmbededArt) : new frmShowFull(sender.storage, chkCrop.Checked);
+                    var viewer = p.Text == @"embeded"? new ShowFull(EmbededArt) : new ShowFull(sender.Storage, chkCrop.Checked);
                     viewer.ShowDialog();
                     if (viewer.NotAvailable) ((imageCell)sender.Parent).Image = Properties.Resources.noartwork;
                     if (viewer.Selected)
@@ -157,10 +161,10 @@ namespace Artwork_Stack
             }
             else if (e.Button == MouseButtons.Right)
             {
-                foreach (var c in p.Parent.Controls) 
-                    if (c is imageCell) 
-                        if (c == p) continue; 
-                        else ((imageCell)c).UnCheck();
+                foreach (var c in p.Parent.Controls.OfType<imageCell>().Where(c => c != p))
+                {
+                    c.UnCheck();
+                }
                 if (p.Checked) p.UnCheck(); else p.Check();
             }
         }
@@ -229,23 +233,16 @@ namespace Artwork_Stack
                 btnPrev.Enabled = (int) currentJob[Fields.ID] >  jCon.BottomMargin;
                 btnNext.Enabled = (int) currentJob[Fields.ID] <= jCon.TopMargin;
                 showTrackInfo();
-                googleIt(currentJob[Fields.Artist] + " " + currentJob[Fields.Album]);
+                txtQuery.Text = currentJob[Fields.Artist] + @" " + currentJob[Fields.Album];
+                DoSearch();
             }
         }
 
-        private void unselectCells() { foreach (var c in this.Controls) if (c is imageCell) ((imageCell)c).UnCheck(); }
+        private void unselectCells() { foreach (var c in Controls.OfType<imageCell>()) { c.UnCheck(); } }
 
         private string getCurrentArtworkUrl(bool uncheckAll = true)
         {
-            string result = "";
-            foreach (var c in this.Controls)
-                if (c is imageCell)
-                {
-                    var j = (imageCell)c;
-                    if (!j.Checked) continue;
-                    result = j.ClickHandler.storage;
-                }
-
+            string result = Sources.SelectedTab.Controls.OfType<imageCell>().First(c => c.Checked).ClickHandler.Storage;
             if (uncheckAll) unselectCells();
             return result;
         }
@@ -271,7 +268,11 @@ namespace Artwork_Stack
             if (track.Tag.Pictures.GetLength(0) > 0)
             {
                 var ic = new ImageConverter();
-                cellEmbeded.Image = EmbededArt = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
+                try
+                {
+                    cellEmbeded.Image = EmbededArt = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
+                }
+                catch(ArgumentException e) { } // Supress strange mime-formats, that Image Converter can't handle
                 cellEmbeded.Caption = @"Embedded Art";
             }
             else
@@ -298,9 +299,9 @@ namespace Artwork_Stack
             (new Thread(() => saveArtWorkWorker(pathLists, artworkUrl, (int)job[Fields.ID]))).Start();
         }
 
-        private void saveArtWorkWorker(List<string> files, string artworkURL, int jobID)
+        private void saveArtWorkWorker(IEnumerable<string> files, string artworkURL, int jobID)
         {
-            var artwork = httpRequest.getPicture(artworkURL);
+            var artwork = Http.getPicture(artworkURL);
             if (artwork == null || artwork.Width == 0 || artwork.Height == 0)
             {
                 jCon.Jobs.Tables[Fields.Tracks].Rows[jobID][Fields.Process] = false;
@@ -308,9 +309,9 @@ namespace Artwork_Stack
             }
 
             if (chkResize.Checked && (artwork.Width > numSize.Value || artwork.Height > numSize.Value))
-                artwork = Tools.resizeImage(artwork, new Size((int)numSize.Value, (int)numSize.Value));
+                artwork = Images.ResizeImage(artwork, new Size((int)numSize.Value, (int)numSize.Value));
 
-            if (chkCrop.Checked) artwork = Tools.CropImage(artwork);
+            if (chkCrop.Checked) artwork = Images.CropImage(artwork);
 
             var stream = new MemoryStream();
             artwork.Save(stream, ImageFormat.Jpeg);
@@ -368,7 +369,8 @@ namespace Artwork_Stack
             {
                 currentJob = job;
                 showTrackInfo();
-                googleIt(currentJob[Fields.Artist] + " " + currentJob[Fields.Album]);
+                txtQuery.Text = currentJob[Fields.Artist] + @" " + currentJob[Fields.Album];
+                DoSearch();
                 chkSkip.Checked = false;
                 btnPrev.Enabled = (int)currentJob[Fields.ID] > jCon.BottomMargin;
                 btnNext.Enabled = (int)currentJob[Fields.ID] <= jCon.TopMargin;

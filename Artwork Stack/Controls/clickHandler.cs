@@ -1,10 +1,10 @@
 ﻿using System.Windows.Forms;
 
-namespace Artwork_Stack
+namespace Artwork_Stack.Controls
 {
-    class TransparentPictureBox : PictureBox
+    public class clickHandler : Label
     {
-        public TransparentPictureBox() { this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, false); }
+        public clickHandler() { this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, false); }
         protected override CreateParams CreateParams
         {
             get
@@ -15,5 +15,6 @@ namespace Artwork_Stack
             }
         }
         protected override void OnPaintBackground(PaintEventArgs e) { /*Prevent erasing background*/ }
+        public string Storage;
     }
 }

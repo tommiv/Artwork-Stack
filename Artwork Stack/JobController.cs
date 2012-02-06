@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Artwork_Stack.GUI;
 
 namespace Artwork_Stack
 {
@@ -14,8 +16,9 @@ namespace Artwork_Stack
         public  bool      Group;
         public  bool      Skip;
         public  DataSet   Jobs;
+
         private DataTable T;
-        private formJobs  fJobs;
+        private Jobs  fJobs;
 
         public JobController(string rootfolder, bool group, bool recurse, bool skip)
         {
@@ -76,9 +79,17 @@ namespace Artwork_Stack
             {
                 if (!f.ToLowerInvariant().EndsWith(".mp3")) continue;
 
-                var track     = TagLib.File.Create(f);
+                TagLib.File track = null;
+                try
+                {
+                    track = TagLib.File.Create(f);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(@"Opening file error: " + e.Message);
+                }
 
-                if (Skip && track.Tag.Pictures.GetLength(0) > 0) continue;
+                if (track == null || (Skip && track.Tag.Pictures.GetLength(0) > 0)) continue;
 
                 DataRow dr    = T.Rows.Add();
                 dr[Fields.ID]      = jobID++;
@@ -94,11 +105,11 @@ namespace Artwork_Stack
                     GatherFiles(folder, true);
         }
 
-        public formJobs ShowJobList()
+        public Jobs ShowJobList()
         {
             if (fJobs == null || fJobs.IsDisposed)
             {
-                fJobs = new formJobs();
+                fJobs = new Jobs();
                 fJobs.gridJobs.DataSource = Jobs.Tables[Fields.Tracks];
                 // ReSharper disable PossibleNullReferenceException
                 fJobs.gridJobs.Columns[Fields.Path].Visible  = false;

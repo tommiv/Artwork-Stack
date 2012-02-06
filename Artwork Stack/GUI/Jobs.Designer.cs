@@ -1,6 +1,6 @@
-﻿namespace Artwork_Stack
+﻿namespace Artwork_Stack.GUI
 {
-    partial class formJobs
+    partial class Jobs
     {
         /// <summary>
         /// Required designer variable.
@@ -62,7 +62,7 @@
             this.gridJobs.TabIndex = 0;
             this.gridJobs.DoubleClick += new System.EventHandler(this.gridJobs_DoubleClick);
             // 
-            // formJobs
+            // Jobs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -73,7 +73,7 @@
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(842, 500);
             this.MinimumSize = new System.Drawing.Size(842, 100);
-            this.Name = "formJobs";
+            this.Name = "Jobs";
             this.Text = "Jobs list";
             ((System.ComponentModel.ISupportInitialize)(this.gridJobs)).EndInit();
             this.ResumeLayout(false);

@@ -1,17 +1,17 @@
 ﻿using System.Windows.Forms;
 
-namespace Artwork_Stack
+namespace Artwork_Stack.GUI
 {
-    public partial class formJobs : Form
+    public partial class Jobs : Form
     {
-        public formJobs()
+        public Jobs()
         {
             InitializeComponent();
         }
 
         private void gridJobs_DoubleClick(object sender, System.EventArgs e)
         {
-            var dw = (formDoWork)Application.OpenForms["formDoWork"];
+            var dw = (DoWork)Application.OpenForms["DoWork"];
             dw.Navigate((int)gridJobs.SelectedRows[0].Cells[Fields.ID].Value);
         }
     }

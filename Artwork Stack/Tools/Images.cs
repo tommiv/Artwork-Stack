@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Artwork_Stack
+namespace Artwork_Stack.Tools
 {
-    public static class Tools
+    public static class Images
     {
-        public static Image resizeImage(Image imgToResize, Size size)
+        public static Image ResizeImage(Image imgToResize, Size size)
         {
             float nPercentW = (size.Width / (float)imgToResize.Width);
             float nPercentH = (size.Height / (float)imgToResize.Height);
