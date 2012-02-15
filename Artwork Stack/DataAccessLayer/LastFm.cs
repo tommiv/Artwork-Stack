@@ -62,18 +62,22 @@ namespace Artwork_Stack.DataAccessLayer
                 r.Album   = result["name"]   == null ? string.Empty : result["name"]  .InnerText;
 
                 XmlNode urlnode = null;
-                if (
-                       (urlnode = result.SelectSingleNode("descendant::image[@size='extralarge']")) != null
-                    || (urlnode = result.SelectSingleNode("descendant::image[@size='large']")) != null
-                    || (urlnode = result.SelectSingleNode("descendant::image[@size='medium']")) != null
-                    || (urlnode = result.SelectSingleNode("descendant::image[@size='small']")) != null
-                )
+                if ((urlnode = result.SelectSingleNode("descendant::image[@size='mega']")) != null)
+                {
+                    r.Width = r.Height = 500;
+                }
+                else if ((urlnode = result.SelectSingleNode("descendant::image[@size='extralarge']")) != null)
+                {
+                    r.Width = r.Height = 300;
+                }
+                else if((urlnode = result.SelectSingleNode("descendant::image[@size='large']")) != null)
+                {
+                    r.Width = r.Height = 174;
+                }
+                
+                if (urlnode != null)
                 {
                     r.Url = urlnode.InnerXml;
-                }
-                else
-                {
-                    r.Url = string.Empty;
                 }
                 response.Results.Add(r);
             }

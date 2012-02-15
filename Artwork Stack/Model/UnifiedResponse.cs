@@ -24,5 +24,13 @@ namespace Artwork_Stack.Model
         public string Artist  { get; set; }
         public string Album   { get; set; }
         public string Url     { get; set; }
+        public int    Width   { get; set; }
+        public int    Height  { get; set; }
+
+        public Result()
+        {
+            Request = Artist = Album = Url = string.Empty;
+            Width = Height = 0;
+        }
     }
 }

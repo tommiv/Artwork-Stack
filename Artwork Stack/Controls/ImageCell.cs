@@ -16,7 +16,7 @@ namespace Artwork_Stack.Controls
         {
             InitializeComponent();
             this.Size = new Size(w, h);
-            this.BorderStyle = BorderStyle.FixedSingle; // temp
+            this.BorderStyle = BorderStyle.None;
             this.Location = new Point(x, y);
 
             this.Picture.Size = new Size(w - margin*2, h - 30 - margin*2);

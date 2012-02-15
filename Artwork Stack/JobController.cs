@@ -114,9 +114,9 @@ namespace Artwork_Stack
                 // ReSharper disable PossibleNullReferenceException
                 fJobs.gridJobs.Columns[Fields.Path].Visible  = false;
                 fJobs.gridJobs.Columns[Fields.ID].Width      = 40;
-                fJobs.gridJobs.Columns[Fields.Artist].Width  = 220;
-                fJobs.gridJobs.Columns[Fields.Title].Width   = 220;
-                fJobs.gridJobs.Columns[Fields.Album].Width   = 220;
+                fJobs.gridJobs.Columns[Fields.Artist].Width  = 275;
+                fJobs.gridJobs.Columns[Fields.Title].Width   = 275;
+                fJobs.gridJobs.Columns[Fields.Album].Width   = 275;
                 fJobs.gridJobs.Columns[Fields.Done].Width    = 40;
                 fJobs.gridJobs.Columns[Fields.Process].Width = 60;
                 // ReSharper restore PossibleNullReferenceException

@@ -58,6 +58,7 @@ namespace Artwork_Stack.Tools
             public const string RecurseTraversing = "RecurseTraversing";
             public const string GroupByAlbum      = "GroupByAlbum";
             public const string SkipExisting      = "SkipExisting";
+            public const string ShowJobs          = "ShowJobs";
         }
     }
 }

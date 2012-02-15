@@ -59,8 +59,12 @@ namespace Artwork_Stack.GUI
             }
 
             currentJob = jCon.Jobs.Tables[Fields.Tracks].Rows[0];
+            if (WinRegistry.GetValue<bool>(WinRegistry.Keys.ShowJobs))
+            {
+                btnJobs.Checked = true;
+            }
 
-            cellEmbeded = new imageCell(120, 150, 724, 300);
+            cellEmbeded = new imageCell(120, 150, 840, 280);
             cellEmbeded.Text = @"embeded";
             cellEmbeded.Click += CellClick;
             Controls.Add(cellEmbeded);
@@ -93,7 +97,7 @@ namespace Artwork_Stack.GUI
                 }
 
                 var cell = new imageCell(120, 150, 120 * (i % 5), 150 * (i / 5));
-                cell.Caption = string.Format("{0}\r\n{1}\r\n fjvnksfjvn", r.Album, r.Url);
+                cell.Caption = string.Format("{0}; {1}x{2}px", r.Album, r.Width, r.Height);
                 cell.Click += CellClick;
                 cell.ClickHandler.Storage = r.Url;
                 Sources.SelectedTab.Controls.Add(cell);
@@ -242,9 +246,9 @@ namespace Artwork_Stack.GUI
 
         private string getCurrentArtworkUrl(bool uncheckAll = true)
         {
-            string result = Sources.SelectedTab.Controls.OfType<imageCell>().First(c => c.Checked).ClickHandler.Storage;
+            var result = Sources.SelectedTab.Controls.OfType<imageCell>().FirstOrDefault(c => c.Checked);
             if (uncheckAll) unselectCells();
-            return result;
+            return result == null ? string.Empty : result.ClickHandler.Storage;
         }
 
         private void showTrackInfo()
@@ -330,6 +334,7 @@ namespace Artwork_Stack.GUI
 
         private void btnJobs_CheckedChanged(object sender, EventArgs e)
         {
+            WinRegistry.SetValue(WinRegistry.Keys.ShowJobs, btnJobs.Checked);
             if (btnJobs.Checked)
             {
                 fJobs = jCon.ShowJobList();

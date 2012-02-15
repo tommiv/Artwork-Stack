@@ -46,14 +46,16 @@ namespace Artwork_Stack.GUI
             this.numSize = new System.Windows.Forms.NumericUpDown();
             this.Sources = new System.Windows.Forms.TabControl();
             this.picBusy = new Artwork_Stack.Controls.TransparentPictureBox();
+            this.grpOptions = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
+            this.grpOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(956, 38);
+            this.btnSearch.Location = new System.Drawing.Point(861, 40);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(99, 23);
             this.btnSearch.TabIndex = 0;
@@ -63,14 +65,14 @@ namespace Artwork_Stack.GUI
             // 
             // txtQuery
             // 
-            this.txtQuery.Location = new System.Drawing.Point(733, 12);
+            this.txtQuery.Location = new System.Drawing.Point(638, 14);
             this.txtQuery.Name = "txtQuery";
             this.txtQuery.Size = new System.Drawing.Size(322, 20);
             this.txtQuery.TabIndex = 3;
             // 
             // btnNext
             // 
-            this.btnNext.Location = new System.Drawing.Point(980, 491);
+            this.btnNext.Location = new System.Drawing.Point(885, 614);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(75, 23);
             this.btnNext.TabIndex = 5;
@@ -81,7 +83,7 @@ namespace Artwork_Stack.GUI
             // btnPrev
             // 
             this.btnPrev.Enabled = false;
-            this.btnPrev.Location = new System.Drawing.Point(733, 491);
+            this.btnPrev.Location = new System.Drawing.Point(638, 614);
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(75, 23);
             this.btnPrev.TabIndex = 6;
@@ -114,7 +116,7 @@ namespace Artwork_Stack.GUI
             this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridCurrentJob.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.gridCurrentJob.GridColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.gridCurrentJob.Location = new System.Drawing.Point(733, 82);
+            this.gridCurrentJob.Location = new System.Drawing.Point(638, 84);
             this.gridCurrentJob.MultiSelect = false;
             this.gridCurrentJob.Name = "gridCurrentJob";
             this.gridCurrentJob.ReadOnly = true;
@@ -151,7 +153,7 @@ namespace Artwork_Stack.GUI
             // chkSkip
             // 
             this.chkSkip.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkSkip.Location = new System.Drawing.Point(980, 451);
+            this.chkSkip.Location = new System.Drawing.Point(885, 574);
             this.chkSkip.Name = "chkSkip";
             this.chkSkip.Size = new System.Drawing.Size(75, 24);
             this.chkSkip.TabIndex = 11;
@@ -162,7 +164,7 @@ namespace Artwork_Stack.GUI
             // btnJobs
             // 
             this.btnJobs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnJobs.Location = new System.Drawing.Point(854, 491);
+            this.btnJobs.Location = new System.Drawing.Point(759, 614);
             this.btnJobs.Name = "btnJobs";
             this.btnJobs.Size = new System.Drawing.Size(86, 24);
             this.btnJobs.TabIndex = 13;
@@ -176,7 +178,7 @@ namespace Artwork_Stack.GUI
             this.chkCrop.AutoSize = true;
             this.chkCrop.Checked = true;
             this.chkCrop.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkCrop.Location = new System.Drawing.Point(733, 431);
+            this.chkCrop.Location = new System.Drawing.Point(6, 19);
             this.chkCrop.Name = "chkCrop";
             this.chkCrop.Size = new System.Drawing.Size(95, 17);
             this.chkCrop.TabIndex = 14;
@@ -186,7 +188,7 @@ namespace Artwork_Stack.GUI
             // chkResize
             // 
             this.chkResize.AutoSize = true;
-            this.chkResize.Location = new System.Drawing.Point(733, 458);
+            this.chkResize.Location = new System.Drawing.Point(6, 42);
             this.chkResize.Name = "chkResize";
             this.chkResize.Size = new System.Drawing.Size(109, 17);
             this.chkResize.TabIndex = 15;
@@ -195,7 +197,7 @@ namespace Artwork_Stack.GUI
             // 
             // numSize
             // 
-            this.numSize.Location = new System.Drawing.Point(848, 456);
+            this.numSize.Location = new System.Drawing.Point(121, 40);
             this.numSize.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -215,7 +217,7 @@ namespace Artwork_Stack.GUI
             this.Sources.Location = new System.Drawing.Point(12, 12);
             this.Sources.Name = "Sources";
             this.Sources.SelectedIndex = 0;
-            this.Sources.Size = new System.Drawing.Size(703, 582);
+            this.Sources.Size = new System.Drawing.Size(610, 626);
             this.Sources.TabIndex = 17;
             // 
             // picBusy
@@ -229,17 +231,27 @@ namespace Artwork_Stack.GUI
             this.picBusy.TabIndex = 12;
             this.picBusy.TabStop = false;
             // 
+            // grpOptions
+            // 
+            this.grpOptions.Controls.Add(this.chkCrop);
+            this.grpOptions.Controls.Add(this.chkResize);
+            this.grpOptions.Controls.Add(this.numSize);
+            this.grpOptions.Location = new System.Drawing.Point(638, 529);
+            this.grpOptions.Name = "grpOptions";
+            this.grpOptions.Size = new System.Drawing.Size(228, 69);
+            this.grpOptions.TabIndex = 18;
+            this.grpOptions.TabStop = false;
+            this.grpOptions.Text = "Options";
+            // 
             // DoWork
             // 
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1067, 606);
+            this.ClientSize = new System.Drawing.Size(974, 651);
+            this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.Sources);
-            this.Controls.Add(this.numSize);
-            this.Controls.Add(this.chkResize);
-            this.Controls.Add(this.chkCrop);
             this.Controls.Add(this.btnJobs);
             this.Controls.Add(this.chkSkip);
             this.Controls.Add(this.gridCurrentJob);
@@ -249,13 +261,17 @@ namespace Artwork_Stack.GUI
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.picBusy);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Location = new System.Drawing.Point(50, 50);
             this.MaximizeBox = false;
             this.Name = "DoWork";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
             this.LocationChanged += new System.EventHandler(this.formDoWork_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
+            this.grpOptions.ResumeLayout(false);
+            this.grpOptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -277,6 +293,7 @@ namespace Artwork_Stack.GUI
         private System.Windows.Forms.CheckBox chkResize;
         private System.Windows.Forms.NumericUpDown numSize;
         private System.Windows.Forms.TabControl Sources;
+        private System.Windows.Forms.GroupBox grpOptions;
 
 
     }

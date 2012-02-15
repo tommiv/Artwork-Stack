@@ -71,7 +71,7 @@
             this.Controls.Add(this.gridJobs);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(842, 500);
+            this.MaximumSize = new System.Drawing.Size(1500, 500);
             this.MinimumSize = new System.Drawing.Size(842, 100);
             this.Name = "Jobs";
             this.Text = "Jobs list";
