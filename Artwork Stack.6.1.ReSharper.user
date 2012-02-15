@@ -924,8 +924,7 @@
     <Providers />
   </UnitTestRunner>
   <UnitTestRunnerNUnit>
-    <NUnitInstallDir IsNull="False">
-    </NUnitInstallDir>
+    <NUnitInstallDir IsNull="False" />
     <UseAddins>Never</UseAddins>
   </UnitTestRunnerNUnit>
 </Configuration>

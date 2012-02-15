@@ -2,7 +2,7 @@
 
 namespace Artwork_Stack.Model
 {
-    internal class UnifiedResponse
+    public class UnifiedResponse
     {
         public int ResultsCount     { get; set; }
         public List<Result> Results { get; set; }
@@ -18,18 +18,21 @@ namespace Artwork_Stack.Model
         }
     }
 
-    internal class Result
+    public class Result
     {
-        public string Request { get; set; }
-        public string Artist  { get; set; }
-        public string Album   { get; set; }
-        public string Url     { get; set; }
-        public int    Width   { get; set; }
-        public int    Height  { get; set; }
+        public string Request        { get; set; }
+        public string Artist         { get; set; }
+        public string Album          { get; set; }
+        public string Url            { get; set; }
+        public string Thumb          { get; set; }
+        public object AdditionalInfo { get; set; }
+        public int    Width          { get; set; }
+        public int    Height         { get; set; }
 
         public Result()
         {
-            Request = Artist = Album = Url = string.Empty;
+            Request = Artist = Album = Url = Thumb = string.Empty;
+            AdditionalInfo = new object();
             Width = Height = 0;
         }
     }

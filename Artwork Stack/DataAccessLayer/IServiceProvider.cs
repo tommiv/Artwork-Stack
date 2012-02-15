@@ -9,5 +9,7 @@ namespace Artwork_Stack.DataAccessLayer
     interface IServiceProvider
     {
         UnifiedResponse Search(string query);
+        bool GetFullsizeUrlViaCallback              { get; }
+        Func<object, string> GetFullsizeUrlCallback { get; }
     }
 }

@@ -90,7 +90,7 @@ namespace Artwork_Stack.GUI
             while (cursor < Response.Results.Count && i < Math.Min(20, Response.Results.Count))
             {
                 var r = Response.Results[cursor];
-                if (string.IsNullOrEmpty(r.Url))
+                if (string.IsNullOrEmpty(r.Url) && string.IsNullOrEmpty(r.Thumb))
                 {
                     cursor++;
                     continue;
@@ -100,8 +100,12 @@ namespace Artwork_Stack.GUI
                 cell.Caption = string.Format("{0}; {1}x{2}px", r.Album, r.Width, r.Height);
                 cell.Click += CellClick;
                 cell.ClickHandler.Storage = r.Url;
+                if (GetCurrentContext().Provider.GetFullsizeUrlViaCallback)
+                {
+                    cell.ClickHandler.AdditionalInfo = r.AdditionalInfo;
+                }
                 Sources.SelectedTab.Controls.Add(cell);
-                (new Thread(() => cell.Image = Http.getPicture(r.Url))).Start();
+                (new Thread(() => cell.Image = Http.getPicture(r.Thumb))).Start();
 
                 cursor++;
                 i++;
@@ -150,9 +154,21 @@ namespace Artwork_Stack.GUI
 
             if (e.Button == MouseButtons.Left)
             {
-                if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.Storage)) // todo move embed to const
+                if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.Storage) || sender.AdditionalInfo != null) // todo move embed to const
                 {
-                    var viewer = p.Text == @"embeded"? new ShowFull(EmbededArt) : new ShowFull(sender.Storage, chkCrop.Checked);
+                    ShowFull viewer = null;
+                    if (p.Text == @"embeded")
+                    {
+                        viewer = new ShowFull(EmbededArt);
+                    }
+                    else
+                    {
+                        var provider = GetCurrentContext().Provider;
+                        viewer = 
+                            provider.GetFullsizeUrlViaCallback 
+                            ? new ShowFull(provider.GetFullsizeUrlCallback(sender.AdditionalInfo), chkCrop.Checked) 
+                            : new ShowFull(sender.Storage, chkCrop.Checked);
+                    }
                     viewer.ShowDialog();
                     if (viewer.NotAvailable) ((imageCell)sender.Parent).Image = Properties.Resources.noartwork;
                     if (viewer.Selected)
@@ -380,6 +396,20 @@ namespace Artwork_Stack.GUI
                 btnPrev.Enabled = (int)currentJob[Fields.ID] > jCon.BottomMargin;
                 btnNext.Enabled = (int)currentJob[Fields.ID] <= jCon.TopMargin;
             }
+        }
+
+        private void DoWork_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            picBusy.Show();
+            while(jCon.ProcessedJobsCount > 0)
+            {
+                Application.DoEvents();
+            }
+        }
+
+        private void Sources_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DoSearch();
         }
     }
 }

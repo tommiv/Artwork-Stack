@@ -7,12 +7,14 @@ namespace Artwork_Stack.DataAccessLayer
     {
         internal static Dictionary<Supported, ServiceContext> Providers = new Dictionary<Supported, ServiceContext>
         {
-            { Supported.LastFm, new ServiceContext { InternalID = Supported.LastFm, DisplayedName = "Last.fm", Provider = new LastFm() } }
+            { Supported.Discogs, new ServiceContext { InternalID = Supported.Discogs, DisplayedName = "Discogs.com", Provider = new Discogs() } },
+            { Supported.LastFm,  new ServiceContext { InternalID = Supported.LastFm,  DisplayedName = "Last.fm",     Provider = new LastFm()  } }
         };
 
         internal enum Supported
         {
-            LastFm
+            LastFm,
+            Discogs
         }
     }
 }

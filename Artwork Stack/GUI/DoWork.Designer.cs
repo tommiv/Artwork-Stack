@@ -45,12 +45,12 @@ namespace Artwork_Stack.GUI
             this.chkResize = new System.Windows.Forms.CheckBox();
             this.numSize = new System.Windows.Forms.NumericUpDown();
             this.Sources = new System.Windows.Forms.TabControl();
-            this.picBusy = new Artwork_Stack.Controls.TransparentPictureBox();
             this.grpOptions = new System.Windows.Forms.GroupBox();
+            this.picBusy = new Artwork_Stack.Controls.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             this.grpOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSearch
@@ -219,17 +219,7 @@ namespace Artwork_Stack.GUI
             this.Sources.SelectedIndex = 0;
             this.Sources.Size = new System.Drawing.Size(610, 626);
             this.Sources.TabIndex = 17;
-            // 
-            // picBusy
-            // 
-            this.picBusy.BackColor = System.Drawing.Color.Transparent;
-            this.picBusy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
-            this.picBusy.Location = new System.Drawing.Point(357, 205);
-            this.picBusy.Name = "picBusy";
-            this.picBusy.Size = new System.Drawing.Size(100, 100);
-            this.picBusy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.picBusy.TabIndex = 12;
-            this.picBusy.TabStop = false;
+            this.Sources.SelectedIndexChanged += new System.EventHandler(this.Sources_SelectedIndexChanged);
             // 
             // grpOptions
             // 
@@ -242,6 +232,17 @@ namespace Artwork_Stack.GUI
             this.grpOptions.TabIndex = 18;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
+            // 
+            // picBusy
+            // 
+            this.picBusy.BackColor = System.Drawing.Color.Transparent;
+            this.picBusy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
+            this.picBusy.Location = new System.Drawing.Point(357, 205);
+            this.picBusy.Name = "picBusy";
+            this.picBusy.Size = new System.Drawing.Size(100, 100);
+            this.picBusy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.picBusy.TabIndex = 12;
+            this.picBusy.TabStop = false;
             // 
             // DoWork
             // 
@@ -265,13 +266,14 @@ namespace Artwork_Stack.GUI
             this.MaximizeBox = false;
             this.Name = "DoWork";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DoWork_FormClosing);
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
             this.LocationChanged += new System.EventHandler(this.formDoWork_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

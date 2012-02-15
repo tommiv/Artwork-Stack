@@ -77,12 +77,19 @@ namespace Artwork_Stack.DataAccessLayer
                 
                 if (urlnode != null)
                 {
-                    r.Url = urlnode.InnerXml;
+                    r.Url = r.Thumb = urlnode.InnerXml;
                 }
                 response.Results.Add(r);
             }
 
             return response;
+        }
+
+        public bool GetFullsizeUrlViaCallback { get { return false; } }
+
+        public Func<object, string> GetFullsizeUrlCallback
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }
