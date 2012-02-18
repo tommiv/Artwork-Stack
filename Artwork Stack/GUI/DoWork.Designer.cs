@@ -32,6 +32,7 @@ namespace Artwork_Stack.GUI
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnNext = new System.Windows.Forms.Button();
@@ -46,11 +47,13 @@ namespace Artwork_Stack.GUI
             this.numSize = new System.Windows.Forms.NumericUpDown();
             this.Sources = new System.Windows.Forms.TabControl();
             this.grpOptions = new System.Windows.Forms.GroupBox();
-            this.picBusy = new Artwork_Stack.Controls.TransparentPictureBox();
+            this.Busy = new System.Windows.Forms.PictureBox();
+            this.gridJobs = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
             this.grpOptions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Busy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridJobs)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSearch
@@ -233,16 +236,43 @@ namespace Artwork_Stack.GUI
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Options";
             // 
-            // picBusy
+            // Busy
             // 
-            this.picBusy.BackColor = System.Drawing.Color.Transparent;
-            this.picBusy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
-            this.picBusy.Location = new System.Drawing.Point(357, 205);
-            this.picBusy.Name = "picBusy";
-            this.picBusy.Size = new System.Drawing.Size(100, 100);
-            this.picBusy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.picBusy.TabIndex = 12;
-            this.picBusy.TabStop = false;
+            this.Busy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
+            this.Busy.Location = new System.Drawing.Point(450, 275);
+            this.Busy.Name = "Busy";
+            this.Busy.Size = new System.Drawing.Size(100, 100);
+            this.Busy.TabIndex = 19;
+            this.Busy.TabStop = false;
+            // 
+            // gridJobs
+            // 
+            this.gridJobs.AllowUserToAddRows = false;
+            this.gridJobs.AllowUserToDeleteRows = false;
+            this.gridJobs.AllowUserToResizeColumns = false;
+            this.gridJobs.AllowUserToResizeRows = false;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lavender;
+            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.gridJobs.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.gridJobs.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.gridJobs.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.gridJobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridJobs.Location = new System.Drawing.Point(12, 654);
+            this.gridJobs.MultiSelect = false;
+            this.gridJobs.Name = "gridJobs";
+            this.gridJobs.ReadOnly = true;
+            this.gridJobs.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.gridJobs.RowHeadersVisible = false;
+            this.gridJobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.gridJobs.RowTemplate.Height = 20;
+            this.gridJobs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.gridJobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridJobs.ShowCellErrors = false;
+            this.gridJobs.ShowEditingIcon = false;
+            this.gridJobs.ShowRowErrors = false;
+            this.gridJobs.Size = new System.Drawing.Size(948, 216);
+            this.gridJobs.TabIndex = 20;
+            this.gridJobs.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridJobs_CellContentDoubleClick);
             // 
             // DoWork
             // 
@@ -250,7 +280,9 @@ namespace Artwork_Stack.GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(974, 651);
+            this.ClientSize = new System.Drawing.Size(974, 882);
+            this.Controls.Add(this.gridJobs);
+            this.Controls.Add(this.Busy);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.Sources);
             this.Controls.Add(this.btnJobs);
@@ -260,20 +292,20 @@ namespace Artwork_Stack.GUI
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.txtQuery);
             this.Controls.Add(this.btnSearch);
-            this.Controls.Add(this.picBusy);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Location = new System.Drawing.Point(50, 50);
             this.MaximizeBox = false;
             this.Name = "DoWork";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "Artwork Stack: Multi-service artwork fetcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DoWork_FormClosing);
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
-            this.LocationChanged += new System.EventHandler(this.formDoWork_LocationChanged);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).EndInit();
             this.grpOptions.ResumeLayout(false);
             this.grpOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Busy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridJobs)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -287,7 +319,6 @@ namespace Artwork_Stack.GUI
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.DataGridView gridCurrentJob;
         private System.Windows.Forms.CheckBox chkSkip;
-        private TransparentPictureBox picBusy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Parameter;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
         private System.Windows.Forms.CheckBox btnJobs;
@@ -296,8 +327,9 @@ namespace Artwork_Stack.GUI
         private System.Windows.Forms.NumericUpDown numSize;
         private System.Windows.Forms.TabControl Sources;
         private System.Windows.Forms.GroupBox grpOptions;
-
-
+        private imageCell cellEmbeded;
+        private System.Windows.Forms.PictureBox Busy;
+        public System.Windows.Forms.DataGridView gridJobs;
     }
 }
 

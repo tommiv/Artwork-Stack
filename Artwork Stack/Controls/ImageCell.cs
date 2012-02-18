@@ -6,11 +6,12 @@ namespace Artwork_Stack.Controls
 {
     public partial class imageCell : UserControl
     {
+        private const int margin = 10;
+
         private imageCell()
         {
+            
         }
-
-        private const int margin = 10;
 
         public imageCell(int w, int h, int x, int y)
         {
@@ -32,7 +33,7 @@ namespace Artwork_Stack.Controls
             this.ClickHandler.BringToFront();
         }
 
-        public Image Image
+        public Image Thumbnail
         {
             set
             {
@@ -46,12 +47,18 @@ namespace Artwork_Stack.Controls
                 }
             }
         }
+
+        public Image  FullSize       { get; set; }
+        public string FullSizeUrl    { get; set; }
+        public object AdditionalInfo { get; set; }
+        public bool   IsEmbeded      { get; set; }
+
         public string Caption { set { this.caption.Text = value; } }
         public void Check()   { this.BackColor = Color.FromArgb(255, 160, 255, 160); _checked = true; }
         public void UnCheck() { this.BackColor = SystemColors.Control; _checked = false; }
         public bool Checked   { get { return _checked; } }
         private bool _checked;
-        public bool Initated;
+        //public bool Initated;
 
         public new event EventHandler Click
         {

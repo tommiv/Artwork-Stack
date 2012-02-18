@@ -15,7 +15,5 @@ namespace Artwork_Stack.Controls
             }
         }
         protected override void OnPaintBackground(PaintEventArgs e) { /*Prevent erasing background*/ }
-        public string Storage { get; set; }
-        public object AdditionalInfo { get; set; }
     }
 }

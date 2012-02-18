@@ -18,11 +18,7 @@ namespace Artwork_Stack.GUI
     public partial class DoWork : Form
     {
         private readonly JobController jCon;
-
-        private DataRow   currentJob;
-        private imageCell cellEmbeded;
-        private Image     EmbededArt;
-        private Jobs      fJobs;
+        private DataRow currentJob;
 
         public DoWork(JobController jcon)
         {
@@ -42,9 +38,13 @@ namespace Artwork_Stack.GUI
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
-            picBusy.Location = new Point(0, 0);
-            picBusy.Size = this.Size;
-            picBusy.BringToFront();
+            cellEmbeded = new imageCell(120, 150, 840, 280);
+            cellEmbeded.Caption = @"Embeded art";
+            cellEmbeded.IsEmbeded = true;
+            cellEmbeded.Click += CellClick;
+            this.Controls.Add(cellEmbeded);
+
+            showBusy();
 
             var t = new Thread(() => jCon.TraverseFolder());
             t.Start();
@@ -53,21 +53,22 @@ namespace Artwork_Stack.GUI
             if (jCon.JobsCount <= 0)
             {
                 MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
-                picBusy.Visible = false;
+                HideBusy();
                 foreach (Control c in this.Controls) c.Enabled = false;
                 return;
             }
 
             currentJob = jCon.Jobs.Tables[Fields.Tracks].Rows[0];
+
+            bindGrid();
             if (WinRegistry.GetValue<bool>(WinRegistry.Keys.ShowJobs))
             {
                 btnJobs.Checked = true;
             }
-
-            cellEmbeded = new imageCell(120, 150, 840, 280);
-            cellEmbeded.Text = @"embeded";
-            cellEmbeded.Click += CellClick;
-            Controls.Add(cellEmbeded);
+            else
+            {
+                btnJobs_CheckedChanged(null, null);
+            }
 
             showTrackInfo();
             DoSearch();
@@ -81,7 +82,7 @@ namespace Artwork_Stack.GUI
 
         private void ShowResults(UnifiedResponse Response)
         {
-            picBusy.Hide();
+            HideBusy();
 
             Sources.SelectedTab.Controls.Clear();
 
@@ -97,15 +98,19 @@ namespace Artwork_Stack.GUI
                 }
 
                 var cell = new imageCell(120, 150, 120 * (i % 5), 150 * (i / 5));
-                cell.Caption = string.Format("{0}; {1}x{2}px", r.Album, r.Width, r.Height);
+                cell.Caption = string.Format(
+                    "{0}; {1}", 
+                    r.Album,
+                    r.Width > 0 && r.Height > 0 ? string.Format("{0}x{1}px", r.Width, r.Height) : "size\u00A0n/a"
+                );
                 cell.Click += CellClick;
-                cell.ClickHandler.Storage = r.Url;
+                cell.FullSizeUrl = r.Url;
                 if (GetCurrentContext().Provider.GetFullsizeUrlViaCallback)
                 {
-                    cell.ClickHandler.AdditionalInfo = r.AdditionalInfo;
+                    cell.AdditionalInfo = r.AdditionalInfo;
                 }
                 Sources.SelectedTab.Controls.Add(cell);
-                (new Thread(() => cell.Image = Http.getPicture(r.Thumb))).Start();
+                (new Thread(() => cell.Thumbnail = Http.getPicture(r.Thumb))).Start();
 
                 cursor++;
                 i++;
@@ -117,14 +122,13 @@ namespace Artwork_Stack.GUI
             Response = SCon.Provider.Search(Query);
             if (Response.ResultsCount == 0)
             {
-                MessageBox.Show(@"No results");
-                return;
+                MessageBox.Show(@"No results"); // TODO: make less annoying
             }
         }
 
         private void DoSearch()
         {
-            picBusy.Show();
+            showBusy();
 
             UnifiedResponse Response = null;
             
@@ -148,45 +152,81 @@ namespace Artwork_Stack.GUI
 
         private void CellClick(object _sender, EventArgs _e)
         {
-            var e      = (MouseEventArgs)_e;
-            var sender = (clickHandler)_sender;
-            var p      = (imageCell)sender.Parent;
+            var e    = (MouseEventArgs)_e;
+            var cell = (imageCell)((clickHandler)_sender).Parent;
 
             if (e.Button == MouseButtons.Left)
             {
-                if (p.Text == @"embeded" || !string.IsNullOrEmpty(sender.Storage) || sender.AdditionalInfo != null) // todo move embed to const
+                showBusy();
+                var image = GetFullImage(cell);
+                if (image != null)
                 {
-                    ShowFull viewer = null;
-                    if (p.Text == @"embeded")
-                    {
-                        viewer = new ShowFull(EmbededArt);
-                    }
-                    else
-                    {
-                        var provider = GetCurrentContext().Provider;
-                        viewer = 
-                            provider.GetFullsizeUrlViaCallback 
-                            ? new ShowFull(provider.GetFullsizeUrlCallback(sender.AdditionalInfo), chkCrop.Checked) 
-                            : new ShowFull(sender.Storage, chkCrop.Checked);
-                    }
+                    var viewer = new ShowFull(image, chkCrop.Checked);
                     viewer.ShowDialog();
-                    if (viewer.NotAvailable) ((imageCell)sender.Parent).Image = Properties.Resources.noartwork;
+                    if (viewer.NotAvailable)
+                    {
+                        cell.Thumbnail = Properties.Resources.noartwork;
+                    }
                     if (viewer.Selected)
                     {
                         unselectCells();
-                        ((imageCell)sender.Parent).Check();
+                        cell.Check();
                     }
-
                 }
+                else
+                {
+                    MessageBox.Show("Picture not available");
+                    cell.Thumbnail = Properties.Resources.noartwork;
+                }
+                HideBusy();
             }
             else if (e.Button == MouseButtons.Right)
             {
-                foreach (var c in p.Parent.Controls.OfType<imageCell>().Where(c => c != p))
+                foreach (var c in cell.Parent.Controls.OfType<imageCell>().Where(c => c != cell))
                 {
                     c.UnCheck();
                 }
-                if (p.Checked) p.UnCheck(); else p.Check();
+                if (cell.Checked) cell.UnCheck(); else cell.Check();
             }
+        }
+
+        private Image GetFullImage(imageCell cell)
+        {
+            Image img = null;
+
+            if (cell.FullSize != null)
+            {
+                img = cell.FullSize;
+            }
+            else
+            {
+                var provider = GetCurrentContext().Provider;
+                string url = string.Empty;
+                if (!string.IsNullOrEmpty(cell.FullSizeUrl))
+                {
+                    url = cell.FullSizeUrl;
+                }
+                else if (provider.GetFullsizeUrlViaCallback)
+                {
+                    var tgeturl = new Thread(() => url = provider.GetFullsizeUrlCallback(cell.AdditionalInfo));
+                    tgeturl.Start();
+                    while (tgeturl.IsAlive)
+                    {
+                        Application.DoEvents();
+                    }
+                }
+
+                var tget = new Thread(() => img = Http.getPicture(url));
+                tget.Start();
+                while (tget.IsAlive)
+                {
+                    Application.DoEvents();
+                }
+
+                cell.FullSize = img;
+            }
+
+            return img;
         }
 
         private void buttonCycleClick(object sender, EventArgs e)
@@ -226,7 +266,7 @@ namespace Artwork_Stack.GUI
             if (!chkSkip.Checked && !cellEmbeded.Checked)
             {
                 stored[Fields.Process] = true;
-                saveArtWork(stored, getCurrentArtworkUrl());
+                saveArtWork(stored, getCurrentArtwork());
             }
             else
             {
@@ -260,11 +300,11 @@ namespace Artwork_Stack.GUI
 
         private void unselectCells() { foreach (var c in Controls.OfType<imageCell>()) { c.UnCheck(); } }
 
-        private string getCurrentArtworkUrl(bool uncheckAll = true)
+        private Image getCurrentArtwork(bool uncheckAll = true)
         {
             var result = Sources.SelectedTab.Controls.OfType<imageCell>().FirstOrDefault(c => c.Checked);
             if (uncheckAll) unselectCells();
-            return result == null ? string.Empty : result.ClickHandler.Storage;
+            return result == null ? null : result.FullSize;
         }
 
         private void showTrackInfo()
@@ -288,25 +328,32 @@ namespace Artwork_Stack.GUI
             if (track.Tag.Pictures.GetLength(0) > 0)
             {
                 var ic = new ImageConverter();
+                Image i = null;
                 try
                 {
-                    cellEmbeded.Image = EmbededArt = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
+                    cellEmbeded.Thumbnail = cellEmbeded.FullSize = i = (Image)ic.ConvertFrom(track.Tag.Pictures[0].Data.Data);
                 }
                 catch(ArgumentException e) { } // Supress strange mime-formats, that Image Converter can't handle
-                cellEmbeded.Caption = @"Embedded Art";
+                if (i != null)
+                {
+                    cellEmbeded.Caption = string.Format(
+                        "Embedded Art; {0}x{1}px", 
+                        cellEmbeded.FullSize.Width, 
+                        cellEmbeded.FullSize.Height
+                    );
+                }
             }
             else
             {
-                cellEmbeded.Image = Properties.Resources.noartwork;
-                EmbededArt = null;
+                cellEmbeded.Thumbnail = Properties.Resources.noartwork;
                 cellEmbeded.Caption = @"No Embedded Art";
             }
             track.Dispose();
         }
 
-        private void saveArtWork(DataRow job, string artworkUrl)
+        private void saveArtWork(DataRow job, Image artwork)
         {
-            if (String.IsNullOrEmpty(artworkUrl))
+            if (artwork == null)
             {
                 job[Fields.Process] = false;
                 return;
@@ -316,12 +363,11 @@ namespace Artwork_Stack.GUI
             if (string.IsNullOrEmpty(job[Fields.Path].ToString())) pathLists = (List<String>)job[Fields.PathList];
             else pathLists.Add((string)job[Fields.Path]);
 
-            (new Thread(() => saveArtWorkWorker(pathLists, artworkUrl, (int)job[Fields.ID]))).Start();
+            (new Thread(() => saveArtWorkWorker(pathLists, artwork, (int)job[Fields.ID]))).Start();
         }
 
-        private void saveArtWorkWorker(IEnumerable<string> files, string artworkURL, int jobID)
+        private void saveArtWorkWorker(IEnumerable<string> files, Image artwork, int jobID)
         {
-            var artwork = Http.getPicture(artworkURL);
             if (artwork == null || artwork.Width == 0 || artwork.Height == 0)
             {
                 jCon.Jobs.Tables[Fields.Tracks].Rows[jobID][Fields.Process] = false;
@@ -329,7 +375,9 @@ namespace Artwork_Stack.GUI
             }
 
             if (chkResize.Checked && (artwork.Width > numSize.Value || artwork.Height > numSize.Value))
+            {
                 artwork = Images.ResizeImage(artwork, new Size((int)numSize.Value, (int)numSize.Value));
+            }
 
             if (chkCrop.Checked) artwork = Images.CropImage(artwork);
 
@@ -346,41 +394,6 @@ namespace Artwork_Stack.GUI
                 track.Save();
             }
             jCon.SetJobIsDone(jobID);
-        }
-
-        private void btnJobs_CheckedChanged(object sender, EventArgs e)
-        {
-            WinRegistry.SetValue(WinRegistry.Keys.ShowJobs, btnJobs.Checked);
-            if (btnJobs.Checked)
-            {
-                fJobs = jCon.ShowJobList();
-                fJobs.Visible = true;
-                fJobs.Closed += (sndr, evargs) => btnJobs.Checked = false;
-                stickJobs();
-            }
-            else
-            {
-                if (fJobs != null && !fJobs.IsDisposed)
-                {
-                    fJobs.Visible = false;
-                    this.Focus();
-                }
-            }
-        }
-
-        private void stickJobs()
-        {
-            if (fJobs == null || fJobs.IsDisposed) return;
-            fJobs.Size     = new Size(this.Width, fJobs.Height);
-            fJobs.Location = new Point(this.Location.X, this.Location.Y + this.Height + 6);
-        }
-
-        private void formDoWork_LocationChanged(object sender, EventArgs e)
-        {
-            if (fJobs == null || fJobs.IsDisposed) return;
-            stickJobs();
-            fJobs.Focus();
-            this.Focus();
         }
 
         public void Navigate(int jobId)
@@ -400,7 +413,7 @@ namespace Artwork_Stack.GUI
 
         private void DoWork_FormClosing(object sender, FormClosingEventArgs e)
         {
-            picBusy.Show();
+            showBusy();
             while(jCon.ProcessedJobsCount > 0)
             {
                 Application.DoEvents();
@@ -410,6 +423,54 @@ namespace Artwork_Stack.GUI
         private void Sources_SelectedIndexChanged(object sender, EventArgs e)
         {
             DoSearch();
+        }
+
+        private void showBusy()
+        {
+            Busy.Show();
+        }
+
+        private void HideBusy()
+        {
+            Busy.Hide();
+        }
+
+        private void gridJobs_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Navigate((int)gridJobs.SelectedRows[0].Cells[Fields.ID].Value);
+        }
+
+        private void btnJobs_CheckedChanged(object sender, EventArgs e)
+        {
+            WinRegistry.SetValue(WinRegistry.Keys.ShowJobs, btnJobs.Checked);
+            this.Height = btnJobs.Checked ? 910 : 678;
+        }
+
+        private void bindGrid()
+        {
+            gridJobs.DataSource = jCon.Jobs.Tables[Fields.Tracks];
+            // ReSharper disable PossibleNullReferenceException
+            gridJobs.Columns[Fields.Path].Visible = false;
+            gridJobs.Columns[Fields.ID].Width = 40;
+            gridJobs.Columns[Fields.Artist].Width = 270;
+            gridJobs.Columns[Fields.Title].Width = 275;
+            gridJobs.Columns[Fields.Album].Width = 275;
+            gridJobs.Columns[Fields.Done].Width = 40;
+            gridJobs.Columns[Fields.Process].Width = 60;
+            // ReSharper restore PossibleNullReferenceException
+            foreach (DataGridViewRow row in gridJobs.Rows)
+            {
+                if (string.IsNullOrEmpty(row.Cells[Fields.Path].Value.ToString()))
+                {
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        cell.Style.BackColor =
+                            row.Index % 2 == 0
+                            ? Color.FromArgb(255, 240, 210, 240)
+                            : Color.FromArgb(255, 255, 220, 255);
+                    }
+                }
+            }
         }
     }
 }

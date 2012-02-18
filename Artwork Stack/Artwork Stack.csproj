@@ -69,12 +69,6 @@
     <Compile Include="DataAccessLayer\LastFm.cs" />
     <Compile Include="DataAccessLayer\IServiceProvider.cs" />
     <Compile Include="DataAccessLayer\SupportedServices.cs" />
-    <Compile Include="GUI\Jobs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Jobs.Designer.cs">
-      <DependentUpon>Jobs.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Setup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,9 +102,6 @@
     <Compile Include="Tools\WinRegistry.cs" />
     <EmbeddedResource Include="Controls\ImageCell.resx">
       <DependentUpon>ImageCell.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Jobs.resx">
-      <DependentUpon>Jobs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Setup.resx">
       <DependentUpon>Setup.cs</DependentUpon>

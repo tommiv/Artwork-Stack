@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
 using Artwork_Stack.Model;
@@ -39,7 +40,7 @@ namespace Artwork_Stack.DataAccessLayer
                 {
                     var entry = results[i];
                     var r = new Result();
-                    var title = ((string)(entry["title"] ?? string.Empty)).Split('-');
+                    var title = Regex.Split((string)(entry["title"] ?? string.Empty), " - ");
                     r.Artist = title.Length > 0 ? title[0] : string.Empty;
                     r.Album = title.Length > 1 ? title[1] : string.Empty;
                     r.Request = query;
@@ -69,10 +70,10 @@ namespace Artwork_Stack.DataAccessLayer
             var json = new JavaScriptSerializer();
             dynamic release = json.DeserializeObject(resp);
             
-            dynamic images = release["image"];
-            if (images != null)
+            dynamic images = release["images"];
+            if (images != null && images.Length > 0)
             {
-                
+                url = images[0]["uri"];
             }
 
             return url;

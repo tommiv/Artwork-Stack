@@ -18,7 +18,6 @@ namespace Artwork_Stack
         public  DataSet   Jobs;
 
         private DataTable T;
-        private Jobs  fJobs;
 
         public JobController(string rootfolder, bool group, bool recurse, bool skip)
         {
@@ -105,29 +104,6 @@ namespace Artwork_Stack
                     GatherFiles(folder, true);
         }
 
-        public Jobs ShowJobList()
-        {
-            if (fJobs == null || fJobs.IsDisposed)
-            {
-                fJobs = new Jobs();
-                fJobs.gridJobs.DataSource = Jobs.Tables[Fields.Tracks];
-                // ReSharper disable PossibleNullReferenceException
-                fJobs.gridJobs.Columns[Fields.Path].Visible  = false;
-                fJobs.gridJobs.Columns[Fields.ID].Width      = 40;
-                fJobs.gridJobs.Columns[Fields.Artist].Width  = 275;
-                fJobs.gridJobs.Columns[Fields.Title].Width   = 275;
-                fJobs.gridJobs.Columns[Fields.Album].Width   = 275;
-                fJobs.gridJobs.Columns[Fields.Done].Width    = 40;
-                fJobs.gridJobs.Columns[Fields.Process].Width = 60;
-                // ReSharper restore PossibleNullReferenceException
-                fJobs.Show();
-                foreach (DataGridViewRow row in fJobs.gridJobs.Rows)
-                    if (string.IsNullOrEmpty(row.Cells[Fields.Path].Value.ToString()))
-                        foreach (DataGridViewCell cell in row.Cells)
-                            cell.Style.BackColor = row.Index % 2 == 0 ? Color.FromArgb(255, 240, 210, 240) : Color.FromArgb(255, 255, 220, 255);
-            }
-            return fJobs;
-        }
         public string CreateQueryString(int jobID)
         {
             DataRow dr = T.Rows[jobID];
@@ -135,19 +111,19 @@ namespace Artwork_Stack
         }
         public int PendingJobsCount
         {
-            get { return T.AsEnumerable().Where(r => (bool)r[Fields.Done] == false).Count(); }
+            get { return T.AsEnumerable().Count(r => (bool)r[Fields.Done] == false); }
         }
         public int ProcessedJobsCount
         {
-            get { return T.AsEnumerable().Where(r => (bool)r[Fields.Process]).Count(); }
+            get { return T.AsEnumerable().Count(r => (bool)r[Fields.Process]); }
         }
         public int CompletedJobsCount
         {
-            get { return T.AsEnumerable().Where(r => (bool)r[Fields.Done]).Count(); }
+            get { return T.AsEnumerable().Count(r => (bool)r[Fields.Done]); }
         }
         public bool IsUnprocessedJobs
         {
-            get { return T.AsEnumerable().Where(r => (bool)r[Fields.Done] == false && (bool)r[Fields.Process] == false).Count() > 0; }
+            get { return T.AsEnumerable().Any(r => (bool)r[Fields.Done] == false && (bool)r[Fields.Process] == false); }
         }
         public int JobsCount
         {
