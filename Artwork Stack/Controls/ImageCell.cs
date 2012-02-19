@@ -58,7 +58,6 @@ namespace Artwork_Stack.Controls
         public void UnCheck() { this.BackColor = SystemColors.Control; _checked = false; }
         public bool Checked   { get { return _checked; } }
         private bool _checked;
-        //public bool Initated;
 
         public new event EventHandler Click
         {

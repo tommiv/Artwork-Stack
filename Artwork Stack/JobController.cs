@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -9,24 +10,25 @@ namespace Artwork_Stack
 {
     public class JobController
     {
-        public  string    RootFolder;
-        public  bool      Recurse;
-        public  bool      Group;
-        public  bool      Skip;
         public  DataSet   Jobs;
-
         private DataTable T;
 
-        public JobController(string rootfolder, bool group, bool recurse, bool skip)
+        public BackgroundWorker WorkerInstance;
+        private readonly string Path;
+        private readonly bool   Group;
+        private readonly bool   Recurse;
+        private readonly bool   Skip;
+
+        public JobController(string path, bool group, bool recurse, bool skip)
         {
-            RootFolder = rootfolder;
-            Recurse    = recurse;
-            Group      = group;
-            Skip       = skip;
+            this.Path    = path;
+            this.Group   = group;
+            this.Recurse = recurse;
+            this.Skip    = skip;
 
             Jobs = new DataSet();
             T = Jobs.Tables.Add(Fields.Tracks);
-            T.Columns.Add(Fields.ID, typeof(int));
+            T.Columns.Add(Fields.ID,       typeof(int));
             T.Columns.Add(Fields.Artist,   typeof(string));
             T.Columns.Add(Fields.Title,    typeof(string));
             T.Columns.Add(Fields.Album,    typeof(string));
@@ -35,25 +37,58 @@ namespace Artwork_Stack
             T.Columns.Add(Fields.Done,     typeof(bool));
             T.Columns.Add(Fields.Process,  typeof(bool));
         }
-        
-        public void TraverseFolder()
+
+        public void GatherJobs(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            GatherFiles(RootFolder, Recurse);
-            
-            if (!Group) return;
+            int i = 0;
+            int c = FilesStack.Count;
+            while (FilesStack.Count > 0)
+            {
+                string f = FilesStack.Pop();
+
+                TagLib.File track = null;
+                try
+                {
+                    track = TagLib.File.Create(f);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(@"Opening file error: " + e.Message);
+                }
+
+                if (track == null || (Skip && track.Tag.Pictures.GetLength(0) > 0)) continue;
+
+                DataRow dr         = T.Rows.Add();
+                dr[Fields.ID]      = i++;
+                dr[Fields.Artist]  = track.Tag.FirstPerformer;
+                dr[Fields.Title]   = track.Tag.Title;
+                dr[Fields.Album]   = track.Tag.Album;
+                dr[Fields.Path]    = f;
+                dr[Fields.Done]    = false;
+                dr[Fields.Process] = false;
+
+                int progress = Math.Min((int)Math.Ceiling((double)i/c*100), 100);
+                WorkerInstance.ReportProgress(progress, string.Format("{0}/{1}; {2}", i, c, f));
+            }
+
+            if (Group) EnableGrouping();
+        }
+
+        private void EnableGrouping()
+        {
             var grouped = T.AsEnumerable().GroupBy(r => string.Format("{0}|{1}", r[Fields.Artist], r[Fields.Album]));
             var nT = T.Clone();
             int jobid = 0;
             foreach (var group in grouped)
             {
-                var data      = group.ToList();
-                DataRow dr    = nT.Rows.Add();
-                dr[Fields.ID]      = jobid++;
-                dr[Fields.Artist]  = data[0][Fields.Artist];
-                dr[Fields.Title]   = data[0][Fields.Title];
-                dr[Fields.Album]   = data[0][Fields.Album];
-                dr[Fields.Path]    = data.Count > 1 ? null : data[0][Fields.Path];
-                dr[Fields.Done]    = false;
+                var data = group.ToList();
+                DataRow dr = nT.Rows.Add();
+                dr[Fields.ID] = jobid++;
+                dr[Fields.Artist] = data[0][Fields.Artist];
+                dr[Fields.Title] = data[0][Fields.Title];
+                dr[Fields.Album] = data[0][Fields.Album];
+                dr[Fields.Path] = data.Count > 1 ? null : data[0][Fields.Path];
+                dr[Fields.Done] = false;
                 dr[Fields.Process] = false;
 
                 if (data.Count <= 1) continue;
@@ -69,37 +104,30 @@ namespace Artwork_Stack
             T = Jobs.Tables[Fields.Tracks];
         }
 
-        private void GatherFiles(string path, bool recurse)
+        private readonly Stack<string> FilesStack = new Stack<string>();
+
+        public void FillFilesStack(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            int jobID = TopMargin == 0 ? 0 : TopMargin + 1;
+            FallThrough(Path, Recurse);
+        }
+
+        private void FallThrough(string path, bool recursive)
+        {
             foreach (string f in Directory.GetFiles(path))
             {
-                if (!f.ToLowerInvariant().EndsWith(".mp3")) continue;
-
-                TagLib.File track = null;
-                try
+                if (f.ToLowerInvariant().EndsWith(".mp3"))
                 {
-                    track = TagLib.File.Create(f);
+                    FilesStack.Push(f);
+                    WorkerInstance.ReportProgress(0, "Added file " + f);
                 }
-                catch (Exception e)
-                {
-                    MessageBox.Show(@"Opening file error: " + e.Message);
-                }
-
-                if (track == null || (Skip && track.Tag.Pictures.GetLength(0) > 0)) continue;
-
-                DataRow dr    = T.Rows.Add();
-                dr[Fields.ID]      = jobID++;
-                dr[Fields.Artist]  = track.Tag.FirstPerformer;
-                dr[Fields.Title]   = track.Tag.Title;
-                dr[Fields.Album]   = track.Tag.Album;
-                dr[Fields.Path]    = f;
-                dr[Fields.Done]    = false;
-                dr[Fields.Process] = false;
             }
-            if (recurse)
+            if (recursive)
+            {
                 foreach (string folder in Directory.GetDirectories(path))
-                    GatherFiles(folder, true);
+                {
+                    FallThrough(folder, true);
+                }
+            }
         }
 
         public string CreateQueryString(int jobID)

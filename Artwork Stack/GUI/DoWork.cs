@@ -13,6 +13,8 @@ using Artwork_Stack.Model;
 using Artwork_Stack.Tools;
 using TagLib;
 
+// TODO: save interface settings to reg; check crop/resample features; check cyrillic
+
 namespace Artwork_Stack.GUI
 {
     public partial class DoWork : Form
@@ -43,20 +45,6 @@ namespace Artwork_Stack.GUI
             cellEmbeded.IsEmbeded = true;
             cellEmbeded.Click += CellClick;
             this.Controls.Add(cellEmbeded);
-
-            showBusy();
-
-            var t = new Thread(() => jCon.TraverseFolder());
-            t.Start();
-            while (t.IsAlive) Application.DoEvents();
-
-            if (jCon.JobsCount <= 0)
-            {
-                MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
-                HideBusy();
-                foreach (Control c in this.Controls) c.Enabled = false;
-                return;
-            }
 
             currentJob = jCon.Jobs.Tables[Fields.Tracks].Rows[0];
 
@@ -307,9 +295,9 @@ namespace Artwork_Stack.GUI
 
         private Image getCurrentArtwork(bool uncheckAll = true)
         {
-            var result = Sources.SelectedTab.Controls.OfType<imageCell>().FirstOrDefault(c => c.Checked);
+            var result = cellEmbeded.Checked ? cellEmbeded : Sources.SelectedTab.Controls.OfType<imageCell>().FirstOrDefault(c => c.Checked);
             if (uncheckAll) unselectCells();
-            return result == null ? null : result.FullSize;
+            return result == null ? null : GetFullImage(result);
         }
 
         private void showTrackInfo()
@@ -457,9 +445,9 @@ namespace Artwork_Stack.GUI
             // ReSharper disable PossibleNullReferenceException
             gridJobs.Columns[Fields.Path].Visible = false;
             gridJobs.Columns[Fields.ID].Width = 40;
-            gridJobs.Columns[Fields.Artist].Width = 270;
-            gridJobs.Columns[Fields.Title].Width = 275;
-            gridJobs.Columns[Fields.Album].Width = 275;
+            gridJobs.Columns[Fields.Artist].Width = 265;
+            gridJobs.Columns[Fields.Title].Width = 270;
+            gridJobs.Columns[Fields.Album].Width = 270;
             gridJobs.Columns[Fields.Done].Width = 40;
             gridJobs.Columns[Fields.Process].Width = 60;
             // ReSharper restore PossibleNullReferenceException

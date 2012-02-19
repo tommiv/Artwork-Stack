@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
@@ -34,9 +36,67 @@ namespace Artwork_Stack.GUI
                 WinRegistry.SetValue(WinRegistry.Keys.GroupByAlbum,      chkGroup.Checked);
                 WinRegistry.SetValue(WinRegistry.Keys.RecurseTraversing, chkRecurse.Checked);
                 WinRegistry.SetValue(WinRegistry.Keys.SkipExisting,      chkSkipExistingArt.Checked);
+                
+                var bw = new BackgroundWorker();
+
                 var jcon = new JobController(path, chkGroup.Checked, chkRecurse.Checked, chkSkipExistingArt.Checked);
-                (new Thread(() => (new DoWork(jcon)).ShowDialog())).Start();
-                this.Close();
+                jcon.WorkerInstance = bw;
+
+                var panel = new Panel();
+                panel.Size = this.Size;
+                panel.Location = new Point(0, 0);
+                this.Controls.Add(panel);
+                panel.BringToFront();
+
+                var message = new Label();
+                message.TextAlign = ContentAlignment.MiddleCenter;
+                message.Location = new Point(0, 0);
+                message.Size = this.Size;
+                this.Controls.Add(message);
+                message.BringToFront();
+
+                bw.DoWork += jcon.FillFilesStack;
+                bw.WorkerReportsProgress = true;
+                bw.ProgressChanged += (o, args) => message.Text = "Falling through folders..." + Environment.NewLine + args;
+                bw.RunWorkerAsync();
+                while (bw.IsBusy)
+                {
+                    Application.DoEvents();
+                }
+
+                message.Location = new Point(0, -30);
+
+                var pg = new ProgressBar();
+                pg.Maximum = 100;
+                pg.Size = new Size(this.Width - 30, 15);
+                pg.Location = new Point(15, this.Height / 2 - 8);
+                this.Controls.Add(pg);
+                pg.BringToFront();
+
+                bw = new BackgroundWorker();
+                jcon.WorkerInstance = bw;
+                bw.WorkerReportsProgress = true;
+                bw.DoWork += jcon.GatherJobs;
+                bw.ProgressChanged += (o, args) => { pg.Value = args.ProgressPercentage; message.Text = (string)args.UserState; };
+                bw.RunWorkerAsync();
+                while (bw.IsBusy)
+                {
+                    Application.DoEvents();
+                }
+
+                this.Controls.Remove(pg);
+                this.Controls.Remove(message);
+                this.Controls.Remove(panel);
+
+                if (jcon.JobsCount > 0)
+                {
+                    (new Thread(() => (new DoWork(jcon)).ShowDialog())).Start();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
+                }
             }
             else MessageBox.Show(@"Directory not exists");
         }
