@@ -182,11 +182,9 @@ namespace Artwork_Stack.GUI
             }
             else if (e.Button == MouseButtons.Right)
             {
-                foreach (var c in cell.Parent.Controls.OfType<imageCell>().Where(c => c != cell))
-                {
-                    c.UnCheck();
-                }
-                if (cell.Checked) cell.UnCheck(); else cell.Check();
+                bool meChecked = cell.Checked;
+                unselectCells();
+                if (meChecked) cell.UnCheck(); else cell.Check();
             }
         }
 
@@ -298,7 +296,14 @@ namespace Artwork_Stack.GUI
             }
         }
 
-        private void unselectCells() { foreach (var c in Controls.OfType<imageCell>()) { c.UnCheck(); } }
+        private void unselectCells()
+        {
+            foreach (var c in Sources.SelectedTab.Controls.OfType<imageCell>())
+            {
+                c.UnCheck();
+            }
+            cellEmbeded.UnCheck();
+        }
 
         private Image getCurrentArtwork(bool uncheckAll = true)
         {
