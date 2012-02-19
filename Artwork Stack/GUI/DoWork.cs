@@ -13,7 +13,7 @@ using Artwork_Stack.Model;
 using Artwork_Stack.Tools;
 using TagLib;
 
-// TODO: save interface settings to reg; check crop/resample features; check cyrillic
+// TODO: save interface settings to reg; check crop/resample features; check cyrillic; replace messagebox by graphic msgs
 
 namespace Artwork_Stack.GUI
 {
@@ -110,7 +110,7 @@ namespace Artwork_Stack.GUI
             Response = SCon.Provider.Search(Query);
             if (Response.ResultsCount == 0)
             {
-                MessageBox.Show(@"No results"); // TODO: make less annoying
+                MessageBox.Show(@"No results");
             }
         }
 
