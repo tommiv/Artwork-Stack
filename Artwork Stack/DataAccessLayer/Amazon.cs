@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using Artwork_Stack.Model;
@@ -24,8 +25,8 @@ namespace Artwork_Stack.DataAccessLayer
 
         public UnifiedResponse Search(string query)
         {
-            var xmlstring = Tools.Http.getText(BuildSearchRequestUrl(query))
-                .Replace("xmlns=\"http://webservices.amazon.com/AWSECommerceService/2005-10-05\"", ""); // hack to avoid namespace manager
+            var xmlstring = Tools.Http.getText(BuildSearchRequestUrl(query));
+            xmlstring = Regex.Replace(xmlstring, "xmlns=[^>]*>", ">"); // hack to avoid namespace manager: just cut namespace
             var response = new XmlDocument();
 
             var output = new UnifiedResponse();
@@ -40,6 +41,13 @@ namespace Artwork_Stack.DataAccessLayer
             }
 
             var root = response.SelectSingleNode("/ItemSearchResponse");
+
+            if (root == null)
+            {
+                output.Success = false;
+                output.Error = "Cannot parse response";
+                return output;
+            }
 
             var valid = root.SelectSingleNode("Items/Request/IsValid");
             if (valid != null && valid.InnerXml == "True")

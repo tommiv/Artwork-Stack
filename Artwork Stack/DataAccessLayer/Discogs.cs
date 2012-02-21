@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -69,8 +66,17 @@ namespace Artwork_Stack.DataAccessLayer
             var resp = Tools.Http.getText(url);
             var json = new JavaScriptSerializer();
             dynamic release = json.DeserializeObject(resp);
-            
-            dynamic images = release["images"];
+
+            dynamic images = null;
+            try
+            {
+                images = release["images"];
+            }
+            catch(Exception)
+            {
+                return string.Empty;
+            }
+
             if (images != null && images.Length > 0)
             {
                 url = images[0]["uri"];

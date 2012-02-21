@@ -13,7 +13,15 @@ using Artwork_Stack.Model;
 using Artwork_Stack.Tools;
 using TagLib;
 
-// TODO: save interface settings to reg; check crop/resample features; check cyrillic; replace messagebox by graphic msgs
+/* 
+ * NOTE: There is awkward issue with cyrillic tags in Windows-1251 codepage (and others non-unicode), 
+ * because ID3 specs makes it clear about Unicode text. TagLib treat all strings in file as UTF,
+ * so this regional encodings will cause non-readable chars. Since taglib denies direct access to byte buffers
+ * of tags, there's not much I can do. May be it's better to keep your music in real UTF encoding.
+ * 
+*/
+
+// TODO: save interface settings to reg; check crop/resample features; replace messagebox by graphic msgs
 
 namespace Artwork_Stack.GUI
 {
@@ -376,7 +384,6 @@ namespace Artwork_Stack.GUI
 
             var stream = new MemoryStream();
             artwork.Save(stream, ImageFormat.Jpeg);
-
             var buffer = new ByteVector(stream.ToArray());
             var pic = new Picture(buffer);
             Picture[] artworkFrame = { pic };
