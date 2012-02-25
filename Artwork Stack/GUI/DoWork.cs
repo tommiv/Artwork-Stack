@@ -20,13 +20,17 @@ using TagLib;
  * of tags, there's not much I can do. May be it's better to keep your music in real UTF encoding.
 */
 
-// TODO: save interface settings to reg; check crop/resample features; replace messagebox by graphic msgs
-// TODO: make requests parallel; figure out discogs odd thumbs/fullsize issue
+/*
+ * NOTE: Discogs API can return odd results such as disc surface photos and others, even more - it can be
+ * completely different from thumbnail. I can't deal with it :(
+*/
+
+// TODO: save interface settings to reg; check crop/resample features
+// TODO: make requests parallel
 // TODO: try linq2xml in providers
 // TODO: move strings to const
 // TODO: xml special chars decode; hotkeys - next-prev-skip
 // TODO: color/count results indication
-// TODO: clear cells before gosearch()
 // TODO: add button for manual encoding fix
 
 namespace Artwork_Stack.GUI
@@ -35,6 +39,17 @@ namespace Artwork_Stack.GUI
     {
         private readonly JobController jCon;
         private DataRow currentJob;
+        
+        private readonly Label generalmsg = new Label
+        {
+            BackColor = Color.FromArgb(108, 140, 213),
+            Padding = new Padding(4),
+            TextAlign = ContentAlignment.MiddleCenter,
+            AutoSize = true,
+            MinimumSize = new Size(200, 15),
+            MaximumSize = new Size(200, 300),
+            Visible = false
+        };
 
         public DoWork(JobController jcon)
         {
@@ -54,6 +69,9 @@ namespace Artwork_Stack.GUI
 
         private void formDoWork_Shown(object sender, EventArgs e)
         {
+            this.Controls.Add(generalmsg);
+            generalmsg.MouseClick += HideEventHandler;
+
             cellEmbeded = new imageCell(120, 150, 840, 280);
             cellEmbeded.Caption = @"Embeded art";
             cellEmbeded.IsEmbeded = true;
@@ -84,10 +102,6 @@ namespace Artwork_Stack.GUI
 
         private void ShowResults(UnifiedResponse Response)
         {
-            HideBusy();
-
-            Sources.SelectedTab.Controls.Clear();
-
             int cursor = 0;
             int i = 0;
             while (cursor < Response.Results.Count && i < Math.Min(20, Response.Results.Count))
@@ -107,8 +121,8 @@ namespace Artwork_Stack.GUI
                 );
                 
                 Label l = null;
-                cell.MouseEnter += (sender, args) => l = ShowInfoTooltip(cell.Caption, cell.Location + new Size(0, cell.Height));
-                cell.MouseLeave += (sender, args) => { Sources.SelectedTab.Controls.Remove(l); l.Dispose(); };
+                cell.MouseEnter += (sender, args) => l = ShowInfoTooltip(cell.Caption, cell.Location + new Size(16, cell.Height));
+                cell.MouseLeave += (sender, args) => { this.Controls.Remove(l); l.Dispose(); };
 
                 cell.Click += CellClick;
                 cell.FullSizeUrl = r.Url;
@@ -124,17 +138,20 @@ namespace Artwork_Stack.GUI
             }
         }
 
-        private static void SearchWorker(ServiceContext SCon, string Query, out UnifiedResponse Response)
+        private void SearchWorker(ServiceContext SCon, string Query, out UnifiedResponse Response)
         {
             Response = SCon.Provider.Search(Query);
-            if (Response.ResultsCount == 0)
-            {
-                MessageBox.Show(@"No results");
-            }
         }
 
         private void DoSearch()
         {
+            foreach (Control c in Sources.TabPages)
+            {
+                c.Controls.Clear();
+            }
+
+            HideEventHandler(null, null);
+
             showBusy();
 
             UnifiedResponse Response = null;
@@ -148,7 +165,17 @@ namespace Artwork_Stack.GUI
             {
                 Application.DoEvents();
             }
-            ShowResults(Response);
+
+            HideBusy();
+
+            if (Response.ResultsCount == 0)
+            {
+                ShowGeneralMessage(@"No results");
+            }
+            else
+            {
+                ShowResults(Response);
+            }
         }
 
         private void btnOverrideSearch_Click(object sender, EventArgs e)
@@ -182,7 +209,7 @@ namespace Artwork_Stack.GUI
                 }
                 else
                 {
-                    MessageBox.Show("Picture not available");
+                    ShowTipMessage("Picture not available");
                     cell.Thumbnail = Properties.Resources.noartwork;
                 }
                 HideBusy();
@@ -497,8 +524,32 @@ namespace Artwork_Stack.GUI
                 MinimumSize = new Size(120, 15),
                 MaximumSize = new Size(120, 300)
             };
-            Sources.SelectedTab.Controls.Add(l);
+            this.Controls.Add(l);
+            l.BringToFront();
             return l;
+        }
+
+        private void ShowGeneralMessage(string msg)
+        {
+            generalmsg.Text = msg;
+            generalmsg.Location = new Point((Sources.Width - generalmsg.Width) / 2, (Sources.Height - generalmsg.Height) / 2);
+            generalmsg.Visible = true;
+            generalmsg.BringToFront();
+        }
+
+        private void ShowTipMessage(string msg)
+        {
+            ShowGeneralMessage(msg);
+
+            var s = new System.Windows.Forms.Timer();
+            s.Interval = 5000;
+            s.Start();
+            s.Tick += (sender, args) => { generalmsg.Visible = false; s.Stop(); s.Dispose(); };
+        }
+
+        private void HideEventHandler(object sender, EventArgs e)
+        {
+            generalmsg.Visible = false;
         }
     }
 }
