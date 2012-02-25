@@ -22,6 +22,13 @@ using TagLib;
 */
 
 // TODO: save interface settings to reg; check crop/resample features; replace messagebox by graphic msgs
+// TODO: make requests parallel; figure out discogs odd thumbs/fullsize issue
+// TODO: try linq2xml in providers
+// TODO: move strings to const
+// TODO: xml special chars decode; hotkeys - next-prev-skip
+// TODO: color/count results indication
+// TODO: clear cells before gosearch()
+// TODO: add tooltip on cell hover with full text (title/size)
 
 namespace Artwork_Stack.GUI
 {

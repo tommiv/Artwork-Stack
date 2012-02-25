@@ -59,7 +59,7 @@ namespace Artwork_Stack.Tools
 
         public static Image getPicture(string URL)
         {
-            if (URL == null) return null;
+            if (string.IsNullOrEmpty(URL)) return null;
             WebRequest request = WebRequest.Create(URL);
             try
             {
