@@ -49,6 +49,7 @@ namespace Artwork_Stack.GUI
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.gridJobs = new System.Windows.Forms.DataGridView();
             this.Busy = new Artwork_Stack.Controls.TransparentPictureBox();
+            this.lblNotes = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
             this.grpOptions.SuspendLayout();
@@ -274,6 +275,15 @@ namespace Artwork_Stack.GUI
             this.Busy.TabIndex = 21;
             this.Busy.TabStop = false;
             // 
+            // lblNotes
+            // 
+            this.lblNotes.AutoSize = true;
+            this.lblNotes.Location = new System.Drawing.Point(635, 294);
+            this.lblNotes.Name = "lblNotes";
+            this.lblNotes.Size = new System.Drawing.Size(147, 13);
+            this.lblNotes.TabIndex = 22;
+            this.lblNotes.Text = "Shortcuts and other stuff here";
+            // 
             // DoWork
             // 
             this.AcceptButton = this.btnSearch;
@@ -281,6 +291,7 @@ namespace Artwork_Stack.GUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(974, 882);
+            this.Controls.Add(this.lblNotes);
             this.Controls.Add(this.Busy);
             this.Controls.Add(this.gridJobs);
             this.Controls.Add(this.grpOptions);
@@ -330,6 +341,7 @@ namespace Artwork_Stack.GUI
         private imageCell cellEmbeded;
         public System.Windows.Forms.DataGridView gridJobs;
         private TransparentPictureBox Busy;
+        private System.Windows.Forms.Label lblNotes;
     }
 }
 

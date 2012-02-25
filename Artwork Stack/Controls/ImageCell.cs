@@ -53,8 +53,12 @@ namespace Artwork_Stack.Controls
         public object AdditionalInfo { get; set; }
         public bool   IsEmbeded      { get; set; }
 
-        public string Caption { set { this.caption.Text = value; } }
-        public void Check()   { this.BackColor = Color.FromArgb(255, 160, 255, 160); _checked = true; }
+        public string Caption
+        {
+            get { return caption.Text; }
+            set { this.caption.Text = value; } 
+        }
+        public void Check()   { this.BackColor = Color.FromArgb(160, 255, 160); _checked = true; }
         public void UnCheck() { this.BackColor = SystemColors.Control; _checked = false; }
         public bool Checked   { get { return _checked; } }
         private bool _checked;
@@ -70,6 +74,34 @@ namespace Artwork_Stack.Controls
             {
                 base.Click -= value;
                 foreach (Control c in Controls) c.Click -= value;
+            }
+        }
+
+        public new event EventHandler MouseEnter
+        {
+            add
+            {
+                base.MouseEnter += value;
+                foreach (Control c in Controls) c.MouseEnter += value;
+            }
+            remove
+            {
+                base.MouseEnter -= value;
+                foreach (Control c in Controls) c.MouseEnter -= value;
+            }
+        }
+
+        public new event EventHandler MouseLeave
+        {
+            add
+            {
+                base.MouseLeave += value;
+                foreach (Control c in Controls) c.MouseLeave += value;
+            }
+            remove
+            {
+                base.MouseLeave -= value;
+                foreach (Control c in Controls) c.MouseLeave -= value;
             }
         }
     }

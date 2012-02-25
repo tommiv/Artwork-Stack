@@ -18,7 +18,6 @@ using TagLib;
  * because ID3 specs makes it clear about Unicode text. TagLib treat all strings in file as UTF,
  * so this regional encodings will cause non-readable chars. Since taglib denies direct access to byte buffers
  * of tags, there's not much I can do. May be it's better to keep your music in real UTF encoding.
- * 
 */
 
 // TODO: save interface settings to reg; check crop/resample features; replace messagebox by graphic msgs
@@ -28,7 +27,7 @@ using TagLib;
 // TODO: xml special chars decode; hotkeys - next-prev-skip
 // TODO: color/count results indication
 // TODO: clear cells before gosearch()
-// TODO: add tooltip on cell hover with full text (title/size)
+// TODO: add button for manual encoding fix
 
 namespace Artwork_Stack.GUI
 {
@@ -106,6 +105,11 @@ namespace Artwork_Stack.GUI
                     r.Album,
                     r.Width > 0 && r.Height > 0 ? string.Format("{0}x{1}px", r.Width, r.Height) : "size\u00A0n/a"
                 );
+                
+                Label l = null;
+                cell.MouseEnter += (sender, args) => l = ShowInfoTooltip(cell.Caption, cell.Location + new Size(0, cell.Height));
+                cell.MouseLeave += (sender, args) => { Sources.SelectedTab.Controls.Remove(l); l.Dispose(); };
+
                 cell.Click += CellClick;
                 cell.FullSizeUrl = r.Url;
                 if (GetCurrentContext().Provider.GetFullsizeUrlViaCallback)
@@ -473,11 +477,28 @@ namespace Artwork_Stack.GUI
                     {
                         cell.Style.BackColor =
                             row.Index % 2 == 0
-                            ? Color.FromArgb(255, 240, 210, 240)
-                            : Color.FromArgb(255, 255, 220, 255);
+                            ? Color.FromArgb(240, 210, 240)
+                            : Color.FromArgb(255, 220, 255);
                     }
                 }
             }
+        }
+
+        private Label ShowInfoTooltip(string msg, Point location)
+        {
+            var l = new Label
+            {
+                Text = msg,
+                Location = location,
+                BackColor = Color.FromArgb(255, 246, 115),
+                Padding = new Padding(4),
+                TextAlign = ContentAlignment.MiddleCenter,
+                AutoSize = true,
+                MinimumSize = new Size(120, 15),
+                MaximumSize = new Size(120, 300)
+            };
+            Sources.SelectedTab.Controls.Add(l);
+            return l;
         }
     }
 }
