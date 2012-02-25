@@ -28,7 +28,6 @@ using TagLib;
 // TODO: save interface settings to reg; check crop/resample features
 // TODO: make requests parallel
 // TODO: try linq2xml in providers
-// TODO: move strings to const
 // TODO: xml special chars decode; hotkeys - next-prev-skip
 // TODO: color/count results indication
 // TODO: add button for manual encoding fix
@@ -73,7 +72,7 @@ namespace Artwork_Stack.GUI
             generalmsg.MouseClick += HideEventHandler;
 
             cellEmbeded = new imageCell(120, 150, 840, 280);
-            cellEmbeded.Caption = @"Embeded art";
+            cellEmbeded.Caption = Verbal.Embedded;
             cellEmbeded.IsEmbeded = true;
             cellEmbeded.Click += CellClick;
             this.Controls.Add(cellEmbeded);
@@ -170,7 +169,7 @@ namespace Artwork_Stack.GUI
 
             if (Response.ResultsCount == 0)
             {
-                ShowGeneralMessage(@"No results");
+                ShowGeneralMessage(Verbal.NoResults);
             }
             else
             {
@@ -209,7 +208,7 @@ namespace Artwork_Stack.GUI
                 }
                 else
                 {
-                    ShowTipMessage("Picture not available");
+                    ShowTipMessage(Verbal.PicNotAvailable);
                     cell.Thumbnail = Properties.Resources.noartwork;
                 }
                 HideBusy();
@@ -304,10 +303,7 @@ namespace Artwork_Stack.GUI
             {
                 if (stored[Fields.PathList].GetType() != typeof(DBNull))
                 {
-                    string msg = string.Format(
-                        "This unit is album-group. If you check 'skip' or 'embedded art', {0} files will be skipped ",
-                        ((List<String>)stored[Fields.PathList]).Count
-                    );
+                    string msg = string.Format(Verbal.AlbumModeOmit, ((List<String>)stored[Fields.PathList]).Count);
                     if (MessageBox.Show(msg, "", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
                 }
                 jCon.SetJobIsDone(curJobIndex);
@@ -318,7 +314,7 @@ namespace Artwork_Stack.GUI
             if (!jCon.IsUnprocessedJobs)
             {
                 btnPrev.Enabled = btnNext.Enabled = false;
-                MessageBox.Show(@"That's all, folks!");
+                MessageBox.Show(Verbal.Alldone);
             }
             else
             {
@@ -353,17 +349,23 @@ namespace Artwork_Stack.GUI
 
             txtQuery.Text = jCon.CreateQueryString(int.Parse(currentJob[Fields.ID].ToString()));
             gridCurrentJob.Rows.Clear();
-            gridCurrentJob.Rows.Add("Job index", (int)currentJob[Fields.ID]);
-            gridCurrentJob.Rows.Add("Done/total jobs", jCon.CompletedJobsCount + "/" + jCon.JobsCount);
-            gridCurrentJob.Rows.Add(Fields.Path, groupMode ? "Grouping mode, multiple paths" : path);
-            gridCurrentJob.Rows.Add("Track", groupMode ? "Grouping mode, multiple titles" : currentJob[Fields.Title].ToString());
+            gridCurrentJob.Rows.Add(Verbal.JobIndex, (int)currentJob[Fields.ID]);
+            gridCurrentJob.Rows.Add(Verbal.DoneTotalJobs, jCon.CompletedJobsCount + "/" + jCon.JobsCount);
+            gridCurrentJob.Rows.Add(Fields.Path,  groupMode ? Verbal.GroupingPath : path);
+            gridCurrentJob.Rows.Add(Verbal.Track, groupMode ? Verbal.GroupingTitles : currentJob[Fields.Title].ToString());
             gridCurrentJob.Rows.Add(Fields.Artist, currentJob[Fields.Artist].ToString());
             gridCurrentJob.Rows.Add(Fields.Album, currentJob[Fields.Album].ToString());
 
-            if (groupMode) gridCurrentJob.Rows.Add("WARN", string.Format("Art applies (or not) to {0} files!", ((List<String>)currentJob[Fields.PathList]).Count));
+            if (groupMode)
+            {
+                gridCurrentJob.Rows.Add(
+                    Verbal.Warning, 
+                    string.Format(Verbal.ArtAppliesCount, ((List<String>)currentJob[Fields.PathList]).Count)
+                );
+            }
 
             var track = TagLib.File.Create(path);
-            gridCurrentJob.Rows.Add("Art in file", track.Tag.Pictures.GetLength(0));
+            gridCurrentJob.Rows.Add(Verbal.ArtInFile, track.Tag.Pictures.GetLength(0));
             if (track.Tag.Pictures.GetLength(0) > 0)
             {
                 var ic = new ImageConverter();
@@ -376,7 +378,8 @@ namespace Artwork_Stack.GUI
                 if (i != null)
                 {
                     cellEmbeded.Caption = string.Format(
-                        "Embedded Art; {0}x{1}px", 
+                        "{0}; {1}x{2}px",
+                        Verbal.Embedded,
                         cellEmbeded.FullSize.Width, 
                         cellEmbeded.FullSize.Height
                     );
@@ -385,7 +388,7 @@ namespace Artwork_Stack.GUI
             else
             {
                 cellEmbeded.Thumbnail = Properties.Resources.noartwork;
-                cellEmbeded.Caption = @"No Embedded Art";
+                cellEmbeded.Caption = Verbal.NoEmbedded;
             }
             track.Dispose();
         }
@@ -502,10 +505,7 @@ namespace Artwork_Stack.GUI
                 {
                     foreach (DataGridViewCell cell in row.Cells)
                     {
-                        cell.Style.BackColor =
-                            row.Index % 2 == 0
-                            ? Color.FromArgb(240, 210, 240)
-                            : Color.FromArgb(255, 220, 255);
+                        cell.Style.BackColor = row.Index % 2 == 0 ? Color.FromArgb(240, 210, 240) : Color.FromArgb(255, 220, 255);
                     }
                 }
             }

@@ -90,6 +90,7 @@
     <Compile Include="GUI\DoWork.Designer.cs">
       <DependentUpon>DoWork.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Verbal.cs" />
     <Compile Include="Model\ServiceContext.cs" />
     <Compile Include="Model\UnifiedResponse.cs" />
     <Compile Include="Tools\Http.cs" />

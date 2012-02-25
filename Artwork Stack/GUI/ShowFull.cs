@@ -49,13 +49,14 @@ namespace Artwork_Stack.GUI
             picBusy.Visible = false;
             if (mainImage == null)
             {
-                MessageBox.Show(@"Picture is not available");
+                MessageBox.Show(Verbal.PicNotAvailable);
                 NotAvailable = true;
                 this.Close();
                 return;
             }
-            bool resize = false;
-            if (mainImage.Width > Placeholder.Width || mainImage.Height > Placeholder.Height) resize = true;
+            
+            bool resize = mainImage.Width > Placeholder.Width || mainImage.Height > Placeholder.Height;
+            
             lblPictureRes.Text = string.Format(
                 "Resolution: {0}x{1}. Resized: {2}",
                 mainImage.Width,

@@ -57,7 +57,7 @@ namespace Artwork_Stack.GUI
 
                 bw.DoWork += jcon.FillFilesStack;
                 bw.WorkerReportsProgress = true;
-                bw.ProgressChanged += (o, args) => message.Text = "Falling through folders..." + Environment.NewLine + args;
+                bw.ProgressChanged += (o, args) => message.Text = Verbal.FallThrough + Environment.NewLine + args;
                 bw.RunWorkerAsync();
                 while (bw.IsBusy)
                 {
@@ -95,10 +95,10 @@ namespace Artwork_Stack.GUI
                 }
                 else
                 {
-                    MessageBox.Show(@"Folders have no mp3 files or all files were filtered out");
+                    MessageBox.Show(Verbal.AllFilesFiltered);
                 }
             }
-            else MessageBox.Show(@"Directory not exists");
+            else MessageBox.Show(Verbal.DirNotExists);
         }
     }
 }
