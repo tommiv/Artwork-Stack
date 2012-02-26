@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Artwork_Stack.Controls;
@@ -18,11 +17,6 @@ using TagLib;
  * NOTE: There is awkward issue with cyrillic tags in taglib,
  * id3 specs allows an iso-8859 encoding, but taglob makes this tags unreadable.
  * Since it hard to estimate readable text or not, I've just add button to manual correction.
-*/
-
-/*
- * NOTE: Discogs API can return odd results such as disc surface photos and others, even more - it can be
- * completely different from thumbnail. I can't deal with it :(
 */
 
 // TODO: save interface settings to reg; 
@@ -109,9 +103,10 @@ namespace Artwork_Stack.GUI
             {
                 var Response = Responses[c];
                 var tab = Sources.TabPages[c];
+                var context = GetContextByTab(tab);
                 int count = Math.Min(20, Response.Results.Count);
 
-                tab.Text = string.Format("{0} ({1})", GetContextByTab(tab).DisplayedName, count);
+                tab.Text = string.Format("{0} ({1})", context.DisplayedName, count);
 
                 if (count == 0)
                 {
@@ -143,7 +138,7 @@ namespace Artwork_Stack.GUI
 
                     cell.Click += CellClick;
                     cell.FullSizeUrl = r.Url;
-                    if (GetCurrentContext().Provider.GetFullsizeUrlViaCallback)
+                    if (context.Provider.GetFullsizeUrlViaCallback)
                     {
                         cell.AdditionalInfo = r.AdditionalInfo;
                     }

@@ -4,17 +4,21 @@ using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Artwork_Stack.Tools
 {
    public static class Http
     {
+       private const string useragent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; "
+            + ".NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; "
+            + "Tablet PC 2.0; OfficeLiveConnector.1.4; OfficeLivePatch.1.3)";
+
         public static WebResponse httpRequestGET(string URL, string cookies)
         {
             WebRequest reqGET = WebRequest.Create(URL);
-            reqGET.Headers["UserAgent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; "
-                                           + ".NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; "
-                                           + "Tablet PC 2.0; OfficeLiveConnector.1.4; OfficeLivePatch.1.3)";
+            reqGET.Headers["UserAgent"] = useragent;
             if (cookies != null) { reqGET.Headers["Cookie"] = cookies; }
             return reqGET.GetResponse();
         }
@@ -25,9 +29,7 @@ namespace Artwork_Stack.Tools
             var reqPOST = WebRequest.Create(URL);
             reqPOST.Method = "POST";
             reqPOST.Timeout = 30000;
-            reqPOST.Headers["UserAgent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; "
-                                            + ".NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; "
-                                            + "Tablet PC 2.0; OfficeLiveConnector.1.4; OfficeLivePatch.1.3)";
+            reqPOST.Headers["UserAgent"] = useragent;
             if (cookies != null) { reqPOST.Headers["Cookie"] = cookies; }
             reqPOST.ContentType = "application/x-www-form-urlencoded";
             reqPOST.ContentLength = sendBuffer.Length;
@@ -72,7 +74,7 @@ namespace Artwork_Stack.Tools
 
         public static string getText(string URL)
         {
-            if (URL == null) return null;
+            if (string.IsNullOrEmpty(URL)) return null;
             WebRequest request = WebRequest.Create(URL);
             try
             {
@@ -81,6 +83,25 @@ namespace Artwork_Stack.Tools
                 return br.ReadToEnd();
             }
             catch { return null; }
+        }
+
+        public static XDocument getXmlDoc(string URL)
+        {
+            if (string.IsNullOrEmpty(URL)) return null;
+
+            var request = (HttpWebRequest)WebRequest.Create(URL);
+            request.Headers["UserAgent"] = useragent;
+            request.Accept = "text/html,application/xhtml+xml,application/xml";
+
+            XDocument doc = null;
+            try
+            {
+                var resp = request.GetResponse();
+                var br = new StreamReader(resp.GetResponseStream());
+                doc = XDocument.Load(br);
+            }
+            catch { return null; }
+            return doc;
         }
 
        public static byte[] getStream(string URL)

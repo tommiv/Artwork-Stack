@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Script.Serialization;
+using System.Xml.Linq;
 using Artwork_Stack.Model;
 
 namespace Artwork_Stack.DataAccessLayer
@@ -9,52 +10,48 @@ namespace Artwork_Stack.DataAccessLayer
     public class Discogs : IServiceProvider
     {
         private const string apiurl = "http://api.discogs.com";
-        
+
         private static string SearchRequestUrl(string query)
         {
-            return string.Format("{0}/database/search?q={1}", apiurl, HttpUtility.UrlEncode(query));
+            return string.Format("{0}/search?q={1}", apiurl, HttpUtility.UrlEncode(query));
         }
 
         private static string ReleasesRequestUrl(string id)
         {
-            return string.Format("{0}/releases/{1}", apiurl, id);
+            return string.Format("{0}/{1}", apiurl, id);
         }
+
+        private string request;
 
         public UnifiedResponse Search(string query)
         {
+            request = query;
+
+            var doc = Tools.Http.getXmlDoc(SearchRequestUrl(query));
             var output = new UnifiedResponse();
-
-            var json = new JavaScriptSerializer();
-            var respstr = Tools.Http.getText(SearchRequestUrl(query));
-            dynamic response = json.DeserializeObject(respstr);
-
-            dynamic results = response["results"];
-            if (results != null)
-            {
-                int i = 0;
-                int cursor = 0;
-                while (cursor < results.Length && i < Math.Min(results.Length, 20))
-                {
-                    var entry = results[i];
-                    var r = new Result();
-                    var title = Regex.Split((string)(entry["title"] ?? string.Empty), " - ");
-                    r.Artist = title.Length > 0 ? title[0] : string.Empty;
-                    r.Album = title.Length > 1 ? title[1] : string.Empty;
-                    r.Request = query;
-                    r.Thumb = entry["thumb"] ?? string.Empty;
-                    r.AdditionalInfo = (entry["id"] ?? string.Empty).ToString();
-
-                    if (!string.IsNullOrEmpty(r.Thumb) && !string.IsNullOrEmpty((string)r.AdditionalInfo))
-                    {
-                        output.Results.Add(r);
-                        i++;
-                    }
-
-                    cursor++;
-                }
-            }
+            output.Success = true;
+            output.Results = doc.Descendants("result").Select(SelectResult).ToList();
             output.ResultsCount = output.Results.Count;
             return output;
+        }
+
+        private Result SelectResult(XElement input)
+        {
+            string thumb = input.Element("thumb") != null ? input.Element("thumb").Value : string.Empty;
+            string title = input.Element("title") != null ? input.Element("title").Value : string.Empty;
+            
+            string uri = input.Element("uri")   != null ? input.Element("uri").Value   : string.Empty;
+            string id = string.Join("/", uri.Split('/').Reverse().Take(2).Reverse().ToArray());
+            
+            var albuminfo = Regex.Split(title, " - ");
+
+            var res = new Result();
+            res.Thumb = thumb;
+            res.AdditionalInfo = id;
+            res.Artist = albuminfo.Length > 0 ? albuminfo[0] : string.Empty;
+            res.Album  = albuminfo.Length > 1 ? albuminfo[1] : string.Empty;
+            res.Request = request;
+            return res;
         }
 
         public bool GetFullsizeUrlViaCallback { get { return true; } }
@@ -62,27 +59,14 @@ namespace Artwork_Stack.DataAccessLayer
         public Func<object, string> GetFullsizeUrlCallback { get { return GetFullsize; } }
         private string GetFullsize(object id)
         {
-            string url = ReleasesRequestUrl(id.ToString());
-            var resp = Tools.Http.getText(url);
-            var json = new JavaScriptSerializer();
-            dynamic release = json.DeserializeObject(resp);
-
-            dynamic images = null;
-            try
-            {
-                images = release["images"];
-            }
-            catch(Exception)
+            var doc = Tools.Http.getXmlDoc(ReleasesRequestUrl((string)id));
+            var images = doc.Descendants("image").ToList();
+            if (!images.Any())
             {
                 return string.Empty;
             }
-
-            if (images != null && images.Length > 0)
-            {
-                url = images[0]["uri"];
-            }
-
-            return url;
+            var primary = images.FirstOrDefault(r => r.Attribute("type").Value == "primary");
+            return primary != null ? primary.Attribute("uri").Value : images[0].Attribute("uri").Value;
         }
     }
 }
