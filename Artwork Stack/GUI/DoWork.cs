@@ -15,7 +15,7 @@ using TagLib;
 
 /* 
  * NOTE: There is awkward issue with cyrillic tags in taglib,
- * id3 specs allows an iso-8859 encoding, but taglob makes this tags unreadable.
+ * id3 specs allows an iso-8859 encoding, but taglib makes this tags unreadable.
  * Since it hard to estimate readable text or not, I've just add button to manual correction.
 */
 
