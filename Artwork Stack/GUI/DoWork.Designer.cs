@@ -223,7 +223,6 @@ namespace Artwork_Stack.GUI
             this.Sources.SelectedIndex = 0;
             this.Sources.Size = new System.Drawing.Size(610, 626);
             this.Sources.TabIndex = 17;
-            this.Sources.SelectedIndexChanged += new System.EventHandler(this.Sources_SelectedIndexChanged);
             // 
             // grpOptions
             // 

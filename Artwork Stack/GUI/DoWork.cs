@@ -25,10 +25,12 @@ using TagLib;
  * completely different from thumbnail. I can't deal with it :(
 */
 
-// TODO: save interface settings to reg; check crop/resample features
+// TODO: save interface settings to reg; 
+// TODO: check crop/resample features
 // TODO: make requests parallel
 // TODO: try linq2xml in providers
-// TODO: xml special chars decode; hotkeys - next-prev-skip
+// TODO: xml special chars decode; 
+// TODO: hotkeys - next-prev-skip
 // TODO: color/count results indication
 // TODO: add button for manual encoding fix
 
@@ -93,81 +95,118 @@ namespace Artwork_Stack.GUI
             DoSearch();
         }
 
-        private ServiceContext GetCurrentContext()
+        private ServiceContext GetContextByTab(TabPage tab)
         {
-            var currentprovier = (Services.Supported)Enum.Parse(typeof(Services.Supported), Sources.SelectedTab.Name);
+            var currentprovier = (Services.Supported)Enum.Parse(typeof(Services.Supported), tab.Name);
             return Services.Providers[currentprovier];
         }
 
-        private void ShowResults(UnifiedResponse Response)
+        private ServiceContext GetCurrentContext()
         {
-            int cursor = 0;
-            int i = 0;
-            while (cursor < Response.Results.Count && i < Math.Min(20, Response.Results.Count))
+            return GetContextByTab(Sources.SelectedTab);
+        }
+
+        private void ShowResults(List<UnifiedResponse> Responses)
+        {
+            for (int c = 0; c < Responses.Count(); c++)
             {
-                var r = Response.Results[cursor];
-                if (string.IsNullOrEmpty(r.Url) && string.IsNullOrEmpty(r.Thumb))
+                var Response = Responses[c];
+                var tab = Sources.TabPages[c];
+                int count = Math.Min(20, Response.Results.Count);
+
+                tab.Text = string.Format("{0} ({1})", GetContextByTab(tab).DisplayedName, count);
+
+                if (count == 0)
                 {
-                    cursor++;
                     continue;
                 }
-
-                var cell = new imageCell(120, 150, 120 * (i % 5), 150 * (i / 5));
-                cell.Caption = string.Format(
-                    "{0}; {1}", 
-                    r.Album,
-                    r.Width > 0 && r.Height > 0 ? string.Format("{0}x{1}px", r.Width, r.Height) : "size\u00A0n/a"
-                );
-                
-                Label l = null;
-                cell.MouseEnter += (sender, args) => l = ShowInfoTooltip(cell.Caption, cell.Location + new Size(16, cell.Height));
-                cell.MouseLeave += (sender, args) => { this.Controls.Remove(l); l.Dispose(); };
-
-                cell.Click += CellClick;
-                cell.FullSizeUrl = r.Url;
-                if (GetCurrentContext().Provider.GetFullsizeUrlViaCallback)
+                else
                 {
-                    cell.AdditionalInfo = r.AdditionalInfo;
+                    tab.Enabled = true;
                 }
-                Sources.SelectedTab.Controls.Add(cell);
-                (new Thread(() => cell.Thumbnail = Http.getPicture(r.Thumb))).Start();
 
-                cursor++;
-                i++;
+                int cursor = 0;
+                int i = 0;
+
+                while (cursor < Response.Results.Count && i < count)
+                {
+                    var r = Response.Results[cursor];
+                    if (string.IsNullOrEmpty(r.Url) && string.IsNullOrEmpty(r.Thumb))
+                    {
+                        cursor++;
+                        continue;
+                    }
+
+                    var cell = new imageCell(120, 150, 120 * (i % 5), 150 * (i / 5));
+                    cell.Caption = string.Format(
+                        "{0}; {1}",
+                        r.Album,
+                        r.Width > 0 && r.Height > 0 ? string.Format("{0}x{1}px", r.Width, r.Height) : "size\u00A0n/a"
+                    );
+
+                    Label l = null;
+                    cell.MouseEnter += (sender, args) => l = ShowInfoTooltip(cell.Caption, cell.Location + new Size(16, cell.Height));
+                    cell.MouseLeave += (sender, args) => { this.Controls.Remove(l); l.Dispose(); };
+
+                    cell.Click += CellClick;
+                    cell.FullSizeUrl = r.Url;
+                    if (GetCurrentContext().Provider.GetFullsizeUrlViaCallback)
+                    {
+                        cell.AdditionalInfo = r.AdditionalInfo;
+                    }
+                    tab.Controls.Add(cell);
+                    (new Thread(() => cell.Thumbnail = Http.getPicture(r.Thumb))).Start();
+
+                    cursor++;
+                    i++;
+                }
             }
         }
 
-        private void SearchWorker(ServiceContext SCon, string Query, out UnifiedResponse Response)
+        private void SearchWorker(string Query, out List<UnifiedResponse> Response)
         {
-            Response = SCon.Provider.Search(Query);
-        }
+            var ThreadPool = new List<Thread>();
+            var ContextPool = Services.Providers.Values.ToArray();
+            var Results = new UnifiedResponse[ContextPool.Length];
 
-        private void DoSearch()
-        {
-            foreach (Control c in Sources.TabPages)
+            for (int i = 0; i < ContextPool.Length; i++)
             {
-                c.Controls.Clear();
+                int closure = i;
+                Results[i] = new UnifiedResponse();
+                var thread = new Thread(() => Results[closure] = ContextPool[closure].Provider.Search(Query));
+                thread.Start();
+                ThreadPool.Add(thread);
             }
 
-            HideEventHandler(null, null);
-
-            showBusy();
-
-            UnifiedResponse Response = null;
-            
-            var context = GetCurrentContext();
-            string query = txtQuery.Text;
-
-            var t = new Thread(() => SearchWorker(context, query, out Response));
-            t.Start();
-            while (t.IsAlive)
+            while(ThreadPool.Any(t => t.IsAlive))
             {
                 Application.DoEvents();
             }
 
+            Response = Results.ToList();
+        }
+
+        private void DoSearchPreinit()
+        {
+            foreach (TabPage page in Sources.TabPages)
+            {
+                page.Controls.Clear();
+                page.Enabled = false;
+                page.Text = GetContextByTab(page).DisplayedName;
+            }
+        }
+
+        private void DoSearch()
+        {
+            DoSearchPreinit();
+            HideEventHandler(null, null);
+
+            ShowBusy();
+            List<UnifiedResponse> Response = null;
+            SearchWorker(txtQuery.Text, out Response);
             HideBusy();
 
-            if (Response.ResultsCount == 0)
+            if (Response.All(r => r.ResultsCount == 0))
             {
                 ShowGeneralMessage(Verbal.NoResults);
             }
@@ -190,7 +229,7 @@ namespace Artwork_Stack.GUI
 
             if (e.Button == MouseButtons.Left)
             {
-                showBusy();
+                ShowBusy();
                 var image = GetFullImage(cell);
                 if (image != null)
                 {
@@ -454,19 +493,14 @@ namespace Artwork_Stack.GUI
 
         private void DoWork_FormClosing(object sender, FormClosingEventArgs e)
         {
-            showBusy();
+            ShowBusy();
             while(jCon.ProcessedJobsCount > 0)
             {
                 Application.DoEvents();
             }
         }
 
-        private void Sources_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DoSearch();
-        }
-
-        private void showBusy()
+        private void ShowBusy()
         {
             Busy.Show();
         }
