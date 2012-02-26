@@ -101,6 +101,7 @@
     <Compile Include="Controls\TransparentPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Tools\Text.cs" />
     <Compile Include="Tools\WinRegistry.cs" />
     <EmbeddedResource Include="Controls\ImageCell.resx">
       <DependentUpon>ImageCell.cs</DependentUpon>

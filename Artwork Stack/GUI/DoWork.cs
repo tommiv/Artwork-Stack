@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Artwork_Stack.Controls;
@@ -14,10 +15,9 @@ using Artwork_Stack.Tools;
 using TagLib;
 
 /* 
- * NOTE: There is awkward issue with cyrillic tags in Windows-1251 codepage (and others non-unicode), 
- * because ID3 specs makes it clear about Unicode text. TagLib treat all strings in file as UTF,
- * so this regional encodings will cause non-readable chars. Since taglib denies direct access to byte buffers
- * of tags, there's not much I can do. May be it's better to keep your music in real UTF encoding.
+ * NOTE: There is awkward issue with cyrillic tags in taglib,
+ * id3 specs allows an iso-8859 encoding, but taglob makes this tags unreadable.
+ * Since it hard to estimate readable text or not, I've just add button to manual correction.
 */
 
 /*
@@ -27,12 +27,9 @@ using TagLib;
 
 // TODO: save interface settings to reg; 
 // TODO: check crop/resample features
-// TODO: make requests parallel
 // TODO: try linq2xml in providers
 // TODO: xml special chars decode; 
 // TODO: hotkeys - next-prev-skip
-// TODO: color/count results indication
-// TODO: add button for manual encoding fix
 
 namespace Artwork_Stack.GUI
 {
@@ -120,10 +117,6 @@ namespace Artwork_Stack.GUI
                 {
                     continue;
                 }
-                else
-                {
-                    tab.Enabled = true;
-                }
 
                 int cursor = 0;
                 int i = 0;
@@ -191,7 +184,6 @@ namespace Artwork_Stack.GUI
             foreach (TabPage page in Sources.TabPages)
             {
                 page.Controls.Clear();
-                page.Enabled = false;
                 page.Text = GetContextByTab(page).DisplayedName;
             }
         }
@@ -584,6 +576,16 @@ namespace Artwork_Stack.GUI
         private void HideEventHandler(object sender, EventArgs e)
         {
             generalmsg.Visible = false;
+        }
+
+        private void btnEncode_Click(object sender, EventArgs e)
+        {
+            currentJob[Fields.Artist] = currentJob[Fields.Artist].ToString().Correct();
+            currentJob[Fields.Album]  = currentJob[Fields.Album ].ToString().Correct();
+            currentJob[Fields.Title]  = currentJob[Fields.Title ].ToString().Correct();
+            txtQuery.Text = txtQuery.Text.Correct();
+            showTrackInfo();
+            DoSearch();
         }
     }
 }

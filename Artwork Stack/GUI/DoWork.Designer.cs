@@ -30,9 +30,9 @@ namespace Artwork_Stack.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnNext = new System.Windows.Forms.Button();
@@ -50,6 +50,7 @@ namespace Artwork_Stack.GUI
             this.gridJobs = new System.Windows.Forms.DataGridView();
             this.Busy = new Artwork_Stack.Controls.TransparentPictureBox();
             this.lblNotes = new System.Windows.Forms.Label();
+            this.btnEncode = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
             this.grpOptions.SuspendLayout();
@@ -100,8 +101,8 @@ namespace Artwork_Stack.GUI
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -110,14 +111,14 @@ namespace Artwork_Stack.GUI
             this.gridCurrentJob.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Parameter,
             this.Value});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle5;
             this.gridCurrentJob.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.gridCurrentJob.GridColor = System.Drawing.SystemColors.ButtonHighlight;
             this.gridCurrentJob.Location = new System.Drawing.Point(638, 84);
@@ -242,8 +243,8 @@ namespace Artwork_Stack.GUI
             this.gridJobs.AllowUserToDeleteRows = false;
             this.gridJobs.AllowUserToResizeColumns = false;
             this.gridJobs.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lavender;
-            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Lavender;
+            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             this.gridJobs.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridJobs.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gridJobs.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -283,6 +284,16 @@ namespace Artwork_Stack.GUI
             this.lblNotes.TabIndex = 22;
             this.lblNotes.Text = "Shortcuts and other stuff here";
             // 
+            // btnEncode
+            // 
+            this.btnEncode.Location = new System.Drawing.Point(638, 40);
+            this.btnEncode.Name = "btnEncode";
+            this.btnEncode.Size = new System.Drawing.Size(115, 23);
+            this.btnEncode.TabIndex = 23;
+            this.btnEncode.Text = "WTF with encoding?";
+            this.btnEncode.UseVisualStyleBackColor = true;
+            this.btnEncode.Click += new System.EventHandler(this.btnEncode_Click);
+            // 
             // DoWork
             // 
             this.AcceptButton = this.btnSearch;
@@ -290,6 +301,7 @@ namespace Artwork_Stack.GUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(974, 882);
+            this.Controls.Add(this.btnEncode);
             this.Controls.Add(this.lblNotes);
             this.Controls.Add(this.Busy);
             this.Controls.Add(this.gridJobs);
@@ -341,6 +353,7 @@ namespace Artwork_Stack.GUI
         public System.Windows.Forms.DataGridView gridJobs;
         private TransparentPictureBox Busy;
         private System.Windows.Forms.Label lblNotes;
+        private System.Windows.Forms.Button btnEncode;
     }
 }
 
