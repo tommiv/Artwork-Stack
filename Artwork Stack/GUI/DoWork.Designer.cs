@@ -30,9 +30,9 @@ namespace Artwork_Stack.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnNext = new System.Windows.Forms.Button();
@@ -48,9 +48,9 @@ namespace Artwork_Stack.GUI
             this.Sources = new System.Windows.Forms.TabControl();
             this.grpOptions = new System.Windows.Forms.GroupBox();
             this.gridJobs = new System.Windows.Forms.DataGridView();
-            this.Busy = new Artwork_Stack.Controls.TransparentPictureBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.btnEncode = new System.Windows.Forms.Button();
+            this.Busy = new Artwork_Stack.Controls.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).BeginInit();
             this.grpOptions.SuspendLayout();
@@ -101,8 +101,8 @@ namespace Artwork_Stack.GUI
             this.gridCurrentJob.AllowUserToAddRows = false;
             this.gridCurrentJob.AllowUserToDeleteRows = false;
             this.gridCurrentJob.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.gridCurrentJob.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridCurrentJob.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridCurrentJob.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridCurrentJob.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -111,14 +111,14 @@ namespace Artwork_Stack.GUI
             this.gridCurrentJob.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Parameter,
             this.Value});
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridCurrentJob.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridCurrentJob.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.gridCurrentJob.GridColor = System.Drawing.SystemColors.ButtonHighlight;
             this.gridCurrentJob.Location = new System.Drawing.Point(638, 84);
@@ -189,6 +189,7 @@ namespace Artwork_Stack.GUI
             this.chkCrop.TabIndex = 14;
             this.chkCrop.Text = "Crop to square";
             this.chkCrop.UseVisualStyleBackColor = true;
+            this.chkCrop.CheckedChanged += new System.EventHandler(this.chkCrop_CheckedChanged);
             // 
             // chkResize
             // 
@@ -199,12 +200,18 @@ namespace Artwork_Stack.GUI
             this.chkResize.TabIndex = 15;
             this.chkResize.Text = "Resize big img to:";
             this.chkResize.UseVisualStyleBackColor = true;
+            this.chkResize.CheckedChanged += new System.EventHandler(this.chkResize_CheckedChanged);
             // 
             // numSize
             // 
             this.numSize.Location = new System.Drawing.Point(121, 40);
             this.numSize.Maximum = new decimal(new int[] {
             2000,
+            0,
+            0,
+            0});
+            this.numSize.Minimum = new decimal(new int[] {
+            50,
             0,
             0,
             0});
@@ -216,6 +223,7 @@ namespace Artwork_Stack.GUI
             0,
             0,
             0});
+            this.numSize.ValueChanged += new System.EventHandler(this.numSize_ValueChanged);
             // 
             // Sources
             // 
@@ -243,8 +251,8 @@ namespace Artwork_Stack.GUI
             this.gridJobs.AllowUserToDeleteRows = false;
             this.gridJobs.AllowUserToResizeColumns = false;
             this.gridJobs.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Lavender;
-            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lavender;
+            this.gridJobs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.gridJobs.BackgroundColor = System.Drawing.SystemColors.Control;
             this.gridJobs.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gridJobs.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -266,15 +274,6 @@ namespace Artwork_Stack.GUI
             this.gridJobs.TabIndex = 20;
             this.gridJobs.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridJobs_CellContentDoubleClick);
             // 
-            // Busy
-            // 
-            this.Busy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
-            this.Busy.Location = new System.Drawing.Point(450, 275);
-            this.Busy.Name = "Busy";
-            this.Busy.Size = new System.Drawing.Size(100, 100);
-            this.Busy.TabIndex = 21;
-            this.Busy.TabStop = false;
-            // 
             // lblNotes
             // 
             this.lblNotes.AutoSize = true;
@@ -293,6 +292,15 @@ namespace Artwork_Stack.GUI
             this.btnEncode.Text = "WTF with encoding?";
             this.btnEncode.UseVisualStyleBackColor = true;
             this.btnEncode.Click += new System.EventHandler(this.btnEncode_Click);
+            // 
+            // Busy
+            // 
+            this.Busy.Image = global::Artwork_Stack.Properties.Resources.ajax_loader;
+            this.Busy.Location = new System.Drawing.Point(450, 275);
+            this.Busy.Name = "Busy";
+            this.Busy.Size = new System.Drawing.Size(100, 100);
+            this.Busy.TabIndex = 21;
+            this.Busy.TabStop = false;
             // 
             // DoWork
             // 

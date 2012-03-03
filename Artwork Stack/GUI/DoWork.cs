@@ -19,9 +19,7 @@ using TagLib;
  * Since it hard to estimate readable text or not, I've just add button to manual correction.
 */
 
-// TODO: save interface settings to reg; 
 // TODO: check crop/resample features
-// TODO: try linq2xml in providers
 // TODO: xml special chars decode; 
 // TODO: hotkeys - next-prev-skip
 
@@ -81,6 +79,12 @@ namespace Artwork_Stack.GUI
             {
                 btnJobs_CheckedChanged(null, null);
             }
+
+            chkCrop.Checked   = WinRegistry.GetValue<bool>(WinRegistry.Keys.Crop);
+            chkResize.Checked = WinRegistry.GetValue<bool>(WinRegistry.Keys.Resize);
+            
+            int size = WinRegistry.GetValue<int>(WinRegistry.Keys.ResizeTo);
+            numSize.Value = size > 0 ? size : 500;
 
             showTrackInfo();
             DoSearch();
@@ -581,6 +585,21 @@ namespace Artwork_Stack.GUI
             txtQuery.Text = txtQuery.Text.Correct();
             showTrackInfo();
             DoSearch();
+        }
+
+        private void chkCrop_CheckedChanged(object sender, EventArgs e)
+        {
+            WinRegistry.SetValue(WinRegistry.Keys.Crop, chkCrop.Checked);
+        }
+
+        private void chkResize_CheckedChanged(object sender, EventArgs e)
+        {
+            WinRegistry.SetValue(WinRegistry.Keys.Resize, chkResize.Checked);
+        }
+
+        private void numSize_ValueChanged(object sender, EventArgs e)
+        {
+            WinRegistry.SetValue(WinRegistry.Keys.ResizeTo, numSize.Value);
         }
     }
 }

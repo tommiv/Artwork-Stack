@@ -25,6 +25,10 @@ namespace Artwork_Stack.Tools
             {
                 return (T)(object)Convert.ToBoolean(value);
             }
+            else if (typeof(T) == typeof(int))
+            {
+                return (T)(object)Convert.ToInt32(value);
+            }
             else
             {
                 return (T)value;
@@ -59,6 +63,9 @@ namespace Artwork_Stack.Tools
             public const string GroupByAlbum      = "GroupByAlbum";
             public const string SkipExisting      = "SkipExisting";
             public const string ShowJobs          = "ShowJobs";
+            public const string Crop              = "Crop";
+            public const string Resize            = "Resize";
+            public const string ResizeTo          = "ResizeTo";
         }
     }
 }

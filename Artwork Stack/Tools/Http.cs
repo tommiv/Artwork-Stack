@@ -5,11 +5,9 @@ using System.Xml.Linq;
 
 namespace Artwork_Stack.Tools
 {
-   public static class Http
+    public static class Http
     {
-       private const string useragent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; "
-            + ".NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; "
-            + "Tablet PC 2.0; OfficeLiveConnector.1.4; OfficeLivePatch.1.3)";
+        private const string useragent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; OfficeLiveConnector.1.4; OfficeLivePatch.1.3)";
 
         public static Image getPicture(string URL)
         {

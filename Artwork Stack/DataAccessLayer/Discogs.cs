@@ -40,7 +40,7 @@ namespace Artwork_Stack.DataAccessLayer
             string thumb = input.Element("thumb") != null ? input.Element("thumb").Value : string.Empty;
             string title = input.Element("title") != null ? input.Element("title").Value : string.Empty;
             
-            string uri = input.Element("uri")   != null ? input.Element("uri").Value   : string.Empty;
+            string uri = input.Element("uri") != null ? input.Element("uri").Value : string.Empty;
             string id = string.Join("/", uri.Split('/').Reverse().Take(2).Reverse().ToArray());
             
             var albuminfo = Regex.Split(title, " - ");
