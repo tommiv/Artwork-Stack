@@ -323,6 +323,7 @@ namespace Artwork_Stack.GUI
             this.Controls.Add(this.txtQuery);
             this.Controls.Add(this.btnSearch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.Location = new System.Drawing.Point(50, 50);
             this.MaximizeBox = false;
             this.Name = "DoWork";
@@ -330,6 +331,7 @@ namespace Artwork_Stack.GUI
             this.Text = "Artwork Stack: Multi-service artwork fetcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DoWork_FormClosing);
             this.Shown += new System.EventHandler(this.formDoWork_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DoWork_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.gridCurrentJob)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSize)).EndInit();
             this.grpOptions.ResumeLayout(false);

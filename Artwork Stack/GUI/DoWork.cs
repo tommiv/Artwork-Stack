@@ -21,7 +21,9 @@ using TagLib;
 
 // TODO: check crop/resample features
 // TODO: xml special chars decode; 
-// TODO: hotkeys - next-prev-skip
+// TODO: Implement Gracenote if they validate me
+// TODO: follow grid selection by current job
+// TODO: check pager disabling (possibly bug)
 
 namespace Artwork_Stack.GUI
 {
@@ -600,6 +602,26 @@ namespace Artwork_Stack.GUI
         private void numSize_ValueChanged(object sender, EventArgs e)
         {
             WinRegistry.SetValue(WinRegistry.Keys.ResizeTo, numSize.Value);
+        }
+
+        private void DoWork_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Modifiers == Keys.Alt)
+            {
+                if (btnNext.Enabled && e.KeyCode == Keys.Right)
+                {
+                    buttonCycleClick(btnNext, EventArgs.Empty);
+                }
+                else if (btnPrev.Enabled && e.KeyCode == Keys.Left)
+                {
+                    buttonCycleClick(btnPrev, EventArgs.Empty);
+                }
+                else if (e.KeyCode == Keys.S)
+                {
+                    chkSkip.Checked = true;
+                    buttonCycleClick(btnNext, EventArgs.Empty);
+                }
+            }
         }
     }
 }
