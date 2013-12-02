@@ -9,17 +9,17 @@ namespace Artwork_Stack.Tools
 
         internal static T GetValue<T>(string key)
         {
-            RegistryKey HKLM = Registry.LocalMachine;
+            RegistryKey HKCU = Registry.CurrentUser;
             Object value;
             try
             {
-                value = HKLM.OpenSubKey(RegPath).GetValue(key);
+                value = HKCU.OpenSubKey(RegPath).GetValue(key);
             }
             catch
             {
                 value = null;
             }
-            HKLM.Close();
+            HKCU.Close();
 
             if(typeof(T) == typeof(bool))
             {
@@ -37,15 +37,15 @@ namespace Artwork_Stack.Tools
 
         internal static void SetValue(string key, object value)
         {
-            RegistryKey HKLM = Registry.LocalMachine;
+            RegistryKey HKCU = Registry.CurrentUser;
             RegistryKey Artwrk = null;
             try
             {
-                Artwrk = HKLM.OpenSubKey(RegPath, true);
+                Artwrk = HKCU.OpenSubKey(RegPath, true);
             }
             finally
             {
-                if (Artwrk == null) Artwrk = HKLM.CreateSubKey(RegPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                if (Artwrk == null) Artwrk = HKCU.CreateSubKey(RegPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
             }
 
             if (Artwrk != null)
@@ -53,7 +53,7 @@ namespace Artwork_Stack.Tools
                 Artwrk.SetValue(key, value);
                 Artwrk.Close();
             }
-            HKLM.Close();
+            HKCU.Close();
         }
         
         internal static class Keys
