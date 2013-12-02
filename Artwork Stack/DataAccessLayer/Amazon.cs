@@ -26,6 +26,15 @@ namespace Artwork_Stack.DataAccessLayer
         public UnifiedResponse Search(string query)
         {
             var xmlstring = Tools.Http.getText(BuildSearchRequestUrl(query));
+            if (string.IsNullOrEmpty(xmlstring))
+            {
+                return new UnifiedResponse
+                {
+                    Success = false,
+                    Error   = "Server answer was null"
+                };
+            }
+
             xmlstring = Regex.Replace(xmlstring, "xmlns=[^>]*>", ">"); // hack to avoid namespace manager: just cut namespace
             var response = new XmlDocument();
 
