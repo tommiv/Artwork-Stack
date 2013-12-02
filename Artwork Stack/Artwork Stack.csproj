@@ -70,7 +70,6 @@
     <Compile Include="Controls\ImageCell.Designer.cs">
       <DependentUpon>ImageCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataAccessLayer\AllCDCovers.cs" />
     <Compile Include="DataAccessLayer\Amazon.cs" />
     <Compile Include="DataAccessLayer\Discogs.cs" />
     <Compile Include="DataAccessLayer\LastFm.cs" />
