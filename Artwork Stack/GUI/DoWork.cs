@@ -24,6 +24,7 @@ using TagLib;
 // TODO: Implement Gracenote if they validate me
 // TODO: follow grid selection by current job
 // TODO: check pager disabling (possibly bug)
+// TODO: handle enter press in setup form
 
 namespace Artwork_Stack.GUI
 {
@@ -464,7 +465,14 @@ namespace Artwork_Stack.GUI
             {
                 var track = TagLib.File.Create(file);
                 track.Tag.Pictures = artworkFrame;
-                track.Save();
+                try
+                {
+                    track.Save();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             }
             jCon.SetJobIsDone(jobID);
         }
