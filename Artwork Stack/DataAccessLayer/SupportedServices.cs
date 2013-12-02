@@ -7,15 +7,6 @@ namespace Artwork_Stack.DataAccessLayer
     {
         internal static Dictionary<Supported, ServiceContext> Providers = new Dictionary<Supported, ServiceContext>
         {
-            //{
-            //    Supported.Allcdcovers,
-            //    new ServiceContext
-            //    {
-            //        InternalID = Supported.Allcdcovers,  
-            //        DisplayedName = "AllCDCovers.com",  
-            //        Provider = new AllCDCovers()
-            //    }
-            //}, 
             {
                 Supported.Amazon,
                 new ServiceContext
@@ -49,8 +40,7 @@ namespace Artwork_Stack.DataAccessLayer
         {
             LastFm,
             Discogs,
-            Amazon,
-            Allcdcovers
+            Amazon
         }
     }
 }
