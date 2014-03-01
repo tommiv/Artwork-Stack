@@ -47,7 +47,7 @@ namespace Artwork_Stack.DataAccessLayer
                     {
                         if (item["type"] != "release" && item["type"] != "master") continue;
                         var release = new Result();
-                        release.Thumb          = item["thumb"];
+                        release.Thumb          = ResUrl(item["thumb"]);
                         release.AdditionalInfo = item["resource_url"];
                         release.Artist = release.Album = item["title"];
                         release.Request        = query;
@@ -64,6 +64,11 @@ namespace Artwork_Stack.DataAccessLayer
                     return output;
                 }
             }
+        }
+
+        private static string ResUrl(string url)
+        {
+            return url.Replace("api.discogs", "s.pixogs");
         }
 
         public bool GetFullsizeUrlViaCallback { get { return true; } }
@@ -85,7 +90,7 @@ namespace Artwork_Stack.DataAccessLayer
                     var resp = new JavaScriptSerializer().Deserialize<dynamic>(plain);
                     foreach (dynamic img in resp["images"])
                     {
-                        if (img["type"] == "primary") return img["uri"];
+                        if (img["type"] == "primary") return ResUrl(img["uri"]);
                         int widesize = Math.Min(img["width"], img["height"]);
                         if (widesize > size)
                         {
@@ -93,7 +98,7 @@ namespace Artwork_Stack.DataAccessLayer
                             candidate = img["uri"];
                         }
                     }
-                    return candidate;
+                    return ResUrl(candidate);
                 }
             }
             catch
