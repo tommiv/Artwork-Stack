@@ -24,9 +24,18 @@ namespace Artwork_Stack.DataAccessLayer
             return string.Format("{0}/{1}", apiurl, id);
         }
 
+        private WebClient getClient()
+        {
+            var wcl = new WebClient();
+            wcl.Headers.Add("User-Agent", "ArtworkStack/0.1b +https://github.com/tommiv/Artwork-Stack");
+            wcl.Headers.Add("Accept", "application/json");
+            return wcl;
+        }
+
         public UnifiedResponse Search(string query)
         {
-            string response = new WebClient().DownloadString(SearchRequestUrl(query));
+            var wcl = this.getClient();
+            string response = wcl.DownloadString(SearchRequestUrl(query));
             var output = new UnifiedResponse();
             if (string.IsNullOrWhiteSpace(response))
             {
@@ -78,7 +87,7 @@ namespace Artwork_Stack.DataAccessLayer
         {
             try
             {
-                string plain = new WebClient().DownloadString((string)url);
+                string plain = this.getClient().DownloadString((string)url);
                 if (string.IsNullOrWhiteSpace(plain))
                 {
                     return null;
